@@ -1,6 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
+import 'package:aspire_edge/services/auth_helper.dart';
+import 'package:aspire_edge/services/user_dao.dart';
+import 'package:aspire_edge/models/user.dart' as user_model;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aspire_edge/services/validate.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -10,21 +14,70 @@ class RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<RegisterForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
   String? selectedTier;
+  bool _isLoading = false;
+  String? _error;
 
-  void signUp(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
-      // Optional: Show success SnackBar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Account Created Successfully!")),
-      );
+  Future<void> _saveUserToPrefs(String uid) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('uid', uid);
+  }
 
-      // Navigate to EntryPoint (home screen)
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const EntryPoint()),
-      );
+  Future<void> signUp(BuildContext context) async {
+    setState(() {
+      _error = null;
+    });
+    if (_formKey.currentState?.validate() ?? false) {
+      // Additional null checks for all fields
+      if (_nameController.text.trim().isEmpty ||
+          _emailController.text.trim().isEmpty ||
+          _passwordController.text.isEmpty ||
+          selectedTier == null || selectedTier == "") {
+        setState(() => _error = "All fields are required");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_error!)),
+        );
+        return;
+      }
+      setState(() => _isLoading = true);
+      try {
+        final firebaseUser = await AuthService().register(
+          _emailController.text.trim(),
+          _passwordController.text,
+          _nameController.text.trim(),
+        );
+        if (firebaseUser != null) {
+          final userObj = user_model.User(
+            uuid: firebaseUser.uid,
+            role: 'user',
+            tier: selectedTier!,
+            username: _nameController.text.trim(),
+          );
+          // Save user using UserDao
+          final userDao = UserDao();
+          // userDao.saveUser(userObj);
+          await _saveUserToPrefs(firebaseUser.uid);
+          if (mounted) {
+            Navigator.pushReplacementNamed(context, '/home');
+          }
+        }
+      } on FirebaseAuthException catch (e) {
+        setState(() => _error = e.message ?? "Registration failed");
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(_error!)));
+      } catch (e) {
+        setState(() => _error = "An unexpected error occurred");
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(_error!)));
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -39,6 +92,7 @@ class _RegisterFormState extends State<RegisterForm> {
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 16),
             child: TextFormField(
+              controller: _nameController,
               validator: (value) {
                 if (value == null || value.isEmpty) return "Enter your name";
                 return null;
@@ -54,10 +108,8 @@ class _RegisterFormState extends State<RegisterForm> {
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 16),
             child: TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) return "Enter your email";
-                return null;
-              },
+              controller: _emailController,
+              validator: validateEmail,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
@@ -70,33 +122,20 @@ class _RegisterFormState extends State<RegisterForm> {
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 16),
             child: TextFormField(
+              controller: _passwordController,
               obscureText: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) return "Enter password";
-                return null;
-              },
+              validator: validatePass,
+              textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
-                hintText: "********",
+                hintText: "******",
                 border: OutlineInputBorder(),
               ),
             ),
           ),
-          const Text("Confirm Password", style: TextStyle(color: Colors.black54)),
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 16),
-            child: TextFormField(
-              obscureText: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) return "Re-enter password";
-                return null;
-              },
-              decoration: const InputDecoration(
-                hintText: "********",
-                border: OutlineInputBorder(),
-              ),
-            ),
+          const Text(
+            "Select Your Tier",
+            style: TextStyle(color: Colors.black54),
           ),
-          const Text("Select Your Tier", style: TextStyle(color: Colors.black54)),
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 24),
             child: DropdownButtonFormField<String>(
@@ -107,25 +146,40 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
               validator: (value) {
-                if (value == null) return "Please select a tier";
+                if (value == null || value == "") return "Please select a tier";
                 return null;
               },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(border: OutlineInputBorder()),
               items: const [
+                DropdownMenuItem(
+                  value: "",
+                  child: Text("Please select a tier"),
+                ),
                 DropdownMenuItem(value: "Student", child: Text("Student")),
-                DropdownMenuItem(value: "Graduate", child: Text("Graduate")),
-                DropdownMenuItem(value: "Professional", child: Text("Professional")),
+                DropdownMenuItem(
+                  value: "UnderGraduate",
+                  child: Text("UnderGraduate"), 
+                ),
+                DropdownMenuItem(
+                  value: "PostGraduate",
+                  child: Text("PostGraduate"),
+                ),
+                DropdownMenuItem(
+                  value: "Professional",
+                  child: Text("Professional"),
+                ),
               ],
             ),
           ),
+          if (_error != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(_error!, style: TextStyle(color: Colors.red)),
+            ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: ElevatedButton(
-              onPressed: () {
-                signUp(context);
-              },
+              onPressed: _isLoading ? null : () => signUp(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFF77D8E),
                 minimumSize: const Size(double.infinity, 56),
@@ -133,7 +187,9 @@ class _RegisterFormState extends State<RegisterForm> {
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
-              child: const Text("Sign Up"),
+              child: _isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text("Sign Up"),
             ),
           ),
           const SizedBox(height: 16),

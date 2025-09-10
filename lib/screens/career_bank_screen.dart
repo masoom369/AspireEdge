@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CareerBankPage extends StatefulWidget {
+class CareerBankScreen extends StatefulWidget {
+  const CareerBankScreen({super.key});
+
   @override
-  _CareerBankPageState createState() => _CareerBankPageState();
+  State<CareerBankScreen> createState() => _CareerBankScreenState();
 }
 
-class _CareerBankPageState extends State<CareerBankPage> {
+class _CareerBankScreenState extends State<CareerBankScreen> {
   String selectedFilter = 'All Levels';
   final TextEditingController searchController = TextEditingController();
 
@@ -82,114 +84,99 @@ class _CareerBankPageState extends State<CareerBankPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Icon(Icons.arrow_back, color: Colors.grey[700]),
-        title: Text(
-          'Career Bank',
-          style: TextStyle(
-            color: Colors.grey[800],
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Career Bank',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Career Bank',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Discover curated career paths designed to help you succeed in today\'s dynamic job market. Each path includes comprehensive learning materials, practical projects, and industry insights.',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+                height: 1.5,
+              ),
+            ),
+            SizedBox(height: 24),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: TextField(
+                controller: searchController,
+                onChanged: (value) => setState(() {}),
+                decoration: InputDecoration(
+                  hintText: 'Search career paths, skills, or industries...',
+                  hintStyle: TextStyle(color: Colors.grey[500]),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
-                'Discover curated career paths designed to help you succeed in today\'s dynamic job market. Each path includes comprehensive learning materials, practical projects, and industry insights.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                  height: 1.5,
-                ),
-              ),
-              SizedBox(height: 24),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
-                ),
-                child: TextField(
-                  controller: searchController,
-                  onChanged: (value) => setState(() {}),
-                  decoration: InputDecoration(
-                    hintText: 'Search career paths, skills, or industries...',
-                    hintStyle: TextStyle(color: Colors.grey[500]),
-                    prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            ),
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: Colors.grey[300]!),
                   ),
-                ),
-              ),
-              SizedBox(height: 16),
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: Colors.grey[300]!),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: selectedFilter,
-                        icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
-                        items: ['All Levels', 'Beginner', 'Intermediate', 'Advanced']
-                            .map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedFilter = newValue!;
-                          });
-                        },
-                      ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: selectedFilter,
+                      icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
+                      items: ['All Levels', 'Beginner', 'Intermediate', 'Advanced']
+                          .map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedFilter = newValue!;
+                        });
+                      },
                     ),
                   ),
-                  Spacer(),
-                  Text(
-                    '$enrolledCount enrolled',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Showing ${filteredPaths.length} career paths',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
                 ),
+                Spacer(),
+                Text(
+                  '$enrolledCount enrolled',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Showing ${filteredPaths.length} career paths',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 14,
               ),
-              SizedBox(height: 20),
+            ),
+            SizedBox(height: 20),
 LayoutBuilder(
   builder: (context, constraints) {
     int crossAxisCount = 1;
@@ -223,8 +210,7 @@ LayoutBuilder(
     );
   },
 ),
-            ],
-          ),
+          ],
         ),
       ),
     );

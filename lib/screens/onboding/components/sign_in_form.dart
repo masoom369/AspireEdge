@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rive/rive.dart';
-import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
+import 'package:aspire_edge/services/auth_helper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({
@@ -15,6 +17,8 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool isShowLoading = false;
   bool isShowConfetti = false;
   late SMITrigger error;
@@ -22,6 +26,20 @@ class _SignInFormState extends State<SignInForm> {
   late SMITrigger reset;
 
   late SMITrigger confetti;
+
+  final AuthService _authService = AuthService();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveUserToPrefs(String uid) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('uid', uid);
+  }
 
   void _onCheckRiveInit(Artboard artboard) {
     StateMachineController? controller =
@@ -41,51 +59,92 @@ class _SignInFormState extends State<SignInForm> {
     confetti = controller.findInput<bool>("Trigger explosion") as SMITrigger;
   }
 
-  void singIn(BuildContext context) {
-    // confetti.fire();
+  Future<void> singIn(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) {
+      error.fire();
+      Future.delayed(
+        const Duration(seconds: 2),
+        () {
+          setState(() {
+            isShowLoading = false;
+          });
+          reset.fire();
+        },
+      );
+      return;
+    }
+
     setState(() {
       isShowConfetti = true;
       isShowLoading = true;
     });
-    Future.delayed(
-      const Duration(seconds: 1),
-      () {
-        if (_formKey.currentState!.validate()) {
-          success.fire();
-          Future.delayed(
-            const Duration(seconds: 2),
-            () {
-              setState(() {
-                isShowLoading = false;
-              });
-              confetti.fire();
-              // Navigate & hide confetti
-              Future.delayed(const Duration(seconds: 1), () {
-                // Navigator.pop(context);
-                if (!context.mounted) return;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const EntryPoint(),
-                  ),
-                );
-              });
-            },
-          );
-        } else {
-          error.fire();
-          Future.delayed(
-            const Duration(seconds: 2),
-            () {
-              setState(() {
-                isShowLoading = false;
-              });
-              reset.fire();
-            },
-          );
-        }
-      },
-    );
+
+    try {
+      User? user = await _authService.signIn(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+
+      if (user != null) {
+        // Save uid to SharedPreferences
+        await _saveUserToPrefs(user.uid);
+
+        success.fire();
+        Future.delayed(
+          const Duration(seconds: 2),
+          () {
+            setState(() {
+              isShowLoading = false;
+            });
+            confetti.fire();
+            // Navigate & hide confetti
+            Future.delayed(const Duration(seconds: 1), () {
+              if (!context.mounted) return;
+              Navigator.pushReplacementNamed(context, '/profile');
+            });
+          },
+        );
+      } else {
+        error.fire();
+        Future.delayed(
+          const Duration(seconds: 2),
+          () {
+            setState(() {
+              isShowLoading = false;
+            });
+            reset.fire();
+          },
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      error.fire();
+      Future.delayed(
+        const Duration(seconds: 2),
+        () {
+          setState(() {
+            isShowLoading = false;
+          });
+          reset.fire();
+        },
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed: ${e.message}')),
+      );
+    } catch (e) {
+      error.fire();
+      Future.delayed(
+        const Duration(seconds: 2),
+        () {
+          setState(() {
+            isShowLoading = false;
+          });
+          reset.fire();
+        },
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 
   @override
@@ -106,7 +165,7 @@ class _SignInFormState extends State<SignInForm> {
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 16),
                 child: TextFormField(
-                  
+                  controller: _emailController,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "";
@@ -114,7 +173,7 @@ class _SignInFormState extends State<SignInForm> {
                     return null;
                   },
                   keyboardType: TextInputType.emailAddress,
-                  
+
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     hintText: 'Enter your registered email',
@@ -134,6 +193,7 @@ class _SignInFormState extends State<SignInForm> {
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 16),
                 child: TextFormField(
+                  controller: _passwordController,
                   obscureText: true,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -142,7 +202,7 @@ class _SignInFormState extends State<SignInForm> {
                     return null;
                   },
                   decoration: InputDecoration(
-                         hintText: 'Enter your registered email',
+                         hintText: 'Enter your password',
                     prefixIcon: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: SvgPicture.asset("assets/icons/password.svg"),

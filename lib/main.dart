@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:aspire_edge/routes/route_guard.dart';
+// import 'package:google_fonts/google_fonts.dart';  // Uncomment if you want Google Fonts
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Enable offline persistence for Realtime Database on non-web platforms
+  if (!kIsWeb) {
+    FirebaseDatabase.instance.setPersistenceEnabled(true);
+  }
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AspireEdge',
+      title: 'Aspire Edge',
       debugShowCheckedModeBanner: false,
+
+      // Apply your custom theme based on your template
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFEEF1F8),
         primarySwatch: Colors.blue,
         fontFamily: "Intel",
-        
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
         ),
@@ -28,12 +41,23 @@ class MyApp extends StatelessWidget {
           errorStyle: TextStyle(height: 0),
           border: defaultInputBorder,
           enabledBorder: defaultInputBorder,
-          
           focusedBorder: defaultInputBorder,
           errorBorder: defaultInputBorder,
         ),
+
+        // If you want to keep ColorScheme from your Firebase app, you can merge here:
+        // colorScheme: ColorScheme.fromSeed(seedColor: blackberry),
+        // useMaterial3: true,
+
+        // If you want to use Google Fonts instead of Intel font, do this:
+        // textTheme: GoogleFonts.emilysCandyTextTheme(),
       ),
-      home: const EntryPoint()
+
+      onGenerateRoute: guardedRoute, // keep your routing
+      builder: (context, child) => ScrollConfiguration(
+        behavior: NoScrollbarBehavior(),
+        child: child!,
+      ),
     );
   }
 }
@@ -45,3 +69,11 @@ const defaultInputBorder = OutlineInputBorder(
     width: 1,
   ),
 );
+
+// Custom ScrollBehavior to remove scrollbars (from your Firebase app)
+class NoScrollbarBehavior extends ScrollBehavior {
+  @override
+  Widget buildScrollbar(BuildContext context, Widget child, ScrollableDetails details) {
+    return child; // disables scrollbar
+  }
+}

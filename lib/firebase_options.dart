@@ -55,6 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '332933676175',
     projectId: 'aspireedge-b9754',
     authDomain: 'aspireedge-b9754.firebaseapp.com',
+    databaseURL: 'https://aspireedge-b9754-default-rtdb.firebaseio.com',
     storageBucket: 'aspireedge-b9754.firebasestorage.app',
     measurementId: 'G-WD21DMS7WH',
   );
@@ -64,6 +65,8 @@ class DefaultFirebaseOptions {
     appId: '1:332933676175:android:96983b3283041262a884fa',
     messagingSenderId: '332933676175',
     projectId: 'aspireedge-b9754',
+    databaseURL: 'https://aspireedge-b9754-default-rtdb.firebaseio.com',
     storageBucket: 'aspireedge-b9754.firebasestorage.app',
   );
+
 }

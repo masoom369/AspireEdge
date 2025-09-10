@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:aspire_edge/constants.dart';
-import 'package:aspire_edge/screens/career_bank.dart';
+import 'package:aspire_edge/screens/career_bank_screen.dart';
 import 'package:aspire_edge/screens/home_screen.dart';
+import 'package:aspire_edge/screens/profile_screen.dart';
+import 'package:aspire_edge/screens/contact_us_screen.dart';
 import 'package:aspire_edge/utils/rive_utils.dart';
 
 import '../../models/menu.dart';
@@ -33,6 +35,23 @@ class _EntryPointState extends State<EntryPoint>
       setState(() {
         selectedBottonNav = menu;
       });
+    }
+  }
+
+  Widget getCurrentScreen() {
+    switch (selectedBottonNav.title) {
+      case "home":
+        return const HomePage(); // Assuming HomeScreen exists
+      case "Search":
+        return const HomePage();
+      case "Timer":
+        return const CareerBankScreen();
+      case "Notification":
+        return const ContactUsPage();
+      case "Profile":
+        return const ProfileScreen();
+      default:
+        return const CareerBankScreen();
     }
   }
 
@@ -93,7 +112,7 @@ class _EntryPointState extends State<EntryPoint>
                   borderRadius: const BorderRadius.all(
                     Radius.circular(24),
                   ),
-                  child:CareerBankPage()
+                  child: getCurrentScreen()
                 ),
               ),
             ),
