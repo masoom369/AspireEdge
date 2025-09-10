@@ -1,5 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
-import '/models/user.dart';
+import 'package:aspire_edge/models/user.dart';
 
 class UserDao {
   final _databaseRef = FirebaseDatabase.instance.ref("users");
@@ -19,4 +19,37 @@ class UserDao {
   void updateUser(String key, User user) {
     _databaseRef.child(key).update(user.toMap());
   }
-}
+
+  Future<String?> getUserRole(String uid) async {
+    // Query for the user with matching uuid
+    final snapshot =
+        await _databaseRef
+            .orderByChild('uuid')
+            .equalTo(uid)
+            .limitToFirst(1)
+            .get();
+    if (snapshot.exists && snapshot.children.isNotEmpty) {
+      final userData = snapshot.children.first.value as Map<dynamic, dynamic>?;
+      if (userData != null && userData['role'] is String) {
+        return userData['role'] as String;
+      }
+    }
+    return null;
+  }
+
+  Future<User?> getUserById(String uid) async {
+    final snapshot =
+        await _databaseRef
+            .orderByChild('uuid')
+            .equalTo(uid)
+            .limitToFirst(1)
+            .get();
+    if (snapshot.exists && snapshot.children.isNotEmpty) {
+      final userData = snapshot.children.first.value as Map<dynamic, dynamic>?;
+      if (userData != null) {
+        return User.fromJson(userData);
+      }
+    }
+    return null;
+  }
+} // end of UserDao
