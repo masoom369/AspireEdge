@@ -2,7 +2,7 @@ name: aspire_edge
 description: "AspireEdge is a proposed cross-platform app designed to provide career guidance to students, graduates, and working professionals."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -37,6 +37,8 @@ dependencies:
   firebase_core: ^4.1.0
   firebase_database: ^12.0.1
   firebase_auth: ^6.0.2
+  rive: ^0.13.20
+  flutter_svg: ^2.2.1
 
 dev_dependencies:
   flutter_test:
@@ -54,11 +56,27 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/avaters/ # Make sure this folder exists
+    - assets/Backgrounds/ # Make sure this folder exists
+    - assets/icons/ # Make sure this folder exists
+    - assets/RiveAssets/ # Make sure this folder exists
+    - assets/Images/ # Added for images like gym.jpg etc.
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/Fonts/Inter-Regular.ttf
+        - asset: assets/Fonts/Inter-SemiBold.ttf
+          weight: 600
+    - family: Poppins
+      fonts:
+        - asset: assets/Fonts/Poppins-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:
