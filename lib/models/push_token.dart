@@ -23,4 +23,11 @@ class PushToken {
         'token': token,
         'platform': platform,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'user_id': userId,
+        'token': token,
+        'platform': platform,
+      };
 }

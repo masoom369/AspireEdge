@@ -31,4 +31,13 @@ class Feedback {
         'message': message,
         'submitted_at': submittedAt,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'user_id': userId,
+        'name': name,
+        'email': email,
+        'message': message,
+        'submitted_at': submittedAt,
+      };
 }

@@ -15,4 +15,9 @@ class Industry {
         'id': id,
         'name': name,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'name': name,
+      };
 }

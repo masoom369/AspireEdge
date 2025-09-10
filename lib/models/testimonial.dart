@@ -31,4 +31,13 @@ class Testimonial {
         'tier_id': tierId,
         'story': story,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'user_id': userId,
+        'display_name': displayName,
+        'image_uri': imageUri,
+        'tier_id': tierId,
+        'story': story,
+      };
 }

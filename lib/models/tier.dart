@@ -23,4 +23,11 @@ class Tier {
         'display_name': displayName,
         'description': description,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'slug': slug,
+        'display_name': displayName,
+        'description': description,
+      };
 }

@@ -15,4 +15,9 @@ class ResourceTag {
         'resource_id': resourceId,
         'tag_id': tagId,
       };
+
+  Map<String, dynamic> toMap() => {
+        'resource_id': resourceId,
+        'tag_id': tagId,
+      };
 }

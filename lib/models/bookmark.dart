@@ -27,4 +27,12 @@ class Bookmark {
         'object_id': objectId,
         'created_at': createdAt,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'user_id': userId,
+        'object_type': objectType,
+        'object_id': objectId,
+        'created_at': createdAt,
+      };
 }

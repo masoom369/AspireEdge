@@ -27,4 +27,12 @@ class CVTemplate {
         'media_id': mediaId,
         'uploaded_by': uploadedBy,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'description': description,
+        'media_id': mediaId,
+        'uploaded_by': uploadedBy,
+      };
 }

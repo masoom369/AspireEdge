@@ -19,4 +19,10 @@ class CareerSkill {
         'skill_id': skillId,
         'importance': importance,
       };
+
+  Map<String, dynamic> toMap() => {
+        'career_id': careerId,
+        'skill_id': skillId,
+        'importance': importance,
+      };
 }

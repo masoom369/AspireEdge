@@ -19,4 +19,10 @@ class NotificationTarget {
         'user_id': userId,
         'read_at': readAt,
       };
+
+  Map<String, dynamic> toMap() => {
+        'notification_id': notificationId,
+        'user_id': userId,
+        'read_at': readAt,
+      };
 }

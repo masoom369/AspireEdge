@@ -27,4 +27,12 @@ class Notification {
         'data': data,
         'sent_at': sentAt,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'body': body,
+        'data': data,
+        'sent_at': sentAt,
+      };
 }

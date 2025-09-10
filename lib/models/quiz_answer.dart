@@ -27,4 +27,12 @@ class QuizAnswer {
         'option_id': optionId,
         'answer_text': answerText,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'attempt_id': attemptId,
+        'question_id': questionId,
+        'option_id': optionId,
+        'answer_text': answerText,
+      };
 }

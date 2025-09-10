@@ -39,4 +39,15 @@ class Resource {
         'published_at': publishedAt,
         'is_published': isPublished,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'type_id': typeId,
+        'author_id': authorId,
+        'content': content,
+        'media_id': mediaId,
+        'published_at': publishedAt,
+        'is_published': isPublished,
+      };
 }

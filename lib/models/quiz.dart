@@ -27,4 +27,12 @@ class Quiz {
         'is_active': isActive,
         'created_by': createdBy,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'description': description,
+        'is_active': isActive,
+        'created_by': createdBy,
+      };
 }

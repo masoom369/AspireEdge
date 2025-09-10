@@ -31,4 +31,13 @@ class OfficeLocation {
         'longitude': longitude,
         'phone': phone,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'name': name,
+        'address': address,
+        'latitude': latitude,
+        'longitude': longitude,
+        'phone': phone,
+      };
 }

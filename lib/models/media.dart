@@ -23,4 +23,11 @@ class Media {
         'type': type,
         'title': title,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'url': url,
+        'type': type,
+        'title': title,
+      };
 }

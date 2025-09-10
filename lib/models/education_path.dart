@@ -27,4 +27,12 @@ class EducationPath {
         'title': title,
         'description': description,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'career_id': careerId,
+        'step_order': stepOrder,
+        'title': title,
+        'description': description,
+      };
 }

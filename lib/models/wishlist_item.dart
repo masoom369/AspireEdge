@@ -23,4 +23,11 @@ class WishlistItem {
         'title': title,
         'description': description,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'user_id': userId,
+        'title': title,
+        'description': description,
+      };
 }

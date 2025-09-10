@@ -23,4 +23,11 @@ class QuizOption {
         'label': label,
         'option_text': optionText,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'question_id': questionId,
+        'label': label,
+        'option_text': optionText,
+      };
 }

@@ -47,4 +47,17 @@ class Career {
         'created_by': createdBy,
         'created_at': createdAt,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'industry_id': industryId,
+        'short_description': shortDescription,
+        'detailed_description': detailedDescription,
+        'salary_min': salaryMin,
+        'salary_max': salaryMax,
+        'currency': currency,
+        'created_by': createdBy,
+        'created_at': createdAt,
+      };
 }

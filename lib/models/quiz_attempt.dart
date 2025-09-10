@@ -39,4 +39,15 @@ class QuizAttempt {
         'suggested_tier_id': suggestedTierId,
         'suggested_career_id': suggestedCareerId,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'quiz_id': quizId,
+        'user_id': userId,
+        'started_at': startedAt,
+        'completed_at': completedAt,
+        'raw_score': rawScore,
+        'suggested_tier_id': suggestedTierId,
+        'suggested_career_id': suggestedCareerId,
+      };
 }

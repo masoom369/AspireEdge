@@ -19,4 +19,10 @@ class QuizScoreMap {
         'option_id': optionId,
         'score_map': scoreMap,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'option_id': optionId,
+        'score_map': scoreMap,
+      };
 }

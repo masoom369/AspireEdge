@@ -27,4 +27,12 @@ class QuizQuestion {
         'question_type': questionType,
         'seq': seq,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'quiz_id': quizId,
+        'question_text': questionText,
+        'question_type': questionType,
+        'seq': seq,
+      };
 }

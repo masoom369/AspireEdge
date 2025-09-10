@@ -43,4 +43,16 @@ class User {
         'avatar_url': avatarUrl,
         'created_at': createdAt,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'role': role,
+        'tier_id': tierId,
+        'name': name,
+        'email': email,
+        'password_hash': passwordHash,
+        'phone': phone,
+        'avatar_url': avatarUrl,
+        'created_at': createdAt,
+      };
 }

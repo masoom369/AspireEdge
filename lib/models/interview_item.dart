@@ -27,4 +27,12 @@ class InterviewItem {
         'media_id': mediaId,
         'category': category,
       };
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'content': content,
+        'media_id': mediaId,
+        'category': category,
+      };
 }
