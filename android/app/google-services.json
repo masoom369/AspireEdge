@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "332933676175",
+    "project_id": "aspireedge-b9754",
+    "storage_bucket": "aspireedge-b9754.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:332933676175:android:96983b3283041262a884fa",
+        "android_client_info": {
+          "package_name": "com.AspireEdge.aspire_edge"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3hvZwhwHsF24_t7GFBg0csUjXKX9oYYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
