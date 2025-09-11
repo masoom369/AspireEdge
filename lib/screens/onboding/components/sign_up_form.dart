@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aspire_edge/services/auth_helper.dart';
+import 'package:aspire_edge/services/auth_service.dart';
 import 'package:aspire_edge/services/user_dao.dart';
 import 'package:aspire_edge/models/user.dart' as user_model;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,7 +75,7 @@ class _RegisterFormState extends State<RegisterForm> {
           await _saveUserToPrefs(firebaseUser.uid);
 
           if (mounted) {
-            Navigator.pushReplacementNamed(context, '/home');
+            Navigator.pushReplacementNamed(context, '/');
           }
         }
       } on FirebaseAuthException catch (e) {

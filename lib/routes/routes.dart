@@ -17,6 +17,8 @@ import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
 import 'package:aspire_edge/screens/home_page.dart';
 import 'package:aspire_edge/screens/logout_screen.dart';
 import 'package:aspire_edge/screens/push_notification_screen.dart';
+import 'package:aspire_edge/services/auth_service.dart';
+import 'package:aspire_edge/services/user_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/screens/onboding/onboding_screen.dart';
 import 'package:aspire_edge/screens/profile_screen.dart';
@@ -43,14 +45,31 @@ final Map<String, WidgetBuilder> publicRoutes = {
   '/CareerBankPage': (context) => EntryPoint(child: CareerBankPage()),
   '/CVGuidancePage': (context) => EntryPoint(child: const CVGuidancePage()),
 };
+final AuthService _authService = AuthService();
+final UserDao _userDao = UserDao();
 
 // Protected routes (authentication required)
 final Map<String, WidgetBuilder> protectedRoutes = {
   '/profile': (context) => EntryPoint(child: const ProfileScreen()),
   '/logout': (context) => EntryPoint(child: const LogoutPage()),
   '/': (context) => EntryPoint(child: const HomePage()),
-  '/DashboardPage': (context) =>
-      EntryPoint(child: DashboardPage(role: 'admin')),
+  '/DashboardPage': (context) => FutureBuilder<String?>(
+    future: _userDao.getUserRole(_authService.currentUser!.uid),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      }
+
+      if (snapshot.hasError || !snapshot.hasData) {
+        return const Scaffold(
+          body: Center(child: Text("Unable to load user role")),
+        );
+      }
+
+      final role = snapshot.data ?? "user"; // default if null
+      return EntryPoint(child: DashboardPage(role: role));
+    },
+  ),
 };
 
 // Admin routes (admin access required)
@@ -76,11 +95,7 @@ final Map<String, WidgetBuilder> routes = {
 const List<String> unprotectedRoutes = [];
 
 // List of routes that DO require authentication
-const List<String> protectedRoutesList = [
-  '/profile',
-  '/'
-      '/logout',
-];
+const List<String> protectedRoutesList = ['/profile', '/', '/logout'];
 
 // List of routes that ONLY admin users can access
 const List<String> adminOnlyRoutes = [

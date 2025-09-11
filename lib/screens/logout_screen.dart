@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:aspire_edge/services/auth_helper.dart';
+import 'package:aspire_edge/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LogoutPage extends StatefulWidget {

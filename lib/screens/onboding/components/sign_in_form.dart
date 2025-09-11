@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rive/rive.dart';
-import 'package:aspire_edge/services/auth_helper.dart';
+import 'package:aspire_edge/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:aspire_edge/services/validate.dart';
@@ -91,7 +91,7 @@ class _SignInFormState extends State<SignInForm> {
           // Navigate & hide confetti
           Future.delayed(const Duration(seconds: 1), () {
             if (!context.mounted) return;
-            Navigator.pushReplacementNamed(context, '/home');
+            Navigator.pushReplacementNamed(context, '/');
           });
         });
       } else {

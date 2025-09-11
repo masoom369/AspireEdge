@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'routes.dart';
-import 'package:aspire_edge/services/auth_helper.dart';
+import 'package:aspire_edge/services/auth_service.dart';
 import 'package:aspire_edge/services/user_dao.dart';
 
 Future<bool> _isAuthenticated() async {
@@ -65,7 +65,7 @@ Route<dynamic>? guardedRoute(RouteSettings settings) {
                   if (roleSnapshot.data != 'admin') {
                     // Not admin, redirect or show error
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.of(context).pushReplacementNamed('/');
+                      Navigator.of(context).pushReplacementNamed('/auth');
                     });
                     return const Scaffold(
                       body: Center(child: Text('Access denied: Admins only')),

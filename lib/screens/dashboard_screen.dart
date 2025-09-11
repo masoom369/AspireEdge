@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DashboardPage extends StatelessWidget {
-  final String role; // 'admin', 'student', 'postgraduate', 'professional'
+  final String role; // Only 'admin' or 'user'
 
   const DashboardPage({Key? key, required this.role}) : super(key: key);
 
@@ -31,7 +31,9 @@ class DashboardPage extends StatelessWidget {
           ),
           const CircleAvatar(
             radius: 16,
-            backgroundImage: NetworkImage('https://via.placeholder.com/100/667EEA/FFFFFF?text=U'),
+            backgroundImage: NetworkImage(
+              'https://via.placeholder.com/100/667EEA/FFFFFF?text=U',
+            ),
           ),
         ],
       ),
@@ -54,13 +56,17 @@ class DashboardPage extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 childAspectRatio: 1.5,
-                children: _getStats().map((stat) => _buildStatCard(
-                  stat['title'] as String,
-                  stat['value'] as String,
-                  stat['subtitle'] as String,
-                  stat['icon'] as IconData,
-                  stat['color'] as Color,
-                )).toList(),
+                children: _getStats()
+                    .map(
+                      (stat) => _buildStatCard(
+                        stat['title'] as String,
+                        stat['value'] as String,
+                        stat['subtitle'] as String,
+                        stat['icon'] as IconData,
+                        stat['color'] as Color,
+                      ),
+                    )
+                    .toList(),
               ),
 
               const SizedBox(height: 24),
@@ -75,13 +81,13 @@ class DashboardPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Profile Completion (for students only)
+              // Profile Completion (for user only)
               if (role != 'admin') ...[
                 _buildProfileCompletion(context),
                 const SizedBox(height: 20),
               ],
 
-              // Success Story & Events (Admin gets Reports & User Mgmt)
+              // Bottom Section: Admin → Reports, User → Success & Events
               _buildBottomSection(context),
 
               const SizedBox(height: 24),
@@ -94,11 +100,12 @@ class DashboardPage extends StatelessWidget {
 
   String _getAppBarTitle() {
     switch (role) {
-      case 'admin': return 'Admin Dashboard';
-      case 'student': return 'Student Hub';
-      case 'postgraduate': return 'Postgrad Pathways';
-      case 'professional': return 'Career Accelerator';
-      default: return 'Dashboard';
+      case 'admin':
+        return 'Admin Dashboard';
+      case 'user':
+        return 'Student Hub';
+      default:
+        return 'Dashboard'; // fallback, should not occur
     }
   }
 
@@ -146,13 +153,20 @@ class DashboardPage extends StatelessWidget {
           const SizedBox(height: 20),
           if ((data['actions'] as List).isNotEmpty) ...[
             Row(
-              children: (data['actions'] as List<Map<String, dynamic>>).map((action) {
+              children: (data['actions'] as List<Map<String, dynamic>>).map((
+                action,
+              ) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 12),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
-                      color: action['primary'] ? const Color(0xFF4CAF50) : Colors.white.withOpacity(0.2),
+                      color: action['primary']
+                          ? const Color(0xFF4CAF50)
+                          : Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
                       border: !action['primary']
                           ? Border.all(color: Colors.white.withOpacity(0.3))
@@ -188,34 +202,15 @@ class DashboardPage extends StatelessWidget {
             {'label': 'Manage Users', 'primary': false},
           ],
         };
-      case 'student':
+      case 'user':
         return {
           'title': 'Welcome back, Alex Student!',
-          'subtitle': 'Continue your learning journey and explore new career opportunities.',
+          'subtitle':
+              'Continue your learning journey and explore new career opportunities.',
           'gradient': [const Color(0xFF667EEA), const Color(0xFF764BA2)],
           'actions': [
             {'label': 'Take Career Quiz', 'primary': true},
             {'label': 'Browse Careers', 'primary': false},
-          ],
-        };
-      case 'postgraduate':
-        return {
-          'title': 'Welcome back, Research Scholar!',
-          'subtitle': 'Advance your expertise and connect with industry leaders.',
-          'gradient': [const Color(0xFF9C27B0), const Color(0xFF673AB7)],
-          'actions': [
-            {'label': 'Find Research Grants', 'primary': true},
-            {'label': 'Join Conferences', 'primary': false},
-          ],
-        };
-      case 'professional':
-        return {
-          'title': 'Welcome back, Career Professional!',
-          'subtitle': 'Upskill, network, and unlock new career heights.',
-          'gradient': [const Color(0xFFFF9800), const Color(0xFFFF5722)],
-          'actions': [
-            {'label': 'Update Resume', 'primary': true},
-            {'label': 'Explore Jobs', 'primary': false},
           ],
         };
       default:
@@ -232,31 +227,65 @@ class DashboardPage extends StatelessWidget {
     switch (role) {
       case 'admin':
         return [
-          {'title': 'Total Users', 'value': '12,450', 'subtitle': '+240 this week', 'icon': Icons.people, 'color': const Color(0xFF667EEA)},
-          {'title': 'Active Courses', 'value': '89', 'subtitle': '5 new this month', 'icon': Icons.school, 'color': const Color(0xFF4CAF50)},
-          {'title': 'Revenue', 'value': '\$24K', 'subtitle': '+\$1.2K today', 'icon': Icons.attach_money, 'color': const Color(0xFFFF9800)},
-          {'title': 'Support Tickets', 'value': '12', 'subtitle': '4 unresolved', 'icon': Icons.headset_mic, 'color': const Color(0xFF9C27B0)},
+          {
+            'title': 'Total Users',
+            'value': '12,450',
+            'subtitle': '+240 this week',
+            'icon': Icons.people,
+            'color': const Color(0xFF667EEA),
+          },
+          {
+            'title': 'Active Courses',
+            'value': '89',
+            'subtitle': '5 new this month',
+            'icon': Icons.school,
+            'color': const Color(0xFF4CAF50),
+          },
+          {
+            'title': 'Revenue',
+            'value': '\$24K',
+            'subtitle': '+\$1.2K today',
+            'icon': Icons.attach_money,
+            'color': const Color(0xFFFF9800),
+          },
+          {
+            'title': 'Support Tickets',
+            'value': '12',
+            'subtitle': '4 unresolved',
+            'icon': Icons.headset_mic,
+            'color': const Color(0xFF9C27B0),
+          },
         ];
-      case 'student':
+      case 'user':
         return [
-          {'title': 'Courses Completed', 'value': '3', 'subtitle': '1 this week', 'icon': Icons.school, 'color': const Color(0xFF667EEA)},
-          {'title': 'Quiz Score', 'value': '85%', 'subtitle': 'Average score', 'icon': Icons.quiz, 'color': const Color(0xFF4CAF50)},
-          {'title': 'Career Matches', 'value': '12', 'subtitle': '3 new matches', 'icon': Icons.work, 'color': const Color(0xFFFF9800)},
-          {'title': 'Learning Hours', 'value': '24h', 'subtitle': '5h this month', 'icon': Icons.timer, 'color': const Color(0xFF9C27B0)},
-        ];
-      case 'postgraduate':
-        return [
-          {'title': 'Research Papers', 'value': '5', 'subtitle': '2 under review', 'icon': Icons.description, 'color': const Color(0xFF667EEA)},
-          {'title': 'Grants Applied', 'value': '3', 'subtitle': '1 awarded', 'icon': Icons.monetization_on, 'color': const Color(0xFF4CAF50)},
-          {'title': 'Conferences', 'value': '2', 'subtitle': 'Next in 14 days', 'icon': Icons.event, 'color': const Color(0xFFFF9800)},
-          {'title': 'Mentors', 'value': '4', 'subtitle': '2 new connections', 'icon': Icons.group, 'color': const Color(0xFF9C27B0)},
-        ];
-      case 'professional':
-        return [
-          {'title': 'Skills Mastered', 'value': '18', 'subtitle': '+2 this month', 'icon': Icons.star, 'color': const Color(0xFF667EEA)},
-          {'title': 'Job Applications', 'value': '7', 'subtitle': '2 interviews', 'icon': Icons.work, 'color': const Color(0xFF4CAF50)},
-          {'title': 'Network Size', 'value': '245', 'subtitle': '+12 this week', 'icon': Icons.groups, 'color': const Color(0xFFFF9800)},
-          {'title': 'Certifications', 'value': '5', 'subtitle': 'AWS Certified', 'icon': Icons.verified, 'color': const Color(0xFF9C27B0)},
+          {
+            'title': 'Courses Completed',
+            'value': '3',
+            'subtitle': '1 this week',
+            'icon': Icons.school,
+            'color': const Color(0xFF667EEA),
+          },
+          {
+            'title': 'Quiz Score',
+            'value': '85%',
+            'subtitle': 'Average score',
+            'icon': Icons.quiz,
+            'color': const Color(0xFF4CAF50),
+          },
+          {
+            'title': 'Career Matches',
+            'value': '12',
+            'subtitle': '3 new matches',
+            'icon': Icons.work,
+            'color': const Color(0xFFFF9800),
+          },
+          {
+            'title': 'Learning Hours',
+            'value': '24h',
+            'subtitle': '5h this month',
+            'icon': Icons.timer,
+            'color': const Color(0xFF9C27B0),
+          },
         ];
       default:
         return [];
@@ -299,18 +328,19 @@ class DashboardPage extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             _getQuickActionsSubtitle(),
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 16),
-          ...actions.map((action) => _buildActionItem(
-            action['title'] as String,
-            action['subtitle'] as String,
-            action['icon'] as IconData,
-            action['color'] as Color,
-          )).toList(),
+          ...actions
+              .map(
+                (action) => _buildActionItem(
+                  action['title'] as String,
+                  action['subtitle'] as String,
+                  action['icon'] as IconData,
+                  action['color'] as Color,
+                ),
+              )
+              .toList(),
         ],
       ),
     );
@@ -318,11 +348,12 @@ class DashboardPage extends StatelessWidget {
 
   String _getQuickActionsSubtitle() {
     switch (role) {
-      case 'admin': return 'Manage platform efficiently';
-      case 'student': return 'Take action to advance your career';
-      case 'postgraduate': return 'Boost your academic profile';
-      case 'professional': return 'Grow your professional brand';
-      default: return 'Recommended next steps';
+      case 'admin':
+        return 'Manage platform efficiently';
+      case 'user':
+        return 'Take action to advance your career';
+      default:
+        return 'Recommended next steps';
     }
   }
 
@@ -330,27 +361,45 @@ class DashboardPage extends StatelessWidget {
     switch (role) {
       case 'admin':
         return [
-          {'title': 'Review New Users', 'subtitle': 'Approve or reject registrations', 'icon': Icons.person_add, 'color': const Color(0xFF667EEA)},
-          {'title': 'Content Moderation', 'subtitle': 'Review reported materials', 'icon': Icons.flag, 'color': const Color(0xFFFF9800)},
-          {'title': 'Send Announcement', 'subtitle': 'Notify all users', 'icon': Icons.notifications, 'color': const Color(0xFF4CAF50)},
+          {
+            'title': 'Review New Users',
+            'subtitle': 'Approve or reject registrations',
+            'icon': Icons.person_add,
+            'color': const Color(0xFF667EEA),
+          },
+          {
+            'title': 'Content Moderation',
+            'subtitle': 'Review reported materials',
+            'icon': Icons.flag,
+            'color': const Color(0xFFFF9800),
+          },
+          {
+            'title': 'Send Announcement',
+            'subtitle': 'Notify all users',
+            'icon': Icons.notifications,
+            'color': const Color(0xFF4CAF50),
+          },
         ];
-      case 'student':
+      case 'user':
         return [
-          {'title': 'Complete Profile', 'subtitle': 'Add more details to get better recommendations', 'icon': Icons.person, 'color': const Color(0xFF4CAF50)},
-          {'title': 'Take Assessment', 'subtitle': 'Discover your career strengths', 'icon': Icons.assessment, 'color': const Color(0xFF667EEA)},
-          {'title': 'Join Study Group', 'subtitle': 'Connect with fellow students', 'icon': Icons.group, 'color': const Color(0xFF9C27B0)},
-        ];
-      case 'postgraduate':
-        return [
-          {'title': 'Submit Paper', 'subtitle': 'Upload to institutional repository', 'icon': Icons.upload, 'color': const Color(0xFF667EEA)},
-          {'title': 'Apply for Grant', 'subtitle': 'Deadline in 7 days', 'icon': Icons.attach_money, 'color': const Color(0xFF4CAF50)},
-          {'title': 'Schedule Advisor Mtg', 'subtitle': 'Discuss thesis progress', 'icon': Icons.calendar_today, 'color': const Color(0xFFFF9800)},
-        ];
-      case 'professional':
-        return [
-          {'title': 'Update LinkedIn', 'subtitle': 'Sync your latest achievements', 'icon': Icons.link, 'color': const Color(0xFF667EEA)},
-          {'title': 'Practice Interview', 'subtitle': 'AI-simulated mock session', 'icon': Icons.videocam, 'color': const Color(0xFF4CAF50)},
-          {'title': 'Request Referral', 'subtitle': 'Ask connections for opportunities', 'icon': Icons.person_pin, 'color': const Color(0xFFFF9800)},
+          {
+            'title': 'Complete Profile',
+            'subtitle': 'Add more details to get better recommendations',
+            'icon': Icons.person,
+            'color': const Color(0xFF4CAF50),
+          },
+          {
+            'title': 'Take Assessment',
+            'subtitle': 'Discover your career strengths',
+            'icon': Icons.assessment,
+            'color': const Color(0xFF667EEA),
+          },
+          {
+            'title': 'Join Study Group',
+            'subtitle': 'Connect with fellow students',
+            'icon': Icons.group,
+            'color': const Color(0xFF9C27B0),
+          },
         ];
       default:
         return [];
@@ -393,10 +442,7 @@ class DashboardPage extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             _getRecommendedSubtitle(),
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 16),
           ...List.generate(items.length, (index) {
@@ -422,21 +468,23 @@ class DashboardPage extends StatelessWidget {
 
   String _getRecommendedTitle() {
     switch (role) {
-      case 'admin': return 'System Alerts';
-      case 'student': return 'Recommended for You';
-      case 'postgraduate': return 'Research Opportunities';
-      case 'professional': return 'Career Growth Paths';
-      default: return 'Recommended';
+      case 'admin':
+        return 'System Alerts';
+      case 'user':
+        return 'Recommended for You';
+      default:
+        return 'Recommended';
     }
   }
 
   String _getRecommendedSubtitle() {
     switch (role) {
-      case 'admin': return 'Critical system updates and suggestions';
-      case 'student': return 'Career paths that match your profile';
-      case 'postgraduate': return 'Funding, publishing, and collaboration';
-      case 'professional': return 'Courses and certifications to advance';
-      default: return 'Personalized recommendations';
+      case 'admin':
+        return 'Critical system updates and suggestions';
+      case 'user':
+        return 'Career paths that match your profile';
+      default:
+        return 'Personalized recommendations';
     }
   }
 
@@ -446,7 +494,8 @@ class DashboardPage extends StatelessWidget {
         return [
           {
             'title': 'User Growth Spike',
-            'description': '320 new signups this week — consider scaling servers.',
+            'description':
+                '320 new signups this week — consider scaling servers.',
             'level': 'Alert',
             'duration': 'High Priority',
             'color': const Color(0xFFFF5722),
@@ -454,18 +503,20 @@ class DashboardPage extends StatelessWidget {
           },
           {
             'title': 'Content Moderation Queue',
-            'description': '14 reports awaiting review. Prioritize flagged quizzes.',
+            'description':
+                '14 reports awaiting review. Prioritize flagged quizzes.',
             'level': 'Action Needed',
             'duration': 'Medium Priority',
             'color': const Color(0xFFFF9800),
             'emoji': '⚠️',
           },
         ];
-      case 'student':
+      case 'user':
         return [
           {
             'title': 'Software Engineering',
-            'description': 'Become a skilled software developer with expertise in modern programming languages.',
+            'description':
+                'Become a skilled software developer with expertise in modern programming languages.',
             'level': 'Beginner',
             'duration': '6-12 months',
             'color': const Color(0xFFFF5722),
@@ -473,7 +524,8 @@ class DashboardPage extends StatelessWidget {
           },
           {
             'title': 'Digital Marketing',
-            'description': 'Master the art of digital marketing and grow online presence.',
+            'description':
+                'Master the art of digital marketing and grow online presence.',
             'level': 'Beginner',
             'duration': '3-6 months',
             'color': const Color(0xFF2196F3),
@@ -481,49 +533,12 @@ class DashboardPage extends StatelessWidget {
           },
           {
             'title': 'Data Science',
-            'description': 'Analyze data to uncover insights and drive decisions.',
+            'description':
+                'Analyze data to uncover insights and drive decisions.',
             'level': 'Intermediate',
             'duration': '8-12 months',
             'color': const Color(0xFF4CAF50),
             'emoji': '📊',
-          },
-        ];
-      case 'postgraduate':
-        return [
-          {
-            'title': 'NSF Research Grant',
-            'description': 'Funding up to 50K for AI/ML research projects.',
-            'level': 'Advanced',
-            'duration': 'Apply by Apr 30',
-            'color': const Color(0xFF4CAF50),
-            'emoji': '💰',
-          },
-          {
-            'title': 'IEEE Conference',
-            'description': 'Present your work in San Francisco. Travel grants available.',
-            'level': 'All Levels',
-            'duration': 'June 10-14',
-            'color': const Color(0xFF9C27B0),
-            'emoji': '🎤',
-          },
-        ];
-      case 'professional':
-        return [
-          {
-            'title': 'AWS Solutions Architect',
-            'description': 'Validate your cloud expertise and boost your market value.',
-            'level': 'Professional',
-            'duration': 'Exam Prep: 4-6 wks',
-            'color': const Color(0xFFFF9800),
-            'emoji': '☁️',
-          },
-          {
-            'title': 'Leadership & Management',
-            'description': 'Transition from contributor to people leader.',
-            'level': 'Intermediate',
-            'duration': '8 weeks',
-            'color': const Color(0xFF667EEA),
-            'emoji': '👔',
           },
         ];
       default:
@@ -571,16 +586,15 @@ class DashboardPage extends StatelessWidget {
                   children: [
                     const Text(
                       'Progress',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     const SizedBox(height: 8),
                     LinearProgressIndicator(
                       value: _getProfileProgress(),
                       backgroundColor: Colors.grey[200],
-                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Color(0xFF4CAF50),
+                      ),
                     ),
                   ],
                 ),
@@ -597,10 +611,14 @@ class DashboardPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          ..._getChecklistItems().map((item) => _buildChecklistItem(
-            item['text'] as String,
-            item['completed'] as bool,
-          )).toList(),
+          ..._getChecklistItems()
+              .map(
+                (item) => _buildChecklistItem(
+                  item['text'] as String,
+                  item['completed'] as bool,
+                ),
+              )
+              .toList(),
           const SizedBox(height: 16),
           Container(
             width: double.infinity,
@@ -626,35 +644,21 @@ class DashboardPage extends StatelessWidget {
 
   double _getProfileProgress() {
     switch (role) {
-      case 'student': return 0.75;
-      case 'postgraduate': return 0.85;
-      case 'professional': return 0.9;
-      default: return 0.5;
+      case 'user':
+        return 0.75;
+      default:
+        return 0.5;
     }
   }
 
   List<Map<String, dynamic>> _getChecklistItems() {
     switch (role) {
-      case 'student':
+      case 'user':
         return [
           {'text': 'Basic info completed', 'completed': true},
           {'text': 'Skills added', 'completed': true},
           {'text': 'Add experience', 'completed': false},
           {'text': 'Upload resume', 'completed': false},
-        ];
-      case 'postgraduate':
-        return [
-          {'text': 'Thesis title added', 'completed': true},
-          {'text': 'Advisor assigned', 'completed': true},
-          {'text': 'Research abstract', 'completed': true},
-          {'text': 'Publications list', 'completed': false},
-        ];
-      case 'professional':
-        return [
-          {'text': 'Current role updated', 'completed': true},
-          {'text': 'Skills endorsed', 'completed': true},
-          {'text': 'Resume uploaded', 'completed': true},
-          {'text': 'LinkedIn connected', 'completed': false},
         ];
       default:
         return [];
@@ -747,10 +751,7 @@ class DashboardPage extends StatelessWidget {
           ),
           Text(
             trend,
-            style: const TextStyle(
-              fontSize: 10,
-              color: Color(0xFF4CAF50),
-            ),
+            style: const TextStyle(fontSize: 10, color: Color(0xFF4CAF50)),
           ),
         ],
       ),
@@ -802,10 +803,7 @@ class DashboardPage extends StatelessWidget {
                 ),
                 Text(
                   'Software Engineer at TechCorp',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -882,9 +880,15 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // --- Reusable Widgets (unchanged from original) ---
+  // --- Reusable Widgets ---
 
-  Widget _buildStatCard(String title, String value, String subtitle, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    String subtitle,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -928,17 +932,19 @@ class DashboardPage extends StatelessWidget {
           ),
           Text(
             subtitle,
-            style: const TextStyle(
-              fontSize: 10,
-              color: Colors.grey,
-            ),
+            style: const TextStyle(fontSize: 10, color: Colors.grey),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActionItem(String title, String subtitle, IconData icon, Color color) {
+  Widget _buildActionItem(
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -952,10 +958,7 @@ class DashboardPage extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             child: Icon(icon, color: Colors.white, size: 20),
           ),
           const SizedBox(width: 12),
@@ -973,10 +976,7 @@ class DashboardPage extends StatelessWidget {
                 ),
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
             ),
@@ -987,7 +987,14 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCourseCard(String title, String description, String level, String duration, Color color, String emoji) {
+  Widget _buildCourseCard(
+    String title,
+    String description,
+    String level,
+    String duration,
+    Color color,
+    String emoji,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1005,10 +1012,7 @@ class DashboardPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
-              child: Text(
-                emoji,
-                style: const TextStyle(fontSize: 24),
-              ),
+              child: Text(emoji, style: const TextStyle(fontSize: 24)),
             ),
           ),
           const SizedBox(width: 12),
@@ -1027,16 +1031,16 @@ class DashboardPage extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   description,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(8),
@@ -1053,10 +1057,7 @@ class DashboardPage extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       duration,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -1107,13 +1108,7 @@ class DashboardPage extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          Text(
-            date,
-            style: const TextStyle(
-              fontSize: 10,
-              color: Colors.grey,
-            ),
-          ),
+          Text(date, style: const TextStyle(fontSize: 10, color: Colors.grey)),
         ],
       ),
     );

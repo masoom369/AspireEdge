@@ -1,6 +1,9 @@
+import 'package:aspire_edge/models/user.dart' as user_model;
+import 'package:aspire_edge/services/user_dao.dart';
+import 'package:aspire_edge/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-// Profile Screen without Scaffold
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -9,188 +12,601 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int selectedTabIndex = 0; // 0 = Resume, 1 = Skills, 2 = Progress, 3 = Achievements
+  final AuthService _authService = AuthService();
+  final UserDao _userDao = UserDao();
 
-  // Profile data
-  String firstName = "Jamie";
-  String lastName = "Graduate";
-  String email = "jamie.graduate@example.com";
-  String phone = "-";
-  String location = "-";
-  String bio = "-";
+  int selectedTabIndex = 0;
 
-  // Track which field is being edited
+  String fullName = "-";
+  String email = "-";
+  String password = "********";
+  String tier = "-";
+
   String? editingField;
-  TextEditingController editingController = TextEditingController();
+  final TextEditingController editingController = TextEditingController();
+
+  bool isLoading = true;
+  bool isSaving = false;
+  String? error;
+
+  // Define tier options — ensure "-" fallback
+  final List<String> tierOptions = [
+    "Student",
+    "UnderGraduate",
+    "PostGraduate",
+    "Professional",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+      return;
+    }
+
+    try {
+      final userProfile = await _userDao.getUserById(user.uid);
+      if (mounted) {
+        setState(() {
+          if (userProfile != null) {
+            fullName = userProfile.username;
+            email = user.email ?? "-";
+            tier = tierOptions.contains(userProfile.tier)
+                ? userProfile.tier
+                : "-";
+          }
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          error = "Failed to load profile: $e";
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  // Prompt for current password before sensitive ops
+  Future<String?> _promptPassword(String action) async {
+    final ctrl = TextEditingController();
+    String? result;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Confirm $action',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: TextField(
+            controller: ctrl,
+            obscureText: true,
+            decoration: const InputDecoration(labelText: 'Current Password'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                result = ctrl.text;
+                Navigator.of(context).pop();
+              },
+              child: const Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result;
+  }
+
+  // Reauthenticate user with current password
+  Future<bool> _reauthenticate(String currentPassword) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || user.email == null) return false;
+
+    final cred = EmailAuthProvider.credential(
+      email: user.email!,
+      password: currentPassword,
+    );
+
+    try {
+      await user.reauthenticateWithCredential(cred);
+      return true;
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          error = "Current password is incorrect";
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error!)));
+      }
+      return false;
+    }
+  }
 
   void startEditing(String field, String currentValue) {
+    if (!mounted) return;
     setState(() {
       editingField = field;
-      editingController.text = currentValue;
+      editingController.text = field == "Password" ? "" : currentValue;
     });
   }
 
-  void saveEditing(String field) {
-    setState(() {
-      switch (field) {
-        case "First Name":
-          firstName = editingController.text;
-          break;
-        case "Last Name":
-          lastName = editingController.text;
-          break;
-        case "Email":
-          email = editingController.text;
-          break;
-        case "Phone Number":
-          phone = editingController.text;
-          break;
-        case "Location":
-          location = editingController.text;
-          break;
-        case "Bio":
-          bio = editingController.text;
-          break;
+  Future<void> saveEditing(String field) async {
+    final newValue = editingController.text.trim();
+    if (newValue.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("$field cannot be empty")));
+      return;
+    }
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) throw Exception("User not logged in");
+
+      final currentUserProfile = await _userDao.getUserById(user.uid);
+      if (currentUserProfile == null) {
+        throw Exception("User profile not found");
       }
-      editingField = null; // exit edit mode
+
+      if (!mounted) return;
+
+      setState(() {
+        isSaving = true;
+        error = null;
+      });
+
+      switch (field) {
+        case "Full Name":
+          final updatedProfile = user_model.User(
+            uuid: currentUserProfile.uuid,
+            role: currentUserProfile.role,
+            tier: currentUserProfile.tier,
+            username: newValue,
+          );
+
+          // 1. Update Firestore
+          _userDao.updateUser(user.uid, updatedProfile);
+
+          // 2. Update Firebase Auth displayName
+          await _authService.updateDisplayName(newValue);
+          if (mounted) {
+            setState(() => fullName = newValue);
+          }
+          break;
+
+        case "Email":
+          final currentPassword = await _promptPassword("Email Update");
+          if (currentPassword == null || currentPassword.isEmpty) {
+            if (mounted) setState(() => isSaving = false);
+            return;
+          }
+
+          if (!await _reauthenticate(currentPassword)) {
+            if (mounted) setState(() => isSaving = false);
+            return;
+          }
+
+          await _authService.updateEmail(newValue);
+          await _authService.sendEmailVerification();
+
+          if (mounted) {
+            setState(() => email = newValue);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  "Verification email sent to new address. Please verify to complete update.",
+                ),
+              ),
+            );
+          }
+          break;
+
+        case "Password":
+          final currentPassword = await _promptPassword("Password Update");
+          if (currentPassword == null || currentPassword.isEmpty) {
+            if (mounted) setState(() => isSaving = false);
+            return;
+          }
+
+          if (!await _reauthenticate(currentPassword)) {
+            if (mounted) setState(() => isSaving = false);
+            return;
+          }
+
+          await _authService.updatePassword(newValue);
+          if (mounted) {
+            setState(() => password = "********");
+          }
+          break;
+
+        default:
+          throw Exception("Unknown field: $field");
+      }
+
+      if (mounted) {
+        setState(() {
+          editingField = null;
+          isSaving = false;
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("$field updated successfully!")));
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        error = "Failed to update $field: $e";
+        isSaving = false;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error!)));
+    }
+  }
+
+  Future<void> _saveTier(String newTier) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) throw Exception("User not logged in");
+
+      final currentUserProfile = await _userDao.getUserById(user.uid);
+      if (currentUserProfile == null) throw Exception("User profile not found");
+
+      if (!mounted) return;
+
+      setState(() {
+        isSaving = true;
+        error = null;
+      });
+
+      final updatedProfile = user_model.User(
+        uuid: currentUserProfile.uuid,
+        role: currentUserProfile.role,
+        tier: newTier,
+        username: currentUserProfile.username,
+      );
+
+      _userDao.updateUser(user.uid, updatedProfile);
+
+      if (mounted) {
+        setState(() {
+          tier = newTier;
+          isSaving = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Tier updated successfully!")),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        error = "Failed to update tier: $e";
+        isSaving = false;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error!)));
+    }
+  }
+
+  Future<void> _sendEmailVerification() async {
+    if (!mounted) return;
+
+    setState(() {
+      isSaving = true;
+      error = null;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("$field updated successfully!")),
-    );
+    try {
+      await _authService.sendEmailVerification();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Verification email sent")),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          error = "Failed to send verification: $e";
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error!)));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isSaving = false);
+      }
+    }
+  }
+
+  // ✅ NEW: Send Password Reset Email
+  Future<void> _sendPasswordResetEmail() async {
+    if (!mounted) return;
+
+    setState(() {
+      isSaving = true;
+      error = null;
+    });
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.email == null) {
+        throw Exception("No user or email found");
+      }
+
+      await _authService.sendPasswordResetEmail(user.email!);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Password reset email sent. Check your inbox."),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          error = "Failed to send reset email: $e";
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error!)));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isSaving = false);
+      }
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    final password = await _promptPassword("Account Deletion");
+    if (password == null || password.isEmpty) return;
+
+    if (!mounted) return;
+
+    setState(() {
+      isSaving = true;
+      error = null;
+    });
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.email == null) throw Exception("No user found");
+
+      final cred = EmailAuthProvider.credential(
+        email: user.email!,
+        password: password,
+      );
+
+      await user.reauthenticateWithCredential(cred);
+      await _authService.deleteCurrentUser();
+
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/auth');
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          error = "Failed to delete account: $e";
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error!)));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isSaving = false);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          // Profile Header
-          Container(
-            width: double.infinity,
-            color: Colors.white,
-            padding: EdgeInsets.all(24),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Color(0xFF667EEA),
-                  child: Text(
-                    "${firstName[0]}${lastName[0]}",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  "$firstName $lastName",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  email,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  height: 2,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-                    ),
-                  ),
-                ),
-              ],
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    final user = FirebaseAuth.instance.currentUser;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Profile"),
+        actions: [
+          if (error != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                error!,
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+              ),
             ),
-          ),
-
-          SizedBox(height: 16),
-
-          // Tabs
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 16),
-            padding: EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                _buildTabItem('Resume', 0),
-                _buildTabItem('Skills', 1),
-                _buildTabItem('Progress', 2),
-                _buildTabItem('Achievements', 3),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 16),
-
-          // Show content depending on selected tab
-          if (selectedTabIndex == 0)
-            _infoCard("Personal Information", [
-              _editableRow("First Name", firstName),
-              _editableRow("Last Name", lastName),
-              _editableRow("Email", email),
-              _editableRow("Phone Number", phone),
-              _editableRow("Location", location),
-              _editableRow("Bio", bio),
-            ]),
-          if (selectedTabIndex == 1)
-            _infoCard("Skills", [
-              _infoRow("Flutter", "Intermediate"),
-              _infoRow("Dart", "Intermediate"),
-              _infoRow("UI Design", "Beginner"),
-            ]),
-          if (selectedTabIndex == 2)
-            _infoCard("Progress", [
-              _progressRow("Flutter Course", 0.8),
-              _progressRow("Dart Course", 0.65),
-              _progressRow("UI Design", 0.3),
-            ]),
-          if (selectedTabIndex == 3)
-            _infoCard("Achievements", [
-              _infoRow("Top Student of 2023", "🏆"),
-              _infoRow("Completed Flutter Bootcamp", "✅"),
-            ]),
         ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              color: Colors.white,
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: const Color(0xFF667EEA),
+                    child: Text(
+                      fullName.isNotEmpty
+                          ? fullName
+                                .split(' ')
+                                .map((name) => name.isNotEmpty ? name[0] : '')
+                                .join('')
+                                .substring(
+                                  0,
+                                  fullName.split(' ').length > 1 ? 2 : 1,
+                                )
+                          : "?",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    fullName,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        email,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: user?.emailVerified == true
+                              ? const Color(0xFF9E9E9E)
+                              : Colors.red,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      if (user != null && !user.emailVerified)
+                        Tooltip(
+                          message: "Email not verified",
+                          child: const Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                            size: 16,
+                          ),
+                        ),
+                    ],
+                  ),
+                  if (user != null && !user.emailVerified)
+                    TextButton(
+                      onPressed: _sendEmailVerification,
+                      child: const Text(
+                        "Resend Verification Email",
+                        style: TextStyle(color: Colors.blue, fontSize: 12),
+                      ),
+                    ),
+                  const SizedBox(height: 20),
+                  Container(
+                    height: 2,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0x0D000000),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  _buildTabItem('Profile', 0),
+                  _buildTabItem('Skills', 1),
+                  _buildTabItem('Progress', 2),
+                  _buildTabItem('Achievements', 3),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (selectedTabIndex == 0)
+              _infoCard("Account Information", [
+                _editableRow("Full Name", fullName),
+                _editableRow("Email", email),
+                _editableRow("Password", password),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Center(
+                    child: TextButton(
+                      onPressed: isSaving ? null : _sendPasswordResetEmail,
+                      child: const Text(
+                        "Forgot Password? Click here to reset",
+                        style: TextStyle(color: Colors.blue, fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ),
+                _dropdownRow("Tier", tier, tierOptions),
+                _actionRow("Delete Account", Colors.red, _deleteAccount),
+              ]),
+            if (selectedTabIndex == 1)
+              _infoCard("Skills", [
+                _infoRow("Flutter", "Intermediate"),
+                _infoRow("Dart", "Intermediate"),
+                _infoRow("UI Design", "Beginner"),
+              ]),
+            if (selectedTabIndex == 2)
+              _infoCard("Progress", [
+                _progressRow("Flutter Course", 0.8),
+                _progressRow("Dart Course", 0.65),
+                _progressRow("UI Design", 0.3),
+              ]),
+            if (selectedTabIndex == 3)
+              _infoCard("Achievements", [
+                _infoRow("Top Student of 2023", "🏆"),
+                _infoRow("Completed Flutter Bootcamp", "✅"),
+              ]),
+          ],
+        ),
       ),
     );
   }
 
-  // 🔹 Reusable tab item
   Widget _buildTabItem(String title, int index) {
-    bool isSelected = selectedTabIndex == index;
+    final isSelected = selectedTabIndex == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            selectedTabIndex = index;
-          });
-        },
+        onTap: () => setState(() => selectedTabIndex = index),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? Color(0xFF667EEA) : Colors.transparent,
+            color: isSelected ? const Color(0xFF667EEA) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -199,7 +615,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: isSelected ? Colors.white : Colors.grey[600],
+              color: isSelected ? Colors.white : const Color(0xFF757575),
             ),
           ),
         ),
@@ -207,12 +623,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 🔹 Editable Row
   Widget _editableRow(String label, String value) {
-    bool isEditing = editingField == label;
-
+    final isEditing = editingField == label;
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           Expanded(
@@ -220,28 +634,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ? TextField(
                     controller: editingController,
                     autofocus: true,
+                    obscureText: label == "Password",
                     decoration: InputDecoration(
                       labelText: label,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(label, style: TextStyle(fontSize: 16, color: Colors.grey[700])),
-                      Text(value.isEmpty ? "-" : value,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                      Text(
+                        label,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF616161),
+                        ),
+                      ),
+                      Text(
+                        value.isEmpty ? "-" : value,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           isEditing
               ? IconButton(
-                  icon: Icon(Icons.check, color: Colors.green),
+                  icon: const Icon(Icons.check, color: Colors.green),
                   onPressed: () => saveEditing(label),
                 )
               : IconButton(
-                  icon: Icon(Icons.edit, color: Colors.blue),
+                  icon: const Icon(Icons.edit, color: Colors.blue),
                   onPressed: () => startEditing(label, value),
                 ),
         ],
@@ -249,29 +675,97 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 🔹 Progress Row with Progress Bar
+  Widget _dropdownRow(String label, String value, List<String> options) {
+    final safeValue = options.contains(value) ? value : options.first;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontSize: 16, color: Color(0xFF616161)),
+          ),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
+            value: safeValue,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+            ),
+            items: options.map((option) {
+              return DropdownMenuItem<String>(
+                value: option,
+                child: Text(option),
+              );
+            }).toList(),
+            onChanged: (newValue) {
+              if (newValue != null && newValue != safeValue) {
+                _saveTier(newValue);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _actionRow(String label, Color color, VoidCallback onPressed) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          onPressed: isSaving ? null : onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            foregroundColor: Colors.white,
+          ),
+          icon: const Icon(Icons.delete_forever),
+          label: Text(label),
+        ),
+      ),
+    );
+  }
+
   Widget _progressRow(String label, double progress) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(label, style: TextStyle(fontSize: 16, color: Colors.grey[700])),
-              Text("${(progress * 100).toInt()}%",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              Text(
+                label,
+                style: const TextStyle(fontSize: 16, color: Color(0xFF616161)),
+              ),
+              Text(
+                "${(progress * 100).toInt()}%",
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 8,
-              backgroundColor: Colors.grey[300],
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF667EEA)),
+              backgroundColor: const Color(0xFFE0E0E0),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFF667EEA),
+              ),
             ),
           ),
         ],
@@ -280,30 +774,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-//
-// 🔹 Reusable helpers
-//
 Widget _infoCard(String title, List<Widget> children) {
   return Container(
-    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-    padding: EdgeInsets.all(20),
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.05),
+          color: const Color(0x0D000000),
           blurRadius: 10,
-          offset: Offset(0, 4),
+          offset: const Offset(0, 4),
         ),
       ],
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black)),
-        SizedBox(height: 12),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(height: 12),
         ...children,
       ],
     ),
@@ -312,12 +809,18 @@ Widget _infoCard(String title, List<Widget> children) {
 
 Widget _infoRow(String label, String value) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 6),
+    padding: const EdgeInsets.symmetric(vertical: 6),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(fontSize: 16, color: Colors.grey[700])),
-        Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, color: Color(0xFF616161)),
+        ),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
       ],
     ),
   );

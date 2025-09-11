@@ -19,8 +19,8 @@ class EntryPoint extends StatefulWidget {
 class _EntryPointState extends State<EntryPoint>
     with SingleTickerProviderStateMixin {
   bool isSideBarOpen = false;
-  Menu selectedBottonNav = bottomNavItems.first;
-  Menu selectedSideMenu = sidebarMenus.first;
+   Menu selectedBottonNav = bottomNavItems.first;
+  // Menu selectedSideMenu = sidebarMenus.first;
 
   SMIBool? isMenuOpenInput; // Nullable for safety
 
@@ -186,7 +186,7 @@ class _EntryPointState extends State<EntryPoint>
                       // Navigate to route based on navBar title
                       switch (navBar.title) {
                         case "Home":
-                          Navigator.pushNamed(context, '/home');
+                          Navigator.pushNamed(context, '/');
                           break;
                         case "Search":
                           Navigator.pushNamed(context, '/StreamSelectorPage');
