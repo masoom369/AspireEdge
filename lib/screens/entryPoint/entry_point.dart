@@ -183,6 +183,26 @@ class _EntryPointState extends State<EntryPoint>
                     press: () {
                       RiveUtils.changeSMIBoolState(navBar.rive.status!);
                       updateSelectedBtmNav(navBar);
+                      // Navigate to route based on navBar title
+                      switch (navBar.title) {
+                        case "Home":
+                          Navigator.pushNamed(context, '/home');
+                          break;
+                        case "Search":
+                          Navigator.pushNamed(context, '/StreamSelectorPage');
+                          break;
+                        case "Profile":
+                          Navigator.pushNamed(context, '/profile');
+                          break;
+                        case "Notifications":
+                          Navigator.pushNamed(context, '/ManagePushNotificationsPage');
+                          break;
+                        case "Help":
+                          Navigator.pushNamed(context, '/contact');
+                          break;
+                        default:
+                          break;
+                      }
                     },
                     riveOnInit: (artboard) {
                       navBar.rive.status = RiveUtils.getRiveInput(

@@ -1,13 +1,55 @@
+import 'package:aspire_edge/screens/CV_Guidance_Page.dart';
+import 'package:aspire_edge/screens/Career_Guidance_Page.dart';
+import 'package:aspire_edge/screens/Interview_Preparation_Page.dart';
+import 'package:aspire_edge/screens/Stream_Selector_Screen.dart';
+import 'package:aspire_edge/screens/Success_Stories_Screen.dart';
+import 'package:aspire_edge/screens/Write_Testimonial_Screen.dart';
+import 'package:aspire_edge/screens/admin/career_bank_management_screen.dart';
+import 'package:aspire_edge/screens/admin/feedback_management_screen.dart';
+import 'package:aspire_edge/screens/admin/quiz_management_screen.dart';
+import 'package:aspire_edge/screens/admin/resources_hub_management_screen.dart';
+import 'package:aspire_edge/screens/admin/testimonial_management_screen.dart';
+import 'package:aspire_edge/screens/admin/user_management_screen.dart';
+import 'package:aspire_edge/screens/admin_dashboard.dart';
+import 'package:aspire_edge/screens/career_bank.dart';
+import 'package:aspire_edge/screens/contact_us.dart';
 import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
 import 'package:aspire_edge/screens/home_page.dart';
+import 'package:aspire_edge/screens/push_notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/screens/onboding/onboding_screen.dart';
 import 'package:aspire_edge/screens/profile_screen.dart';
 
 // Public routes (no authentication required)
 final Map<String, WidgetBuilder> publicRoutes = {
-  '/auth': (context) => const OnbodingScreen(),
-  '/': (context) => EntryPoint(child: const HomePage()),
+  '/': (context) => const OnbodingScreen(),
+  '/home': (context) => EntryPoint(child: const HomePage()),
+  '/contact': (context) => EntryPoint(child: const ContactUsPage()),
+  '/about': (context) => EntryPoint(child: const ContactUsPage()),
+  '/success': (context) => EntryPoint(child: const SuccessStoriesPage()),
+  '/DashboardPage': (context) => EntryPoint(child: DashboardPage()),
+  '/quiz_management': (context) => EntryPoint(child: ManageQuizPage()),
+  '/resources_management': (context) =>
+      EntryPoint(child: ManageResourcesHubPage()),
+  '/testimonials_management': (context) =>
+      EntryPoint(child: ManageTestimonialsPage()),
+  '/feedback_management': (context) => EntryPoint(child: ManageFeedbackPage()),
+  '/user_management': (context) => EntryPoint(child: AdminUserManagementPage()),
+  '/career_management': (context) => EntryPoint(child: CareerManagementPage()),
+  '/WriteTestimonialPage': (context) =>
+      EntryPoint(child: const WriteTestimonialPage()),
+  '/StreamSelectorPage': (context) =>
+      EntryPoint(child: const StreamSelectorPage()),
+  '/SuccessStoriesPage': (context) =>
+      EntryPoint(child: const SuccessStoriesPage()),
+  '/ManagePushNotificationsPage': (context) =>
+      EntryPoint(child: const ManagePushNotificationsPage()),
+  '/CareerGuidancePage': (context) =>
+      EntryPoint(child: const CareerGuidancePage()),
+  '/InterviewPrepPage': (context) =>
+      EntryPoint(child: const InterviewPrepPage()),
+  '/CareerBankPage': (context) => EntryPoint(child: CareerBankPage()),
+  '/CVGuidancePage': (context) => EntryPoint(child: const CVGuidancePage()),
 };
 
 // Protected routes (authentication required)
@@ -16,9 +58,7 @@ final Map<String, WidgetBuilder> protectedRoutes = {
 };
 
 // Admin routes (admin access required)
-final Map<String, WidgetBuilder> adminRoutes = {
-
-};
+final Map<String, WidgetBuilder> adminRoutes = {};
 
 // Combined routes map
 final Map<String, WidgetBuilder> routes = {
@@ -28,29 +68,10 @@ final Map<String, WidgetBuilder> routes = {
 };
 
 // List of routes that do NOT require authentication
-const List<String> unprotectedRoutes = [
-  '/',
-  '/auth',
-  '/contact-us',
-  '/about-us',
-  '/search',
-  '/faq',
-  '/book-detail',
-];
+const List<String> unprotectedRoutes = [];
 
 // List of routes that DO require authentication
-const List<String> protectedRoutesList = [
-  '/logout',
-  '/cart',
-  '/wishlist',
-  '/order',
-  '/profile',
-];
+const List<String> protectedRoutesList = [];
 
 // List of routes that ONLY admin users can access
-const List<String> adminOnlyRoutes = [
-  '/manage-books',
-  '/manage-categories',
-  '/manage-orders',
-  '/manage-contact-us',
-];
+const List<String> adminOnlyRoutes = [];
