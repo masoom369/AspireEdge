@@ -1,17 +1,18 @@
-import 'package:aspire_edge/screens/home_screen.dart';
+import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
+import 'package:aspire_edge/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/screens/onboding/onboding_screen.dart';
 import 'package:aspire_edge/screens/profile_screen.dart';
 
 // Public routes (no authentication required)
 final Map<String, WidgetBuilder> publicRoutes = {
-  '/': (context) => const OnbodingScreen(),
-  '/home':(context) => const HomePage(),
+  '/auth': (context) => const OnbodingScreen(),
+  '/': (context) => EntryPoint(child: const HomePage()),
 };
 
 // Protected routes (authentication required)
 final Map<String, WidgetBuilder> protectedRoutes = {
-  '/profile': (context) => const ProfileScreen(),
+  '/profile': (context) => EntryPoint(child: const ProfileScreen()),
 };
 
 // Admin routes (admin access required)

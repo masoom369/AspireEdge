@@ -1,21 +1,25 @@
 import 'dart:math';
-
+import 'package:aspire_edge/screens/CVGuidancePage.dart';
+import 'package:aspire_edge/screens/InterviewPrepPage.dart';
+import 'package:aspire_edge/screens/SuccessStoriesPage.dart';
+import 'package:aspire_edge/screens/WriteTestimonialPage.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:aspire_edge/constants.dart';
-import 'package:aspire_edge/screens/career_bank_screen.dart';
-import 'package:aspire_edge/screens/home_screen.dart';
-import 'package:aspire_edge/screens/profile_screen.dart';
-import 'package:aspire_edge/screens/contact_us_screen.dart';
+import 'package:aspire_edge/screens/CareerGuidancePage.dart';
+import 'package:aspire_edge/screens/StreamSelectorPage.dart';
+import 'package:aspire_edge/screens/admin_dashboard.dart';
+import 'package:aspire_edge/screens/contact_us.dart';
+import 'package:aspire_edge/screens/home_page.dart';
 import 'package:aspire_edge/utils/rive_utils.dart';
-
 import '../../models/menu.dart';
 import 'components/btm_nav_item.dart';
 import 'components/menu_btn.dart';
 import 'components/side_bar.dart';
 
 class EntryPoint extends StatefulWidget {
-  const EntryPoint({super.key});
+  final Widget child;
+  const EntryPoint({super.key, required this.child});
 
   @override
   State<EntryPoint> createState() => _EntryPointState();
@@ -24,11 +28,10 @@ class EntryPoint extends StatefulWidget {
 class _EntryPointState extends State<EntryPoint>
     with SingleTickerProviderStateMixin {
   bool isSideBarOpen = false;
-
   Menu selectedBottonNav = bottomNavItems.first;
   Menu selectedSideMenu = sidebarMenus.first;
 
-  late SMIBool isMenuOpenInput;
+  SMIBool? isMenuOpenInput; // Nullable for safety
 
   void updateSelectedBtmNav(Menu menu) {
     if (selectedBottonNav != menu) {
@@ -38,41 +41,35 @@ class _EntryPointState extends State<EntryPoint>
     }
   }
 
-  Widget getCurrentScreen() {
-    switch (selectedBottonNav.title) {
-      case "home":
-        return const HomePage(); // Assuming HomeScreen exists
-      case "Search":
-        return const HomePage();
-      case "Timer":
-        return const CareerBankScreen();
-      case "Notification":
-        return const ContactUsPage();
-      case "Profile":
-        return const ProfileScreen();
-      default:
-        return const CareerBankScreen();
-    }
-  }
-
   late AnimationController _animationController;
   late Animation<double> scalAnimation;
   late Animation<double> animation;
 
   @override
   void initState() {
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 200))
-      ..addListener(
-        () {
-          setState(() {});
-        },
-      );
-    scalAnimation = Tween<double>(begin: 1, end: 0.8).animate(CurvedAnimation(
-        parent: _animationController, curve: Curves.fastOutSlowIn));
-    animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
-        parent: _animationController, curve: Curves.fastOutSlowIn));
     super.initState();
+
+    _animationController =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 200),
+        )..addListener(() {
+          setState(() {});
+        });
+
+    scalAnimation = Tween<double>(begin: 1, end: 0.8).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.fastOutSlowIn,
+      ),
+    );
+
+    animation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.fastOutSlowIn,
+      ),
+    );
   }
 
   @override
@@ -89,6 +86,7 @@ class _EntryPointState extends State<EntryPoint>
       backgroundColor: backgroundColor2,
       body: Stack(
         children: [
+          // Sidebar animation
           AnimatedPositioned(
             width: 288,
             height: MediaQuery.of(context).size.height,
@@ -98,25 +96,28 @@ class _EntryPointState extends State<EntryPoint>
             top: 0,
             child: const SideBar(),
           ),
+
+          // Main content animation
           Transform(
             alignment: Alignment.center,
             transform: Matrix4.identity()
               ..setEntry(3, 2, 0.001)
               ..rotateY(
-                  1 * animation.value - 30 * (animation.value) * pi / 180),
+                1 * animation.value - 30 * (animation.value) * pi / 180,
+              ),
             child: Transform.translate(
               offset: Offset(animation.value * 265, 0),
               child: Transform.scale(
                 scale: scalAnimation.value,
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(24),
-                  ),
-                  child: getCurrentScreen()
+                  borderRadius: const BorderRadius.all(Radius.circular(24)),
+                  child: widget.child, // Use the passed child
                 ),
               ),
             ),
           ),
+
+          // Menu button
           AnimatedPositioned(
             duration: const Duration(milliseconds: 200),
             curve: Curves.fastOutSlowIn,
@@ -124,7 +125,10 @@ class _EntryPointState extends State<EntryPoint>
             top: 16,
             child: MenuBtn(
               press: () {
-                isMenuOpenInput.value = !isMenuOpenInput.value;
+                // Safely toggle Rive input
+                if (isMenuOpenInput != null) {
+                  isMenuOpenInput!.value = !isMenuOpenInput!.value;
+                }
 
                 if (_animationController.value == 0) {
                   _animationController.forward();
@@ -132,32 +136,40 @@ class _EntryPointState extends State<EntryPoint>
                   _animationController.reverse();
                 }
 
-                setState(
-                  () {
-                    isSideBarOpen = !isSideBarOpen;
-                  },
-                );
+                setState(() {
+                  isSideBarOpen = !isSideBarOpen;
+                });
               },
               riveOnInit: (artboard) {
                 final controller = StateMachineController.fromArtboard(
-                    artboard, "State Machine");
+                  artboard,
+                  "State Machine",
+                );
 
                 artboard.addController(controller!);
 
-                isMenuOpenInput =
-                    controller.findInput<bool>("isOpen") as SMIBool;
-                isMenuOpenInput.value = true;
+                // Safely get input
+                final input = controller.findInput<bool>("isOpen") as SMIBool?;
+                if (input != null) {
+                  isMenuOpenInput = input;
+                  isMenuOpenInput!.value = true;
+                }
               },
             ),
           ),
         ],
       ),
+      // Bottom Navigation
       bottomNavigationBar: Transform.translate(
         offset: Offset(0, 100 * animation.value),
         child: SafeArea(
           child: Container(
-            padding:
-                const EdgeInsets.only(left: 12, top: 12, right: 12, bottom: 12),
+            padding: const EdgeInsets.only(
+              left: 12,
+              top: 12,
+              right: 12,
+              bottom: 12,
+            ),
             margin: const EdgeInsets.symmetric(horizontal: 24),
             decoration: BoxDecoration(
               color: backgroundColor2.withOpacity(0.8),
@@ -173,24 +185,23 @@ class _EntryPointState extends State<EntryPoint>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ...List.generate(
-                  bottomNavItems.length,
-                  (index) {
-                    Menu navBar = bottomNavItems[index];
-                    return BtmNavItem(
-                      navBar: navBar,
-                      press: () {
-                        RiveUtils.chnageSMIBoolState(navBar.rive.status!);
-                        updateSelectedBtmNav(navBar);
-                      },
-                      riveOnInit: (artboard) {
-                        navBar.rive.status = RiveUtils.getRiveInput(artboard,
-                            stateMachineName: navBar.rive.stateMachineName);
-                      },
-                      selectedNav: selectedBottonNav,
-                    );
-                  },
-                ),
+                ...List.generate(bottomNavItems.length, (index) {
+                  Menu navBar = bottomNavItems[index];
+                  return BtmNavItem(
+                    navBar: navBar,
+                    press: () {
+                      RiveUtils.chnageSMIBoolState(navBar.rive.status!);
+                      updateSelectedBtmNav(navBar);
+                    },
+                    riveOnInit: (artboard) {
+                      navBar.rive.status = RiveUtils.getRiveInput(
+                        artboard,
+                        stateMachineName: navBar.rive.stateMachineName,
+                      );
+                    },
+                    selectedNav: selectedBottonNav,
+                  );
+                }),
               ],
             ),
           ),

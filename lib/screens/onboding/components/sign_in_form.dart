@@ -5,20 +5,19 @@ import 'package:rive/rive.dart';
 import 'package:aspire_edge/services/auth_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aspire_edge/services/validate.dart';
 
 class SignInForm extends StatefulWidget {
-  const SignInForm({
-    super.key,
-  });
+  const SignInForm({super.key});
 
   @override
   State<SignInForm> createState() => _SignInFormState();
 }
 
 class _SignInFormState extends State<SignInForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool isShowLoading = false;
   bool isShowConfetti = false;
   late SMITrigger error;
@@ -29,21 +28,16 @@ class _SignInFormState extends State<SignInForm> {
 
   final AuthService _authService = AuthService();
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
   Future<void> _saveUserToPrefs(String uid) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('uid', uid);
   }
 
   void _onCheckRiveInit(Artboard artboard) {
-    StateMachineController? controller =
-        StateMachineController.fromArtboard(artboard, 'State Machine 1');
+    StateMachineController? controller = StateMachineController.fromArtboard(
+      artboard,
+      'State Machine 1',
+    );
 
     artboard.addController(controller!);
     error = controller.findInput<bool>('Error') as SMITrigger;
@@ -52,8 +46,10 @@ class _SignInFormState extends State<SignInForm> {
   }
 
   void _onConfettiRiveInit(Artboard artboard) {
-    StateMachineController? controller =
-        StateMachineController.fromArtboard(artboard, "State Machine 1");
+    StateMachineController? controller = StateMachineController.fromArtboard(
+      artboard,
+      "State Machine 1",
+    );
     artboard.addController(controller!);
 
     confetti = controller.findInput<bool>("Trigger explosion") as SMITrigger;
@@ -62,15 +58,12 @@ class _SignInFormState extends State<SignInForm> {
   Future<void> singIn(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
       error.fire();
-      Future.delayed(
-        const Duration(seconds: 2),
-        () {
-          setState(() {
-            isShowLoading = false;
-          });
-          reset.fire();
-        },
-      );
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() {
+          isShowLoading = false;
+        });
+        reset.fire();
+      });
       return;
     }
 
@@ -90,61 +83,56 @@ class _SignInFormState extends State<SignInForm> {
         await _saveUserToPrefs(user.uid);
 
         success.fire();
-        Future.delayed(
-          const Duration(seconds: 2),
-          () {
-            setState(() {
-              isShowLoading = false;
-            });
-            confetti.fire();
-            // Navigate & hide confetti
-            Future.delayed(const Duration(seconds: 1), () {
-              if (!context.mounted) return;
-              Navigator.pushReplacementNamed(context, '/profile');
-            });
-          },
-        );
+        Future.delayed(const Duration(seconds: 2), () {
+          setState(() {
+            isShowLoading = false;
+          });
+          confetti.fire();
+          // Navigate & hide confetti
+          Future.delayed(const Duration(seconds: 1), () {
+            if (!context.mounted) return;
+            Navigator.pushReplacementNamed(context, '/home');
+          });
+        });
       } else {
         error.fire();
-        Future.delayed(
-          const Duration(seconds: 2),
-          () {
-            setState(() {
-              isShowLoading = false;
-            });
-            reset.fire();
-          },
-        );
+        Future.delayed(const Duration(seconds: 2), () {
+          setState(() {
+            isShowLoading = false;
+          });
+          reset.fire();
+        });
       }
     } on FirebaseAuthException catch (e) {
       error.fire();
-      Future.delayed(
-        const Duration(seconds: 2),
-        () {
-          setState(() {
-            isShowLoading = false;
-          });
-          reset.fire();
-        },
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: ${e.message}')),
-      );
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() {
+          isShowLoading = false;
+        });
+        reset.fire();
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Login failed: ${e.message}')));
     } catch (e) {
       error.fire();
-      Future.delayed(
-        const Duration(seconds: 2),
-        () {
-          setState(() {
-            isShowLoading = false;
-          });
-          reset.fire();
-        },
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() {
+          isShowLoading = false;
+        });
+        reset.fire();
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -156,24 +144,13 @@ class _SignInFormState extends State<SignInForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Email",
-                style: TextStyle(
-                  color: Colors.black54,
-                ),
-              ),
+              const Text("Email", style: TextStyle(color: Colors.black54)),
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 16),
                 child: TextFormField(
                   controller: _emailController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "";
-                    }
-                    return null;
-                  },
+                  validator: validateEmail,
                   keyboardType: TextInputType.emailAddress,
-
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     hintText: 'Enter your registered email',
@@ -184,25 +161,15 @@ class _SignInFormState extends State<SignInForm> {
                   ),
                 ),
               ),
-              const Text(
-                "Password",
-                style: TextStyle(
-                  color: Colors.black54,
-                ),
-              ),
+              const Text("Password", style: TextStyle(color: Colors.black54)),
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 16),
                 child: TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "";
-                    }
-                    return null;
-                  },
+                  validator: validatePass,
                   decoration: InputDecoration(
-                         hintText: 'Enter your password',
+                    hintText: 'Enter your password',
                     prefixIcon: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: SvgPicture.asset("assets/icons/password.svg"),
@@ -277,10 +244,7 @@ class CustomPositioned extends StatelessWidget {
           SizedBox(
             height: 100,
             width: 100,
-            child: Transform.scale(
-              scale: scale,
-              child: child,
-            ),
+            child: Transform.scale(scale: scale, child: child),
           ),
           const Spacer(flex: 2),
         ],

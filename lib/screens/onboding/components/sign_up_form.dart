@@ -18,38 +18,48 @@ class _RegisterFormState extends State<RegisterForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
-  String? selectedTier;
+
+  // Default value set to empty string to trigger validation if not changed
+  String? selectedTier = "";
+
   bool _isLoading = false;
   String? _error;
 
+  /// Save user UID locally using SharedPreferences
   Future<void> _saveUserToPrefs(String uid) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('uid', uid);
   }
 
+  /// Handles registration
   Future<void> signUp(BuildContext context) async {
     setState(() {
       _error = null;
     });
+
     if (_formKey.currentState?.validate() ?? false) {
-      // Additional null checks for all fields
+      // Extra null/empty checks
       if (_nameController.text.trim().isEmpty ||
           _emailController.text.trim().isEmpty ||
           _passwordController.text.isEmpty ||
-          selectedTier == null || selectedTier == "") {
+          selectedTier == null ||
+          selectedTier == "") {
         setState(() => _error = "All fields are required");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_error!)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(_error!)));
         return;
       }
+
       setState(() => _isLoading = true);
+
       try {
         final firebaseUser = await AuthService().register(
           _emailController.text.trim(),
           _passwordController.text,
           _nameController.text.trim(),
         );
+
         if (firebaseUser != null) {
           final userObj = user_model.User(
             uuid: firebaseUser.uid,
@@ -57,10 +67,13 @@ class _RegisterFormState extends State<RegisterForm> {
             tier: selectedTier!,
             username: _nameController.text.trim(),
           );
-          // Save user using UserDao
+
+          // Save to Firestore
           final userDao = UserDao();
-          // userDao.saveUser(userObj);
+          userDao.saveUser(userObj);
+
           await _saveUserToPrefs(firebaseUser.uid);
+
           if (mounted) {
             Navigator.pushReplacementNamed(context, '/home');
           }
@@ -81,6 +94,15 @@ class _RegisterFormState extends State<RegisterForm> {
     }
   }
 
+  /// ✅ Clean up controllers to prevent memory leaks
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _nameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -93,10 +115,7 @@ class _RegisterFormState extends State<RegisterForm> {
             padding: const EdgeInsets.only(top: 8, bottom: 16),
             child: TextFormField(
               controller: _nameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) return "Enter your name";
-                return null;
-              },
+              validator: validateName,
               textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
                 hintText: "John Doe",
@@ -146,7 +165,9 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
               validator: (value) {
-                if (value == null || value == "") return "Please select a tier";
+                if (value == null || value == "") {
+                  return "Please select a tier";
+                }
                 return null;
               },
               decoration: const InputDecoration(border: OutlineInputBorder()),
@@ -158,7 +179,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 DropdownMenuItem(value: "Student", child: Text("Student")),
                 DropdownMenuItem(
                   value: "UnderGraduate",
-                  child: Text("UnderGraduate"), 
+                  child: Text("UnderGraduate"),
                 ),
                 DropdownMenuItem(
                   value: "PostGraduate",
@@ -174,7 +195,7 @@ class _RegisterFormState extends State<RegisterForm> {
           if (_error != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: Text(_error!, style: TextStyle(color: Colors.red)),
+              child: Text(_error!, style: const TextStyle(color: Colors.red)),
             ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
