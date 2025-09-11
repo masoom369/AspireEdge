@@ -121,6 +121,8 @@ class _SideBarState extends State<SideBar> {
                           case "Notifications":
                             Navigator.pushNamed(context, '/ManagePushNotificationsPage');
                             break;
+                          case "logout":
+                            Navigator.pushNamed(context, '/logout');
                           default:
                             break;
                         }

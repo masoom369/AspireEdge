@@ -15,6 +15,7 @@ import 'package:aspire_edge/screens/career_bank.dart';
 import 'package:aspire_edge/screens/contact_us.dart';
 import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
 import 'package:aspire_edge/screens/home_page.dart';
+import 'package:aspire_edge/screens/logout_screen.dart';
 import 'package:aspire_edge/screens/push_notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/screens/onboding/onboding_screen.dart';
@@ -22,8 +23,7 @@ import 'package:aspire_edge/screens/profile_screen.dart';
 
 // Public routes (no authentication required)
 final Map<String, WidgetBuilder> publicRoutes = {
-  '/': (context) => const OnbodingScreen(),
-  '/home': (context) => EntryPoint(child: const HomePage()),
+  '/auth': (context) => const OnbodingScreen(),
   '/contact': (context) => EntryPoint(child: const ContactUsPage()),
   '/about': (context) => EntryPoint(child: const ContactUsPage()),
   '/success': (context) => EntryPoint(child: const SuccessStoriesPage()),
@@ -55,10 +55,14 @@ final Map<String, WidgetBuilder> publicRoutes = {
 // Protected routes (authentication required)
 final Map<String, WidgetBuilder> protectedRoutes = {
   '/profile': (context) => EntryPoint(child: const ProfileScreen()),
+  '/logout': (context) => EntryPoint(child: const LogoutPage()),
+  '/': (context) => EntryPoint(child: const HomePage()),
 };
 
 // Admin routes (admin access required)
-final Map<String, WidgetBuilder> adminRoutes = {};
+final Map<String, WidgetBuilder> adminRoutes = {
+  '/admin_dashboard': (context) => EntryPoint(child: DashboardPage()),
+};
 
 // Combined routes map
 final Map<String, WidgetBuilder> routes = {
@@ -71,7 +75,19 @@ final Map<String, WidgetBuilder> routes = {
 const List<String> unprotectedRoutes = [];
 
 // List of routes that DO require authentication
-const List<String> protectedRoutesList = [];
+const List<String> protectedRoutesList = [
+  '/profile',
+  '/'
+      '/logout',
+];
 
 // List of routes that ONLY admin users can access
-const List<String> adminOnlyRoutes = [];
+const List<String> adminOnlyRoutes = [
+  '/admin_dashboard',
+  '/quiz_management',
+  '/resources_management',
+  '/testimonials_management',
+  '/feedback_management',
+  '/user_management',
+  '/career_management',
+];
