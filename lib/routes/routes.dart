@@ -10,7 +10,7 @@ import 'package:aspire_edge/screens/admin/quiz_management_screen.dart';
 import 'package:aspire_edge/screens/admin/resources_hub_management_screen.dart';
 import 'package:aspire_edge/screens/admin/testimonial_management_screen.dart';
 import 'package:aspire_edge/screens/admin/user_management_screen.dart';
-import 'package:aspire_edge/screens/admin_dashboard.dart';
+import 'package:aspire_edge/screens/dashboard_screen.dart';
 import 'package:aspire_edge/screens/career_bank.dart';
 import 'package:aspire_edge/screens/contact_us.dart';
 import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
@@ -27,15 +27,7 @@ final Map<String, WidgetBuilder> publicRoutes = {
   '/contact': (context) => EntryPoint(child: const ContactUsPage()),
   '/about': (context) => EntryPoint(child: const ContactUsPage()),
   '/success': (context) => EntryPoint(child: const SuccessStoriesPage()),
-  '/DashboardPage': (context) => EntryPoint(child: DashboardPage()),
-  '/quiz_management': (context) => EntryPoint(child: ManageQuizPage()),
-  '/resources_management': (context) =>
-      EntryPoint(child: ManageResourcesHubPage()),
-  '/testimonials_management': (context) =>
-      EntryPoint(child: ManageTestimonialsPage()),
-  '/feedback_management': (context) => EntryPoint(child: ManageFeedbackPage()),
-  '/user_management': (context) => EntryPoint(child: AdminUserManagementPage()),
-  '/career_management': (context) => EntryPoint(child: CareerManagementPage()),
+
   '/WriteTestimonialPage': (context) =>
       EntryPoint(child: const WriteTestimonialPage()),
   '/StreamSelectorPage': (context) =>
@@ -57,11 +49,20 @@ final Map<String, WidgetBuilder> protectedRoutes = {
   '/profile': (context) => EntryPoint(child: const ProfileScreen()),
   '/logout': (context) => EntryPoint(child: const LogoutPage()),
   '/': (context) => EntryPoint(child: const HomePage()),
+  '/DashboardPage': (context) =>
+      EntryPoint(child: DashboardPage(role: 'admin')),
 };
 
 // Admin routes (admin access required)
 final Map<String, WidgetBuilder> adminRoutes = {
-  '/admin_dashboard': (context) => EntryPoint(child: DashboardPage()),
+  '/career_management': (context) => EntryPoint(child: CareerManagementPage()),
+  '/quiz_management': (context) => EntryPoint(child: ManageQuizPage()),
+  '/resources_management': (context) =>
+      EntryPoint(child: ManageResourcesHubPage()),
+  '/testimonials_management': (context) =>
+      EntryPoint(child: ManageTestimonialsPage()),
+  '/feedback_management': (context) => EntryPoint(child: ManageFeedbackPage()),
+  '/user_management': (context) => EntryPoint(child: AdminUserManagementPage()),
 };
 
 // Combined routes map
@@ -83,7 +84,6 @@ const List<String> protectedRoutesList = [
 
 // List of routes that ONLY admin users can access
 const List<String> adminOnlyRoutes = [
-  '/admin_dashboard',
   '/quiz_management',
   '/resources_management',
   '/testimonials_management',

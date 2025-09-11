@@ -32,10 +32,6 @@ class _SideBarState extends State<SideBar> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const InfoCard(
-                  name: "Abu Anwar",
-                  bio: "YouTuber",
-                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 24, top: 32, bottom: 16),
                   child: Text(
@@ -59,8 +55,8 @@ class _SideBarState extends State<SideBar> {
                           case "Home":
                             Navigator.pushNamed(context, '/home');
                             break;
-                          case "Search":
-                            Navigator.pushNamed(context, '/StreamSelectorPage');
+                          case "Dashboard":
+                            Navigator.pushNamed(context, '/DashboardPage');
                             break;
                           case "Favorites":
                             Navigator.pushNamed(context, '/career_management');
