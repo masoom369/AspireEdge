@@ -1,23 +1,23 @@
 class ResourceTag {
-  final int resourceId;
-  final int tagId;
+  final String id;
+  final String name;
 
-  ResourceTag({
-    required this.resourceId,
-    required this.tagId,
-  });
+  ResourceTag({required this.id, required this.name});
 
-  ResourceTag.fromJson(Map<dynamic, dynamic> json)
-      : resourceId = json["resource_id"] as int,
-        tagId = json["tag_id"] as int;
+  factory ResourceTag.fromJson(Map<String, dynamic> json) {
+    return ResourceTag(
+      id: json['id'] as String,
+      name: json['name'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'resource_id': resourceId,
-        'tag_id': tagId,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'resource_id': resourceId,
-        'tag_id': tagId,
-      };
+  @override
+  String toString() => 'ResourceTag(id: $id, name: $name)';
 }

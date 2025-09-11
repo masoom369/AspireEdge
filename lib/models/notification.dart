@@ -1,38 +1,26 @@
 class Notification {
-  final int id;
+  final String id;
   final String title;
   final String body;
-  final dynamic data;
-  final int sentAt;
 
-  Notification({
-    required this.id,
-    required this.title,
-    required this.body,
-    required this.data,
-    required this.sentAt,
-  });
+  Notification({required this.id, required this.title, required this.body});
 
-  Notification.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        title = json["title"] as String,
-        body = json["body"] as String,
-        data = json["data"],
-        sentAt = json["sent_at"] as int;
+  factory Notification.fromJson(Map<String, dynamic> json) {
+    return Notification(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      body: json['body'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'body': body,
-        'data': data,
-        'sent_at': sentAt,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'body': body,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'title': title,
-        'body': body,
-        'data': data,
-        'sent_at': sentAt,
-      };
+  @override
+  String toString() => 'Notification(id: $id, title: $title, body: $body)';
 }

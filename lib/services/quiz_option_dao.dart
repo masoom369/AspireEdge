@@ -17,6 +17,6 @@ class QuizOptionDao {
   }
 
   void updateQuizOption(String key, QuizOption quizOption) {
-    _databaseRef.child(key).update(quizOption.toMap());
+    _databaseRef.child(key).update(quizOption.toJson());
   }
 }

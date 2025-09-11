@@ -1,38 +1,30 @@
 class InterviewItem {
-  final int id;
-  final String title;
-  final String content;
-  final int mediaId;
-  final String category;
+  final String id;
+  final String question;
+  final String answer;
 
   InterviewItem({
     required this.id,
-    required this.title,
-    required this.content,
-    required this.mediaId,
-    required this.category,
+    required this.question,
+    required this.answer,
   });
 
-  InterviewItem.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        title = json["title"] as String,
-        content = json["content"] as String,
-        mediaId = json["media_id"] as int,
-        category = json["category"] as String;
+  factory InterviewItem.fromJson(Map<String, dynamic> json) {
+    return InterviewItem(
+      id: json['id'] as String,
+      question: json['question'] as String,
+      answer: json['answer'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'content': content,
-        'media_id': mediaId,
-        'category': category,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'question': question,
+      'answer': answer,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'title': title,
-        'content': content,
-        'media_id': mediaId,
-        'category': category,
-      };
+  @override
+  String toString() => 'InterviewItem(id: $id, question: $question, answer: $answer)';
 }

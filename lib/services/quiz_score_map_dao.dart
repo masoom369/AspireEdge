@@ -4,6 +4,8 @@ import '../models/quiz_score_map.dart';
 class QuizScoreMapDao {
   final _databaseRef = FirebaseDatabase.instance.ref("quiz_score_maps");
 
+  QuizScoreMapDao();
+
   void saveQuizScoreMap(QuizScoreMap quizScoreMap) {
     _databaseRef.push().set(quizScoreMap.toJson());
   }
@@ -17,6 +19,6 @@ class QuizScoreMapDao {
   }
 
   void updateQuizScoreMap(String key, QuizScoreMap quizScoreMap) {
-    _databaseRef.child(key).update(quizScoreMap.toMap());
+    _databaseRef.child(key).update(quizScoreMap.toJson());
   }
 }

@@ -4,6 +4,8 @@ import '../models/wishlist_item.dart';
 class WishlistItemDao {
   final _databaseRef = FirebaseDatabase.instance.ref("wishlist_items");
 
+  WishlistItemDao();
+
   void saveWishlistItem(WishlistItem wishlistItem) {
     _databaseRef.push().set(wishlistItem.toJson());
   }
@@ -17,6 +19,6 @@ class WishlistItemDao {
   }
 
   void updateWishlistItem(String key, WishlistItem wishlistItem) {
-    _databaseRef.child(key).update(wishlistItem.toMap());
+    _databaseRef.child(key).update(wishlistItem.toJson());
   }
 }

@@ -4,6 +4,9 @@ import '../models/industry.dart';
 class IndustryDao {
   final _databaseRef = FirebaseDatabase.instance.ref("industries");
 
+  // Add constructor if needed
+  IndustryDao();
+
   void saveIndustry(Industry industry) {
     _databaseRef.push().set(industry.toJson());
   }
@@ -17,6 +20,6 @@ class IndustryDao {
   }
 
   void updateIndustry(String key, Industry industry) {
-    _databaseRef.child(key).update(industry.toMap());
+    _databaseRef.child(key).update(industry.toJson());
   }
 }

@@ -1,22 +1,24 @@
 import 'package:firebase_database/firebase_database.dart';
 import '../models/cv_template.dart';
 
-class CVTemplateDao {
+class CvTemplateDao {
   final _databaseRef = FirebaseDatabase.instance.ref("cv_templates");
 
-  void saveCVTemplate(CVTemplate cvTemplate) {
-    _databaseRef.push().set(cvTemplate.toJson());
+  CvTemplateDao();
+
+  void saveCvTemplate(CvTemplate cvTemplate) {
+    _databaseRef.child(cvTemplate.id).set(cvTemplate.toJson());
   }
 
-  Query getCVTemplateList() {
+  Query getCvTemplateList() {
     return _databaseRef;
   }
 
-  void deleteCVTemplate(String key) {
-    _databaseRef.child(key).remove();
+  void deleteCvTemplate(String id) {
+    _databaseRef.child(id).remove();
   }
 
-  void updateCVTemplate(String key, CVTemplate cvTemplate) {
-    _databaseRef.child(key).update(cvTemplate.toMap());
+  void updateCvTemplate(String id, CvTemplate cvTemplate) {
+    _databaseRef.child(id).update(cvTemplate.toJson()); // ✅ Fixed here
   }
 }

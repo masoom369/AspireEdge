@@ -4,6 +4,8 @@ import '../models/skill.dart';
 class SkillDao {
   final _databaseRef = FirebaseDatabase.instance.ref("skills");
 
+  SkillDao();
+
   void saveSkill(Skill skill) {
     _databaseRef.push().set(skill.toJson());
   }
@@ -17,6 +19,6 @@ class SkillDao {
   }
 
   void updateSkill(String key, Skill skill) {
-    _databaseRef.child(key).update(skill.toMap());
+    _databaseRef.child(key).update(skill.toJson());
   }
 }

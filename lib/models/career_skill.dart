@@ -1,28 +1,23 @@
 class CareerSkill {
-  final int careerId;
-  final int skillId;
-  final int importance;
+  final String id;
+  final String name;
 
-  CareerSkill({
-    required this.careerId,
-    required this.skillId,
-    required this.importance,
-  });
+  CareerSkill({required this.id, required this.name});
 
-  CareerSkill.fromJson(Map<dynamic, dynamic> json)
-      : careerId = json["career_id"] as int,
-        skillId = json["skill_id"] as int,
-        importance = json["importance"] as int;
+  factory CareerSkill.fromJson(Map<String, dynamic> json) {
+    return CareerSkill(
+      id: json['id'] as String,
+      name: json['name'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'career_id': careerId,
-        'skill_id': skillId,
-        'importance': importance,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'career_id': careerId,
-        'skill_id': skillId,
-        'importance': importance,
-      };
+  @override
+  String toString() => 'CareerSkill(id: $id, name: $name)';
 }

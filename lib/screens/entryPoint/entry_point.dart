@@ -1,16 +1,7 @@
 import 'dart:math';
-import 'package:aspire_edge/screens/CVGuidancePage.dart';
-import 'package:aspire_edge/screens/InterviewPrepPage.dart';
-import 'package:aspire_edge/screens/SuccessStoriesPage.dart';
-import 'package:aspire_edge/screens/WriteTestimonialPage.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:aspire_edge/constants.dart';
-import 'package:aspire_edge/screens/CareerGuidancePage.dart';
-import 'package:aspire_edge/screens/StreamSelectorPage.dart';
-import 'package:aspire_edge/screens/admin_dashboard.dart';
-import 'package:aspire_edge/screens/contact_us.dart';
-import 'package:aspire_edge/screens/home_page.dart';
 import 'package:aspire_edge/utils/rive_utils.dart';
 import '../../models/menu.dart';
 import 'components/btm_nav_item.dart';
@@ -190,7 +181,7 @@ class _EntryPointState extends State<EntryPoint>
                   return BtmNavItem(
                     navBar: navBar,
                     press: () {
-                      RiveUtils.chnageSMIBoolState(navBar.rive.status!);
+                      RiveUtils.changeSMIBoolState(navBar.rive.status!);
                       updateSelectedBtmNav(navBar);
                     },
                     riveOnInit: (artboard) {

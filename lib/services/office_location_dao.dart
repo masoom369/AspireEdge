@@ -2,6 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import '../models/office_location.dart';
 
 class OfficeLocationDao {
+  OfficeLocationDao();
+
   final _databaseRef = FirebaseDatabase.instance.ref("office_locations");
 
   void saveOfficeLocation(OfficeLocation officeLocation) {
@@ -17,6 +19,6 @@ class OfficeLocationDao {
   }
 
   void updateOfficeLocation(String key, OfficeLocation officeLocation) {
-    _databaseRef.child(key).update(officeLocation.toMap());
+    _databaseRef.child(key).update(officeLocation.toJson());
   }
 }

@@ -1,43 +1,23 @@
 class OfficeLocation {
-  final int id;
-  final String name;
+  final String id;
   final String address;
-  final double latitude;
-  final double longitude;
-  final String? phone;
 
-  OfficeLocation({
-    required this.id,
-    required this.name,
-    required this.address,
-    required this.latitude,
-    required this.longitude,
-    this.phone,
-  });
+  OfficeLocation({required this.id, required this.address});
 
-  OfficeLocation.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        name = json["name"] as String,
-        address = json["address"] as String,
-        latitude = json["latitude"] as double,
-        longitude = json["longitude"] as double,
-        phone = json["phone"] as String?;
+  factory OfficeLocation.fromJson(Map<String, dynamic> json) {
+    return OfficeLocation(
+      id: json['id'] as String,
+      address: json['address'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'address': address,
-        'latitude': latitude,
-        'longitude': longitude,
-        'phone': phone,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'address': address,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'name': name,
-        'address': address,
-        'latitude': latitude,
-        'longitude': longitude,
-        'phone': phone,
-      };
+  @override
+  String toString() => 'OfficeLocation(id: $id, address: $address)';
 }

@@ -17,6 +17,6 @@ class ResourceDao {
   }
 
   void updateResource(String key, Resource resource) {
-    _databaseRef.child(key).update(resource.toMap());
+    _databaseRef.child(key).update(resource.toJson());
   }
 }

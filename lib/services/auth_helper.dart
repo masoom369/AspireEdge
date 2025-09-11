@@ -60,3 +60,9 @@ class AuthService {
     await _auth.sendPasswordResetEmail(email: email);
   }
 }
+
+class AuthHelper {
+  // Add constructor if needed
+  AuthHelper();
+  // Add method stubs for authentication
+}

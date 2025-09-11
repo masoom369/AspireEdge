@@ -1,23 +1,23 @@
 class Industry {
-  final int id;
+  final String id;
   final String name;
 
-  Industry({
-    required this.id,
-    required this.name,
-  });
+  Industry({required this.id, required this.name});
 
-  Industry.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        name = json["name"] as String;
+  factory Industry.fromJson(Map<String, dynamic> json) {
+    return Industry(
+      id: json['id'] as String,
+      name: json['name'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'name': name,
-      };
+  @override
+  String toString() => 'Industry(id: $id, name: $name)';
 }

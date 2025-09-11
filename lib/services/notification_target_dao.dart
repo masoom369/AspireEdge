@@ -4,6 +4,8 @@ import '../models/notification_target.dart';
 class NotificationTargetDao {
   final _databaseRef = FirebaseDatabase.instance.ref("notification_targets");
 
+  NotificationTargetDao();
+
   void saveNotificationTarget(NotificationTarget notificationTarget) {
     _databaseRef.push().set(notificationTarget.toJson());
   }
@@ -17,6 +19,6 @@ class NotificationTargetDao {
   }
 
   void updateNotificationTarget(String key, NotificationTarget notificationTarget) {
-    _databaseRef.child(key).update(notificationTarget.toMap());
+    _databaseRef.child(key).update(notificationTarget.toJson());
   }
 }

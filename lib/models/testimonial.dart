@@ -1,43 +1,26 @@
 class Testimonial {
-  final int id;
-  final int userId;
-  final String displayName;
-  final String imageUri;
-  final int tierId;
-  final String story;
+  final String id;
+  final String userId;
+  final String content;
 
-  Testimonial({
-    required this.id,
-    required this.userId,
-    required this.displayName,
-    required this.imageUri,
-    required this.tierId,
-    required this.story,
-  });
+  Testimonial({required this.id, required this.userId, required this.content});
 
-  Testimonial.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        userId = json["user_id"] as int,
-        displayName = json["display_name"] as String,
-        imageUri = json["image_uri"] as String,
-        tierId = json["tier_id"] as int,
-        story = json["story"] as String;
+  factory Testimonial.fromJson(Map<String, dynamic> json) {
+    return Testimonial(
+      id: json['id'] as String,
+      userId: json['userId'] as String,
+      content: json['content'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'user_id': userId,
-        'display_name': displayName,
-        'image_uri': imageUri,
-        'tier_id': tierId,
-        'story': story,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'content': content,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'user_id': userId,
-        'display_name': displayName,
-        'image_uri': imageUri,
-        'tier_id': tierId,
-        'story': story,
-      };
+  @override
+  String toString() => 'Testimonial(id: $id, userId: $userId, content: $content)';
 }

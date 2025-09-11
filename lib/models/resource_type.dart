@@ -1,23 +1,23 @@
 class ResourceType {
-  final int id;
-  final String name;
+  final String id;
+  final String type;
 
-  ResourceType({
-    required this.id,
-    required this.name,
-  });
+  ResourceType({required this.id, required this.type});
 
-  ResourceType.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        name = json["name"] as String;
+  factory ResourceType.fromJson(Map<String, dynamic> json) {
+    return ResourceType(
+      id: json['id'] as String,
+      type: json['type'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'type': type,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'name': name,
-      };
+  @override
+  String toString() => 'ResourceType(id: $id, type: $type)';
 }

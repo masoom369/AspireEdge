@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import '/models/tier.dart';
 
 class TierDao {
+  TierDao();
   final _databaseRef = FirebaseDatabase.instance.ref("tiers");
 
   void saveTier(Tier tier) {
@@ -17,6 +18,6 @@ class TierDao {
   }
 
   void updateTier(String key, Tier tier) {
-    _databaseRef.child(key).update(tier.toMap());
+    _databaseRef.child(key).update(tier.toJson());
   }
 }

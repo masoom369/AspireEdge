@@ -4,6 +4,9 @@ import '../models/interview_item.dart';
 class InterviewItemDao {
   final _databaseRef = FirebaseDatabase.instance.ref("interview_items");
 
+  // Add constructor if needed
+  InterviewItemDao();
+
   void saveInterviewItem(InterviewItem interviewItem) {
     _databaseRef.push().set(interviewItem.toJson());
   }
@@ -17,6 +20,6 @@ class InterviewItemDao {
   }
 
   void updateInterviewItem(String key, InterviewItem interviewItem) {
-    _databaseRef.child(key).update(interviewItem.toMap());
+    _databaseRef.child(key).update(interviewItem.toJson());
   }
 }

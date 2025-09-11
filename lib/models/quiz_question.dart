@@ -1,38 +1,23 @@
 class QuizQuestion {
-  final int id;
-  final int quizId;
-  final String questionText;
-  final String questionType;
-  final int seq;
+  final String id;
+  final String question;
 
-  QuizQuestion({
-    required this.id,
-    required this.quizId,
-    required this.questionText,
-    required this.questionType,
-    required this.seq,
-  });
+  QuizQuestion({required this.id, required this.question});
 
-  QuizQuestion.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        quizId = json["quiz_id"] as int,
-        questionText = json["question_text"] as String,
-        questionType = json["question_type"] as String,
-        seq = json["seq"] as int;
+  factory QuizQuestion.fromJson(Map<String, dynamic> json) {
+    return QuizQuestion(
+      id: json['id'] as String,
+      question: json['question'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'quiz_id': quizId,
-        'question_text': questionText,
-        'question_type': questionType,
-        'seq': seq,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'question': question,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'quiz_id': quizId,
-        'question_text': questionText,
-        'question_type': questionType,
-        'seq': seq,
-      };
+  @override
+  String toString() => 'QuizQuestion(id: $id, question: $question)';
 }

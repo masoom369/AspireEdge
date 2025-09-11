@@ -17,6 +17,6 @@ class NotificationDao {
   }
 
   void updateNotification(String key, Notification notification) {
-    _databaseRef.child(key).update(notification.toMap());
+    _databaseRef.child(key).update(notification.toJson());
   }
 }

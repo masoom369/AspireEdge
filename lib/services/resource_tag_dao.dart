@@ -4,6 +4,8 @@ import '../models/resource_tag.dart';
 class ResourceTagDao {
   final _databaseRef = FirebaseDatabase.instance.ref("resource_tags");
 
+  ResourceTagDao();
+
   void saveResourceTag(ResourceTag resourceTag) {
     _databaseRef.push().set(resourceTag.toJson());
   }
@@ -17,6 +19,6 @@ class ResourceTagDao {
   }
 
   void updateResourceTag(String key, ResourceTag resourceTag) {
-    _databaseRef.child(key).update(resourceTag.toMap());
+    _databaseRef.child(key).update(resourceTag.toJson());
   }
 }

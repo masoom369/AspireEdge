@@ -1,28 +1,23 @@
 class QuizScoreMap {
-  final int id;
-  final int optionId;
-  final dynamic scoreMap;
+  final String id;
+  final int score;
 
-  QuizScoreMap({
-    required this.id,
-    required this.optionId,
-    required this.scoreMap,
-  });
+  QuizScoreMap({required this.id, required this.score});
 
-  QuizScoreMap.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        optionId = json["option_id"] as int,
-        scoreMap = json["score_map"];
+  factory QuizScoreMap.fromJson(Map<String, dynamic> json) {
+    return QuizScoreMap(
+      id: json['id'] as String,
+      score: json['score'] as int,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'option_id': optionId,
-        'score_map': scoreMap,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'score': score,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'option_id': optionId,
-        'score_map': scoreMap,
-      };
+  @override
+  String toString() => 'QuizScoreMap(id: $id, score: $score)';
 }

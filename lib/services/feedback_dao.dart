@@ -4,6 +4,9 @@ import '../models/feedback.dart';
 class FeedbackDao {
   final _databaseRef = FirebaseDatabase.instance.ref("feedbacks");
 
+  // Add constructor if needed
+  FeedbackDao();
+
   void saveFeedback(Feedback feedback) {
     _databaseRef.push().set(feedback.toJson());
   }
@@ -17,6 +20,6 @@ class FeedbackDao {
   }
 
   void updateFeedback(String key, Feedback feedback) {
-    _databaseRef.child(key).update(feedback.toMap());
+    _databaseRef.child(key).update(feedback.toJson());
   }
 }

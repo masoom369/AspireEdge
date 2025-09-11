@@ -1,33 +1,23 @@
 class PushToken {
-  final int id;
-  final int userId;
+  final String id;
   final String token;
-  final String platform;
 
-  PushToken({
-    required this.id,
-    required this.userId,
-    required this.token,
-    required this.platform,
-  });
+  PushToken({required this.id, required this.token});
 
-  PushToken.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        userId = json["user_id"] as int,
-        token = json["token"] as String,
-        platform = json["platform"] as String;
+  factory PushToken.fromJson(Map<String, dynamic> json) {
+    return PushToken(
+      id: json['id'] as String,
+      token: json['token'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'user_id': userId,
-        'token': token,
-        'platform': platform,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'token': token,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'user_id': userId,
-        'token': token,
-        'platform': platform,
-      };
+  @override
+  String toString() => 'PushToken(id: $id, token: $token)';
 }

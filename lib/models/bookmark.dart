@@ -1,38 +1,26 @@
 class Bookmark {
-  final int id;
-  final int userId;
-  final String objectType;
-  final int objectId;
-  final int createdAt;
+  final String id;
+  final String userId;
+  final String resourceId;
 
-  Bookmark({
-    required this.id,
-    required this.userId,
-    required this.objectType,
-    required this.objectId,
-    required this.createdAt,
-  });
+  Bookmark({required this.id, required this.userId, required this.resourceId});
 
-  Bookmark.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        userId = json["user_id"] as int,
-        objectType = json["object_type"] as String,
-        objectId = json["object_id"] as int,
-        createdAt = json["created_at"] as int;
+  factory Bookmark.fromJson(Map<String, dynamic> json) {
+    return Bookmark(
+      id: json['id'] as String,
+      userId: json['userId'] as String,
+      resourceId: json['resourceId'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'user_id': userId,
-        'object_type': objectType,
-        'object_id': objectId,
-        'created_at': createdAt,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'resourceId': resourceId,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'user_id': userId,
-        'object_type': objectType,
-        'object_id': objectId,
-        'created_at': createdAt,
-      };
+  @override
+  String toString() => 'Bookmark(id: $id, userId: $userId, resourceId: $resourceId)';
 }

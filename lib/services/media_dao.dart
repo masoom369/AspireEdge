@@ -4,6 +4,8 @@ import '../models/media.dart';
 class MediaDao {
   final _databaseRef = FirebaseDatabase.instance.ref("media");
 
+  MediaDao();
+
   void saveMedia(Media media) {
     _databaseRef.push().set(media.toJson());
   }
@@ -17,6 +19,6 @@ class MediaDao {
   }
 
   void updateMedia(String key, Media media) {
-    _databaseRef.child(key).update(media.toMap());
+    _databaseRef.child(key).update(media.toJson());
   }
 }

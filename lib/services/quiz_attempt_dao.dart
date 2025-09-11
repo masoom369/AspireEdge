@@ -4,6 +4,8 @@ import '../models/quiz_attempt.dart';
 class QuizAttemptDao {
   final _databaseRef = FirebaseDatabase.instance.ref("quiz_attempts");
 
+  QuizAttemptDao();
+
   void saveQuizAttempt(QuizAttempt quizAttempt) {
     _databaseRef.push().set(quizAttempt.toJson());
   }
@@ -17,6 +19,6 @@ class QuizAttemptDao {
   }
 
   void updateQuizAttempt(String key, QuizAttempt quizAttempt) {
-    _databaseRef.child(key).update(quizAttempt.toMap());
+    _databaseRef.child(key).update(quizAttempt.toJson());
   }
 }

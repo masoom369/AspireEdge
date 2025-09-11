@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import '../models/tag.dart';
 
 class TagDao {
+  TagDao();
   final _databaseRef = FirebaseDatabase.instance.ref("tags");
 
   void saveTag(Tag tag) {
@@ -17,6 +18,6 @@ class TagDao {
   }
 
   void updateTag(String key, Tag tag) {
-    _databaseRef.child(key).update(tag.toMap());
+    _databaseRef.child(key).update(tag.toJson());
   }
 }

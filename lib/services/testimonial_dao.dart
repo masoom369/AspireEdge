@@ -2,6 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import '../models/testimonial.dart';
 
 class TestimonialDao {
+  TestimonialDao();
+
   final _databaseRef = FirebaseDatabase.instance.ref("testimonials");
 
   void saveTestimonial(Testimonial testimonial) {
@@ -17,6 +19,6 @@ class TestimonialDao {
   }
 
   void updateTestimonial(String key, Testimonial testimonial) {
-    _databaseRef.child(key).update(testimonial.toMap());
+    _databaseRef.child(key).update(testimonial.toJson());
   }
 }

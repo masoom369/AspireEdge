@@ -11,23 +11,25 @@ class User {
     required this.username,
   });
 
-  User.fromJson(Map<dynamic, dynamic> json)
-      : uuid = json["uuid"] as String,
-        role = json["role"] as String,
-        tier = json["tier"] as String,
-        username = json["username"] as String;
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      uuid: json['uuid'] as String,
+      role: json['role'] as String,
+      tier: json['tier'] as String,
+      username: json['username'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'uuid': uuid,
-        'role': role,
-        'tier': tier,
-        'username': username,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'uuid': uuid,
+      'role': role,
+      'tier': tier,
+      'username': username,
+    };
+  }
 
-  Map<String, dynamic> toMap() => <String, dynamic>{
-        'uuid': uuid,
-        'role': role,
-        'tier': tier,
-        'username': username,
-      };
+  @override
+  String toString() =>
+      'User(uuid: $uuid, role: $role, tier: $tier, username: $username)';
 }

@@ -4,6 +4,9 @@ import '../models/career.dart';
 class CareerDao {
   final _databaseRef = FirebaseDatabase.instance.ref("careers");
 
+  // Add constructor if needed
+  CareerDao();
+
   void saveCareer(Career career) {
     _databaseRef.push().set(career.toJson());
   }
@@ -17,6 +20,6 @@ class CareerDao {
   }
 
   void updateCareer(String key, Career career) {
-    _databaseRef.child(key).update(career.toMap());
+    _databaseRef.child(key).update(career.toJson());
   }
 }

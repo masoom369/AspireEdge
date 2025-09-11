@@ -4,6 +4,8 @@ import '../models/push_token.dart';
 class PushTokenDao {
   final _databaseRef = FirebaseDatabase.instance.ref("push_tokens");
 
+  PushTokenDao();
+
   void savePushToken(PushToken pushToken) {
     _databaseRef.push().set(pushToken.toJson());
   }
@@ -17,6 +19,6 @@ class PushTokenDao {
   }
 
   void updatePushToken(String key, PushToken pushToken) {
-    _databaseRef.child(key).update(pushToken.toMap());
+    _databaseRef.child(key).update(pushToken.toJson());
   }
 }

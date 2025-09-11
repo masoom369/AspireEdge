@@ -1,38 +1,26 @@
-class CVTemplate {
-  final int id;
-  final String title;
-  final String description;
-  final int mediaId;
-  final int uploadedBy;
+class CvTemplate {
+  final String id;
+  final String name;
+  final String url;
 
-  CVTemplate({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.mediaId,
-    required this.uploadedBy,
-  });
+  CvTemplate({required this.id, required this.name, required this.url});
 
-  CVTemplate.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        title = json["title"] as String,
-        description = json["description"] as String,
-        mediaId = json["media_id"] as int,
-        uploadedBy = json["uploaded_by"] as int;
+  factory CvTemplate.fromJson(Map<String, dynamic> json) {
+    return CvTemplate(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      url: json['url'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'description': description,
-        'media_id': mediaId,
-        'uploaded_by': uploadedBy,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'url': url,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'title': title,
-        'description': description,
-        'media_id': mediaId,
-        'uploaded_by': uploadedBy,
-      };
+  @override
+  String toString() => 'CvTemplate(id: $id, name: $name, url: $url)';
 }

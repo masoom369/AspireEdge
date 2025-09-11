@@ -1,33 +1,26 @@
 class Media {
-  final int id;
+  final String id;
   final String url;
   final String type;
-  final String title;
 
-  Media({
-    required this.id,
-    required this.url,
-    required this.type,
-    required this.title,
-  });
+  Media({required this.id, required this.url, required this.type});
 
-  Media.fromJson(Map<dynamic, dynamic> json)
-      : id = json["id"] as int,
-        url = json["url"] as String,
-        type = json["type"] as String,
-        title = json["title"] as String;
+  factory Media.fromJson(Map<String, dynamic> json) {
+    return Media(
+      id: json['id'] as String,
+      url: json['url'] as String,
+      type: json['type'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'url': url,
-        'type': type,
-        'title': title,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'url': url,
+      'type': type,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'url': url,
-        'type': type,
-        'title': title,
-      };
+  @override
+  String toString() => 'Media(id: $id, url: $url, type: $type)';
 }

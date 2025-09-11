@@ -1,28 +1,31 @@
 class NotificationTarget {
-  final int notificationId;
-  final int userId;
-  final int? readAt;
+  final String id;
+  final String targetType;
+  final String targetId;
 
   NotificationTarget({
-    required this.notificationId,
-    required this.userId,
-    this.readAt,
+    required this.id,
+    required this.targetType,
+    required this.targetId,
   });
 
-  NotificationTarget.fromJson(Map<dynamic, dynamic> json)
-      : notificationId = json["notification_id"] as int,
-        userId = json["user_id"] as int,
-        readAt = json["read_at"] as int?;
+  factory NotificationTarget.fromJson(Map<String, dynamic> json) {
+    return NotificationTarget(
+      id: json['id'] as String,
+      targetType: json['targetType'] as String,
+      targetId: json['targetId'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        'notification_id': notificationId,
-        'user_id': userId,
-        'read_at': readAt,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'targetType': targetType,
+      'targetId': targetId,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-        'notification_id': notificationId,
-        'user_id': userId,
-        'read_at': readAt,
-      };
+  @override
+  String toString() =>
+      'NotificationTarget(id: $id, targetType: $targetType, targetId: $targetId)';
 }
