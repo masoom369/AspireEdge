@@ -61,8 +61,8 @@ class _SideBarState extends State<SideBar> {
                           case "Favorites":
                             Navigator.pushNamed(context, '/career_management');
                             break;
-                          case "Help":
-                            Navigator.pushNamed(context, '/contact');
+                          case "profile":
+                            Navigator.pushNamed(context, '/profile');
                             break;
                           case "Career Guidance":
                             Navigator.pushNamed(context, '/CareerGuidancePage');
