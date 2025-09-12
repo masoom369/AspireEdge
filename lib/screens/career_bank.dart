@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:aspire_edge/services/career_dao.dart';
+import 'package:aspire_edge/models/career.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:async';
 
 class CareerBankPage extends StatefulWidget {
   @override
@@ -6,78 +11,112 @@ class CareerBankPage extends StatefulWidget {
 }
 
 class _CareerBankPageState extends State<CareerBankPage> {
-  String selectedFilter = 'All Levels';
+  final CareerDao _careerDao = CareerDao();
+  List<Career> careers = [];
+  bool _isLoading = true;
+  String searchQuery = '';
+  String selectedIndustry = 'All';
+  String selectedSort = 'Title';
   final TextEditingController searchController = TextEditingController();
+  StreamSubscription? _careersStream;
 
-  final List<CareerPath> careerPaths = [
-    CareerPath(
-      title: 'Software Engineering',
-      description: 'Become a skilled software developer with expertise in modern programming...',
-      duration: '6-12 months',
-      tags: ['Programming', 'Technology', 'Problem Solving'],
-      isEnrolled: true,
-      level: 'Beginner',
-      image: 'assets/Images/gym.jpg',
-    ),
-    CareerPath(
-      title: 'Data Science',
-      description: 'Master data analysis, machine learning, and statistical modeling...',
-      duration: '8-14 months',
-      tags: ['Analytics', 'Machine Learning', 'Statistics'],
-      isEnrolled: false,
-      level: 'Intermediate',
-      image: 'assets/Images/gym.jpg',
-    ),
-    CareerPath(
-      title: 'UX/UI Design',
-      description: 'Learn user experience design principles and create intuitive interfaces...',
-      duration: '4-8 months',
-      tags: ['Design', 'User Experience', 'Creativity'],
-      isEnrolled: false,
-      level: 'Beginner',
-      image: 'assets/Images/gym.jpg',
-    ),
-    CareerPath(
-      title: 'Digital Marketing',
-      description: 'Master online marketing strategies, SEO, and social media management...',
-      duration: '3-6 months',
-      tags: ['Marketing', 'SEO', 'Social Media'],
-      isEnrolled: false,
-      level: 'Beginner',
-      image: 'assets/Images/gym.jpg',
-    ),
-    CareerPath(
-      title: 'Cybersecurity',
-      description: 'Protect digital assets and learn ethical hacking techniques...',
-      duration: '10-16 months',
-      tags: ['Security', 'Networking', 'Ethics'],
-      isEnrolled: false,
-      level: 'Advanced',
-      image: 'assets/Images/gym.jpg',
-    ),
-    CareerPath(
-      title: 'Project Management',
-      description: 'Lead teams and deliver projects successfully using modern methodologies...',
-      duration: '5-9 months',
-      tags: ['Leadership', 'Planning', 'Agile'],
-      isEnrolled: false,
-      level: 'Intermediate',
-      image: 'assets/Images/gym.jpg',
-    ),
-  ];
-
-  List<CareerPath> get filteredPaths {
-    return careerPaths.where((path) {
-      bool matchesFilter = selectedFilter == 'All Levels' || path.level == selectedFilter;
-      bool matchesSearch = searchController.text.isEmpty ||
-          path.title.toLowerCase().contains(searchController.text.toLowerCase()) ||
-          path.tags.any((tag) => tag.toLowerCase().contains(searchController.text.toLowerCase()));
-      return matchesFilter && matchesSearch;
-    }).toList();
+  // 👇 COPY THESE TWO HELPER METHODS FROM CAREER MANAGEMENT PAGE
+  Map<String, dynamic> _convertToMap(dynamic value) {
+    if (value == null) return {};
+    if (value is Map<dynamic, dynamic>) {
+      final Map<String, dynamic> result = {};
+      value.forEach((key, val) {
+        result[key.toString()] = _convertValue(val);
+      });
+      return result;
+    }
+    return {};
   }
 
-  int get enrolledCount {
-    return careerPaths.where((path) => path.isEnrolled).length;
+  dynamic _convertValue(dynamic value) {
+    if (value == null) return null;
+    if (value is Map<dynamic, dynamic>) {
+      final Map<String, dynamic> result = {};
+      value.forEach((key, val) {
+        result[key.toString()] = _convertValue(val);
+      });
+      return result;
+    }
+    if (value is List) return value.map(_convertValue).toList();
+    return value;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCareers();
+  }
+
+  void _fetchCareers() {
+    setState(() => _isLoading = true);
+    _careersStream = _careerDao.getCareerList().onValue.listen((event) {
+      final snapshot = event.snapshot;
+      if (snapshot.exists) {
+        // 👇 USE THE SAME SAFE CONVERSION AS IN CAREER MANAGEMENT PAGE
+        final data = _convertToMap(snapshot.value); // ← This converts everything safely!
+        final List<Career> loaded = [];
+
+        data.forEach((key, value) {
+          try {
+            // Now `value` is guaranteed to be Map<String, dynamic>
+            final career = Career.fromJson(value);
+            loaded.add(career);
+          } catch (e) {
+            print('Parse error for career $key: $e');
+          }
+        });
+
+        setState(() {
+          careers = loaded;
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          careers = [];
+          _isLoading = false;
+        });
+      }
+    });
+  }
+
+  List<String> get industries {
+    final allIndustries = careers.map((c) => c.industry).toSet().toList();
+    allIndustries.sort();
+    return ['All', ...allIndustries];
+  }
+
+  List<Career> get filteredCareers {
+    List<Career> filtered = careers.where((career) {
+      final matchesSearch =
+          searchQuery.isEmpty ||
+          career.title.toLowerCase().contains(searchQuery.toLowerCase()) ||
+          career.industry.toLowerCase().contains(searchQuery.toLowerCase()) ||
+          career.requiredSkills.any(
+            (skill) => skill.toLowerCase().contains(searchQuery.toLowerCase()),
+          );
+      final matchesIndustry =
+          selectedIndustry == 'All' || career.industry == selectedIndustry;
+      return matchesSearch && matchesIndustry;
+    }).toList();
+
+    if (selectedSort == 'Title') {
+      filtered.sort((a, b) => a.title.compareTo(b.title));
+    } else if (selectedSort == 'Salary') {
+      filtered.sort((a, b) => a.salaryRange.compareTo(b.salaryRange));
+    }
+
+    return filtered;
+  }
+
+  @override
+  void dispose() {
+    _careersStream?.cancel();
+    super.dispose();
   }
 
   @override
@@ -97,371 +136,205 @@ class _CareerBankPageState extends State<CareerBankPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Career Bank',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
-                ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Career Bank',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
               ),
-              SizedBox(height: 8),
-              Text(
-                'Discover curated career paths designed to help you succeed in today\'s dynamic job market. Each path includes comprehensive learning materials, practical projects, and industry insights.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                  height: 1.5,
-                ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Discover curated career paths designed to help you succeed in today\'s dynamic job market. Each path includes comprehensive learning materials, practical projects, and industry insights.',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+                height: 1.5,
               ),
-              SizedBox(height: 24),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
-                ),
-                child: TextField(
-                  controller: searchController,
-                  onChanged: (value) => setState(() {}),
-                  decoration: InputDecoration(
-                    hintText: 'Search career paths, skills, or industries...',
-                    hintStyle: TextStyle(color: Colors.grey[500]),
-                    prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: Colors.grey[300]!),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: selectedFilter,
-                        icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
-                        items: ['All Levels', 'Beginner', 'Intermediate', 'Advanced']
-                            .map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedFilter = newValue!;
-                          });
-                        },
+            ),
+            SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Search by title, skills, or industry...',
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                      prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
                       ),
                     ),
                   ),
-                  Spacer(),
-                  Text(
-                    '$enrolledCount enrolled',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Showing ${filteredPaths.length} career paths',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
                 ),
-              ),
-              SizedBox(height: 20),
-LayoutBuilder(
-  builder: (context, constraints) {
-    int crossAxisCount = 1;
-    if (constraints.maxWidth > 1200) {
-      crossAxisCount = 3;
-    } else if (constraints.maxWidth > 800) {
-      crossAxisCount = 2;
-    }
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        // removed childAspectRatio
-      ),
-      itemCount: filteredPaths.length,
-      itemBuilder: (context, index) {
-        return IntrinsicHeight( // <-- ensures card height fits content
-          child: CareerPathCard(
-            careerPath: filteredPaths[index],
-            onEnroll: () {
-              setState(() {
-                filteredPaths[index].isEnrolled = !filteredPaths[index].isEnrolled;
-              });
-            },
-          ),
-        );
-      },
-    );
-  },
-),
-            ],
-          ),
+                SizedBox(width: 12),
+                DropdownButton<String>(
+                  value: selectedSort,
+                  items: ['Title', 'Salary'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedSort = newValue!;
+                    });
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 12),
+            DropdownButton<String>(
+              value: selectedIndustry,
+              items: industries.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedIndustry = newValue!;
+                });
+              },
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Showing ${filteredCareers.length} careers',
+              style: TextStyle(color: Colors.grey[600], fontSize: 14),
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : filteredCareers.isEmpty
+                      ? Center(child: Text('No careers found.'))
+                      : ListView.builder(
+                          itemCount: filteredCareers.length,
+                          itemBuilder: (context, index) {
+                            final career = filteredCareers[index];
+                            Uint8List? imageBytes;
+                            if (career.imageBase64.isNotEmpty) {
+                              try {
+                                final clean = career.imageBase64.contains(',')
+                                    ? career.imageBase64.split(',').last
+                                    : career.imageBase64;
+                                imageBytes = base64Decode(clean);
+                              } catch (e) {
+                                print('Image decode error: $e');
+                              }
+                            }
+                            return Container(
+                              margin: EdgeInsets.only(bottom: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (imageBytes != null)
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.memory(
+                                          imageBytes,
+                                          width: double.infinity,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) => Container(
+                                            height: 100,
+                                            child: Center(
+                                              child: Text('Load Error'),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    else
+                                      Container(
+                                        width: double.infinity,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.image,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    SizedBox(height: 12),
+                                    Text(
+                                      career.title,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Color(0xFF3D455B),
+                                      ),
+                                    ),
+                                    SizedBox(height: 6),
+                                    Text(
+                                      career.description,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(color: Colors.grey[700]),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text('Industry: ${career.industry}'),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Skills: ${career.requiredSkills.join(", ")}',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text('Salary Range: ${career.salaryRange}'),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Degrees: ${career.educationPath.recommendedDegrees.join(", ")}',
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Certifications: ${career.educationPath.certifications.join(", ")}',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
-class CareerPath {
-  final String title;
-  final String description;
-  final String duration;
-  final List<String> tags;
-  bool isEnrolled;
-  final String level;
-  final String image;
-
-  CareerPath({
-    required this.title,
-    required this.description,
-    required this.duration,
-    required this.tags,
-    required this.isEnrolled,
-    required this.level,
-    required this.image,
-  });
-}
-
-class CareerPathCard extends StatelessWidget {
-  final CareerPath careerPath;
-  final VoidCallback onEnroll;
-
-  const CareerPathCard({
-    Key? key,
-    required this.careerPath,
-    required this.onEnroll,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min, // keep column compact
-        children: [
-          // Image and Badge
-          Stack(
-            children: [
-              Container(
-                height: 240,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.blue[400]!,
-                      Colors.purple[400]!,
-                    ],
-                  ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(careerPath.image),
-                        fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(
-                          Colors.black.withOpacity(0.3),
-                          BlendMode.darken,
-                        ),
-                      ),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.work_outline,
-                        size: 4,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              if (careerPath.level == 'Beginner')
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF25254B),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      'Beginner',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          // Content
-          Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 16), // keep bottom padding small
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title
-                Text(
-                  careerPath.title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 8),
-                // Description
-                Text(
-                  careerPath.description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                    height: 1.4,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 12),
-                // Duration
-                Row(
-                  children: [
-                    Icon(Icons.access_time, size: 16, color: Colors.grey[500]),
-                    SizedBox(width: 4),
-                    Text(
-                      careerPath.duration,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12),
-                // Tags
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  children: careerPath.tags.take(3).map((tag) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        tag,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-                SizedBox(height: 16),
-                // Buttons row
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.grey[300]!),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                        ),
-                        child: Text(
-                          'Learn More',
-                          style: TextStyle(
-                            color: Colors.grey[700],
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: onEnroll,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: careerPath.isEnrolled
-                              ?Color(0xFF25254B)
-                              : Color(0xFFFE0037),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          elevation: 0,
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                        ),
-                        child: Text(
-                          careerPath.isEnrolled ? 'Enrolled' : 'Enroll',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-

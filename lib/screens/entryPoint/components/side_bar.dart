@@ -86,16 +86,6 @@ class _SideBarState extends State<SideBar> {
     }
   }
 
-  List<Menu> _getSidebarMenus2() {
-    if (userRole == "Admin") {
-      return adminSidebarMenus2;
-    } else if (userRole == null) {
-      return guestSidebarMenus2;
-    } else {
-      return userSidebarMenus2;
-    }
-  }
-
   void _navigateToPage(BuildContext context, String title) {
     switch (title) {
       case "Home":
@@ -125,7 +115,7 @@ class _SideBarState extends State<SideBar> {
       case "Contact":
         Navigator.pushNamed(context, '/contact');
         break;
-      case "History":
+      case "Quiz Management":
         Navigator.pushNamed(context, '/quiz_management'); // ⚠️ Confirm this is correct
         break;
       case "Notifications":
@@ -141,7 +131,7 @@ class _SideBarState extends State<SideBar> {
         Navigator.pushNamed(context, '/login');
         break;
       case "Logout":
-       Navigator.pushNamed(context, '/logout');
+        Navigator.pushNamed(context, '/logout');
         break;
     }
   }
@@ -184,41 +174,8 @@ class _SideBarState extends State<SideBar> {
                   ),
                 ),
 
-                // ✅ Dynamic Menus (Browse)
+                // ✅ Single Dynamic Menu Section
                 ..._getSidebarMenus().map(
-                  (menu) => SideMenu(
-                    menu: menu,
-                    selectedMenu: selectedSideMenu!,
-                    press: () {
-                      RiveUtils.changeSMIBoolState(menu.rive.status!);
-                      setState(() {
-                        selectedSideMenu = menu;
-                      });
-                      _navigateToPage(context, menu.title);
-                    },
-                    riveOnInit: (artboard) {
-                      menu.rive.status = RiveUtils.getRiveInput(
-                        artboard,
-                        stateMachineName: menu.rive.stateMachineName,
-                      );
-                    },
-                  ),
-                ),
-
-                // 📜 History Section
-                Padding(
-                  padding: const EdgeInsets.only(left: 24, top: 40, bottom: 16),
-                  child: Text(
-                    "History".toUpperCase(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: Colors.white70),
-                  ),
-                ),
-
-                // ✅ Dynamic Menus (History/Footer)
-                ..._getSidebarMenus2().map(
                   (menu) => SideMenu(
                     menu: menu,
                     selectedMenu: selectedSideMenu!,

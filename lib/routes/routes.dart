@@ -26,10 +26,15 @@ import 'package:aspire_edge/screens/profile_screen.dart';
 // Public routes (no authentication required)
 final Map<String, WidgetBuilder> publicRoutes = {
   '/auth': (context) => const OnbodingScreen(),
+};
+final AuthService _authService = AuthService();
+final UserDao _userDao = UserDao();
+
+// Protected routes (authentication required)
+final Map<String, WidgetBuilder> protectedRoutes = {
   '/contact': (context) => EntryPoint(child: const ContactUsPage()),
   '/about': (context) => EntryPoint(child: const ContactUsPage()),
   '/success': (context) => EntryPoint(child: const SuccessStoriesPage()),
-
   '/WriteTestimonialPage': (context) =>
       EntryPoint(child: const WriteTestimonialPage()),
   '/StreamSelectorPage': (context) =>
@@ -44,12 +49,6 @@ final Map<String, WidgetBuilder> publicRoutes = {
       EntryPoint(child: const InterviewPrepPage()),
   '/CareerBankPage': (context) => EntryPoint(child: CareerBankPage()),
   '/CVGuidancePage': (context) => EntryPoint(child: const CVGuidancePage()),
-};
-final AuthService _authService = AuthService();
-final UserDao _userDao = UserDao();
-
-// Protected routes (authentication required)
-final Map<String, WidgetBuilder> protectedRoutes = {
   '/profile': (context) => EntryPoint(child: const ProfileScreen()),
   '/logout': (context) => EntryPoint(child: const LogoutPage()),
   '/': (context) => EntryPoint(child: const HomePage()),
@@ -92,7 +91,9 @@ final Map<String, WidgetBuilder> routes = {
 };
 
 // List of routes that do NOT require authentication
-const List<String> unprotectedRoutes = [];
+const List<String> unprotectedRoutes = [
+  '/auth',
+];
 
 // List of routes that DO require authentication
 const List<String> protectedRoutesList = ['/profile', '/', '/logout'];

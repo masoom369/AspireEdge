@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
-// Data Model
+// ---------------- Data Model ----------------
 class Resource {
   String title;
   String description;
-  String category; // Blog, eBook, Video
-  String tier; // Student, Graduate, Professional
+  String category; // Blog, eBook, Video, Gallery
+  String? link; // For video/ebook
+  List<String>? images; // For gallery
   bool isBookmarked;
 
   Resource({
     required this.title,
     required this.description,
     required this.category,
-    required this.tier,
+    this.link,
+    this.images,
     this.isBookmarked = false,
   });
 }
 
+// ---------------- Page ----------------
 class ManageResourcesHubPage extends StatefulWidget {
   const ManageResourcesHubPage({super.key});
 
@@ -26,283 +29,416 @@ class ManageResourcesHubPage extends StatefulWidget {
 }
 
 class _ManageResourcesHubPageState extends State<ManageResourcesHubPage> {
-  List<Resource> resources = [
-    Resource(
-      title: "How to Write an Impressive CV",
-      description: "Step-by-step guide for students and graduates.",
-      category: "Blog",
-      tier: "Student",
-    ),
-    Resource(
-      title: "Career Planning eBook",
-      description: "Comprehensive guide for career transitions.",
-      category: "eBook",
-      tier: "Professional",
-    ),
-    Resource(
-      title: "Interview Tips Video",
-      description: "Expert video on mastering interviews.",
-      category: "Video",
-      tier: "Graduate",
-    ),
-  ];
+  List<Resource> resources = [];
+  String selectedTab = "Blog"; // active tab in main screen
 
-  final List<String> categories = ["Blog", "eBook", "Video"];
-  final List<String> tiers = ["Student", "Graduate", "Professional"];
+  @override
+  void initState() {
+    super.initState();
+    // ✅ Add demo data
+    resources = [
+      Resource(
+          title: "How to Improve Focus",
+          description: "A guide to staying productive and focused.",
+          category: "Blog"),
+      Resource(
+          title: "Dart Programming eBook",
+          description: "A beginner-friendly Dart eBook.",
+          category: "eBook",
+          link: "https://example.com/dart-ebook"),
+      Resource(
+          title: "Flutter Tutorial",
+          description: "Learn Flutter step by step.",
+          category: "Video",
+          link: "https://youtube.com/flutter-tutorial"),
+      Resource(
+          title: "Vacation Memories",
+          description: "Beautiful beach pictures.",
+          category: "Gallery",
+          images: ["beach.png", "sunset.png"]),
+    ];
+  }
 
-  // Add or Edit Resource
-  void _openResourceDialog({Resource? resource, int? index}) {
-    final titleController = TextEditingController(text: resource?.title ?? "");
-    final descController =
-        TextEditingController(text: resource?.description ?? "");
-    String selectedCategory = resource?.category ?? categories.first;
-    String selectedTier = resource?.tier ?? tiers.first;
+  // ---------------- Add Resource Dialog ----------------
+  void _openAddDialog() {
+    final formKey = GlobalKey<FormState>();
+    final titleController = TextEditingController();
+    final descController = TextEditingController();
+    final linkController = TextEditingController();
+    List<String> uploaded = [];
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: Text(
-          resource == null ? "Add Resource" : "Edit Resource",
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, color: Color(0xFF3D455B)),
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  labelText: "Title",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8)),
+      builder: (context) {
+        return DefaultTabController(
+          length: 4,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Text(
+              "Add Resource",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            content: SizedBox(
+              width: 400,
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const TabBar(
+                      labelColor: Colors.blueGrey,
+                      indicatorColor: Colors.blueGrey,
+                      tabs: [
+                        Tab(text: "Blog"),
+                        Tab(text: "eBook"),
+                        Tab(text: "Video"),
+                        Tab(text: "Gallery"),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 300,
+                      child: TabBarView(
+                        children: [
+                          // Blog
+                          _dialogFields(
+                            titleController,
+                            descController,
+                            null,
+                            null,
+                          ),
+                          // eBook
+                          _dialogFields(
+                            titleController,
+                            descController,
+                            linkController,
+                            "eBook Link",
+                          ),
+                          // Video
+                          _dialogFields(
+                            titleController,
+                            descController,
+                            linkController,
+                            "Video Link",
+                          ),
+                          // Gallery
+                          StatefulBuilder(
+                            builder: (context, setStateSB) {
+                              return SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    _textField(titleController, "Title",
+                                        isRequired: true),
+                                    const SizedBox(height: 10),
+                                    _textField(descController, "Description",
+                                        maxLines: 3, isRequired: true),
+                                    const SizedBox(height: 10),
+                                    ElevatedButton.icon(
+                                      onPressed: () {
+                                        setStateSB(() {
+                                          uploaded.add(
+                                              "image_${uploaded.length + 1}.png");
+                                        });
+                                      },
+                                      icon: const Icon(Icons.upload),
+                                      label: const Text("Upload Images"),
+                                    ),
+                                    if (uploaded.isNotEmpty)
+                                      Wrap(
+                                        spacing: 8,
+                                        children: uploaded
+                                            .map((e) => Chip(label: Text(e)))
+                                            .toList(),
+                                      ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: descController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: "Description",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
               ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                value: selectedCategory,
-                items: categories
-                    .map((c) =>
-                        DropdownMenuItem(value: c, child: Text(c)))
-                    .toList(),
-                onChanged: (val) => setState(() => selectedCategory = val!),
-                decoration: InputDecoration(
-                  labelText: "Category",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8)),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueGrey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                value: selectedTier,
-                items: tiers
-                    .map((t) =>
-                        DropdownMenuItem(value: t, child: Text(t)))
-                    .toList(),
-                onChanged: (val) => setState(() => selectedTier = val!),
-                decoration: InputDecoration(
-                  labelText: "User Tier",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
+                onPressed: () {
+                  final currentTab =
+                      DefaultTabController.of(context)!.index;
+                  String category =
+                      ["Blog", "eBook", "Video", "Gallery"][currentTab];
+
+                  // ✅ Validation
+                  if (!formKey.currentState!.validate()) return;
+                  if (category == "Gallery" && uploaded.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text("Please upload at least 1 image")),
+                    );
+                    return;
+                  }
+                  if ((category == "eBook" || category == "Video") &&
+                      linkController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Link is required")),
+                    );
+                    return;
+                  }
+
+                  setState(() {
+                    resources.add(
+                      Resource(
+                        title: titleController.text,
+                        description: descController.text,
+                        category: category,
+                        link: (category == "eBook" || category == "Video")
+                            ? linkController.text
+                            : null,
+                        images: category == "Gallery" ? uploaded : null,
+                      ),
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text("Save"),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: Navigator.of(context).pop,
-            child: const Text("Cancel",
-                style: TextStyle(color: Colors.black54)),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3D455B),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-            ),
-            onPressed: () {
-              final newRes = Resource(
-                title: titleController.text,
-                description: descController.text,
-                category: selectedCategory,
-                tier: selectedTier,
-              );
-              setState(() {
-                if (resource == null) {
-                  resources.add(newRes);
-                } else {
-                  resources[index!] = newRes;
-                }
-              });
-              Navigator.pop(context);
-            },
-            child:
-                const Text("Save", style: TextStyle(color: Colors.white)),
-          ),
+        );
+      },
+    );
+  }
+
+  // ---------------- Dialog Fields ----------------
+  static Widget _dialogFields(
+    TextEditingController title,
+    TextEditingController desc,
+    TextEditingController? link,
+    String? linkLabel,
+  ) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _textField(title, "Title", isRequired: true),
+          const SizedBox(height: 10),
+          _textField(desc, "Description", maxLines: 3, isRequired: true),
+          if (link != null) ...[
+            const SizedBox(height: 10),
+            _textField(link, linkLabel ?? "Link", isRequired: true),
+          ],
         ],
       ),
     );
   }
 
-  // Delete Resource
-  void _deleteResource(int index) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: const Text("Delete Resource"),
-        content: const Text(
-            "Are you sure you want to delete this resource?"),
-        actions: [
-          TextButton(
-            onPressed: Navigator.of(context).pop,
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() => resources.removeAt(index));
-              Navigator.pop(context);
-            },
-            child:
-                const Text("Delete", style: TextStyle(color: Colors.red)),
-          ),
-        ],
+  static Widget _textField(TextEditingController controller, String label,
+      {int maxLines = 1, bool isRequired = false}) {
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines,
+      validator: (v) {
+        if (isRequired && (v == null || v.trim().isEmpty)) {
+          return "$label is required";
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       ),
     );
   }
 
-  Widget _buildResourceCard(Resource r, int index) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(10),
-      ),
+  // ---------------- Resource Card ----------------
+Widget _buildResourceCard(Resource r) {
+  return Card(
+    margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+      side: BorderSide(color: Colors.grey.shade300), // Grey border
+    ),
+    elevation: 0, // No shadow
+    color: Colors.white, // White background
+    child: Padding(
+      padding: const EdgeInsets.all(16.0), // Padding for clean spacing
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title + Category
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                r.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Color(0xFF3D455B),
-                ),
-              ),
-              Text(
-                r.category,
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-              ),
-            ],
+          // Title
+          Text(
+            r.title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 18, // Larger title text for readability
+              color: Colors.black,
+            ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8), // Space between title and description
+          
           // Description
           Text(
             r.description,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: Colors.grey.shade800),
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
           ),
-          const SizedBox(height: 6),
-          Text("Tier: ${r.tier}",
-              style: const TextStyle(color: Colors.black87, fontSize: 13)),
-          const SizedBox(height: 10),
-          // Actions
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.edit, color: Colors.blueGrey),
-                onPressed: () =>
-                    _openResourceDialog(resource: r, index: index),
+          const SizedBox(height: 8), // Space between description and link/images
+
+          // Link (if available)
+          if (r.link != null)
+            Text(
+              "🔗 ${r.link}",
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.blueGrey,
               ),
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.redAccent),
-                onPressed: () => _deleteResource(index),
-              ),
-            ],
+            ),
+
+          // Images (if available)
+          if (r.images != null && r.images!.isNotEmpty)
+            Wrap(
+              spacing: 6,
+              children: r.images!
+                  .map((img) => Chip(
+                        label: Text(img),
+                        backgroundColor: Colors.blueGrey.shade50,
+                      ))
+                  .toList(),
+            ),
+          const SizedBox(height: 8), // Space between images and category
+
+          // Category chip
+          Chip(
+            label: Text(
+              r.category,
+              style: const TextStyle(fontSize: 12),
+            ),
+            backgroundColor: Colors.blueGrey.shade50,
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.folder_open, size: 70, color: Colors.grey.shade400),
-          const SizedBox(height: 16),
-          const Text("No resources available",
-              style: TextStyle(fontSize: 16, color: Colors.black54)),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-          appBar: AppBar(
-        title: Text("Manage Feedback", style: TextStyle(color: Colors.white)),
+// ---------------- inside build ----------------
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+       appBar: AppBar(
+        title: Text("Resource Hub Management", style: TextStyle(color: Colors.white)),
         backgroundColor: Color(0xFF3D455B),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          // Add Button
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => _openResourceDialog(),
-                icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text("Add Resource",
-                    style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3D455B),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                  elevation: 0,
+    body: Column(
+      children: [
+        // ✅ Add Resource button (full width + responsive)
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SizedBox(
+            width: double.infinity, // full width
+            child: ElevatedButton.icon(
+              onPressed: _openAddDialog,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF3D455B),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              icon: const Icon(Icons.add, color: Colors.white),
+              label: const Text(
+                "Add Resource",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ),
+        ),
 
-          // Resource List
-          Expanded(
-            child: resources.isEmpty
-                ? _buildEmptyState()
-                : ListView.builder(
-                    itemCount: resources.length,
-                    itemBuilder: (_, index) =>
-                        _buildResourceCard(resources[index], index),
-                  ),
-          ),
-        ],
+        // Custom tab buttons 2x2 grid
+  Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16),
+  child: Container(
+    decoration: BoxDecoration(
+      color: Colors.blueGrey.shade50, // ✅ change bg color here
+      borderRadius: BorderRadius.circular(12),
+    ),
+    padding: const EdgeInsets.all(12),
+    child: GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(), // prevents scroll conflicts
+      crossAxisCount: 2,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      childAspectRatio: 3,
+      
+      children: [
+        _tabButton("Blog"),
+        _tabButton("eBook"),
+        _tabButton("Video"),
+        _tabButton("Gallery"),
+      ],
+    ),
+  ),
+),
+
+        const SizedBox(height: 8),
+        Expanded(child: _tabContent(selectedTab)),
+      ],
+    ),
+  );
+}
+
+
+  // ---------------- Tab Buttons ----------------
+  Widget _tabButton(String type) {
+    final isActive = selectedTab == type;
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isActive ? Color(0xFF3D455B) : Colors.blueGrey.shade100,
+        foregroundColor: isActive ? Colors.white : Colors.black87,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
+      onPressed: () => setState(() => selectedTab = type),
+      child: Text(type),
+    );
+  }
+
+  // ---------------- Tab Content ----------------
+  Widget _tabContent(String type) {
+    final filtered = resources.where((r) => r.category == type).toList();
+    if (filtered.isEmpty) {
+      return const Center(
+        child:
+            Text("No resources yet", style: TextStyle(color: Colors.grey)),
+      );
+    }
+    return ListView.builder(
+      itemCount: filtered.length,
+      itemBuilder: (_, i) => _buildResourceCard(filtered[i]),
     );
   }
 }
