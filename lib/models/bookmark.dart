@@ -1,26 +1,27 @@
 class Bookmark {
-  final String id;
-  final String userId;
+  final String uuid;
   final String resourceId;
 
-  Bookmark({required this.id, required this.userId, required this.resourceId});
+  Bookmark({
+    required this.uuid,
+    required this.resourceId,
+  });
 
   factory Bookmark.fromJson(Map<String, dynamic> json) {
     return Bookmark(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
+      uuid: json['uuid'] as String,
       resourceId: json['resourceId'] as String,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'userId': userId,
+      'uuid': uuid,
       'resourceId': resourceId,
     };
   }
 
   @override
-  String toString() => 'Bookmark(id: $id, userId: $userId, resourceId: $resourceId)';
+  String toString() =>
+      'Bookmark(uuid: $uuid, resourceId: $resourceId)';
 }

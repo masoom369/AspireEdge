@@ -1,30 +1,35 @@
 class WishlistItem {
-  final String id;
   final String userId;
-  final String resourceId;
+  final String category;
+  final String title;
+  final String description;
 
   WishlistItem({
-    required this.id,
     required this.userId,
-    required this.resourceId,
+    required this.category,
+    required this.title,
+    required this.description,
   });
 
   factory WishlistItem.fromJson(Map<String, dynamic> json) {
     return WishlistItem(
-      id: json['id'] as String,
       userId: json['userId'] as String,
-      resourceId: json['resourceId'] as String,
+      category: json['category'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'userId': userId,
-      'resourceId': resourceId,
+      'category': category,
+      'title': title,
+      'description': description,
     };
   }
 
   @override
-  String toString() => 'WishlistItem(id: $id, userId: $userId, resourceId: $resourceId)';
+  String toString() =>
+      'WishlistItem(userId: $userId, category: $category, title: $title, description: $description)';
 }

@@ -189,16 +189,16 @@ class _EntryPointState extends State<EntryPoint>
                           Navigator.pushNamed(context, '/');
                           break;
                         case "Search":
-                          Navigator.pushNamed(context, '/career_management');
+                          Navigator.pushNamed(context, '/ResourcesHubPage');
                           break;
                         case "Profile":
                           Navigator.pushNamed(context, '/profile');
                           break;
                         case "Notifications":
-                          Navigator.pushNamed(context, '/ManagePushNotificationsPage');
+                          Navigator.pushNamed(context, '/BookmarksPage');
                           break;
                         case "Help":
-                          Navigator.pushNamed(context, '/resources_management');
+                          Navigator.pushNamed(context, '/WishlistPage');
                           break;
                         default:
                           break;
