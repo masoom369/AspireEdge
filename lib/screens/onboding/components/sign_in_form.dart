@@ -128,6 +128,16 @@ class _SignInFormState extends State<SignInForm> {
     }
   }
 
+  void _showForgotPasswordDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Forgot Password'),
+        content: ForgotPasswordForm(),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -174,6 +184,16 @@ class _SignInFormState extends State<SignInForm> {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: SvgPicture.asset("assets/icons/password.svg"),
                     ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => _showForgotPasswordDialog(context),
+                  child: const Text(
+                    "Forgot Password?",
+                    style: TextStyle(color: Color(0xFFF77D8E)),
                   ),
                 ),
               ),
@@ -248,6 +268,96 @@ class CustomPositioned extends StatelessWidget {
           ),
           const Spacer(flex: 2),
         ],
+      ),
+    );
+  }
+}
+
+class ForgotPasswordForm extends StatefulWidget {
+  const ForgotPasswordForm({super.key});
+
+  @override
+  State<ForgotPasswordForm> createState() => _ForgotPasswordFormState();
+}
+
+class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  bool _isLoading = false;
+  String? _error;
+  String? _success;
+
+  Future<void> _sendResetEmail() async {
+    setState(() {
+      _error = null;
+      _success = null;
+      _isLoading = true;
+    });
+    if (!_formKey.currentState!.validate()) {
+      setState(() => _isLoading = false);
+      return;
+    }
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: _emailController.text.trim(),
+      );
+      setState(() {
+        _success = "Password reset email sent!";
+      });
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _error = e.message ?? "Failed to send reset email";
+      });
+    } catch (e) {
+      setState(() {
+        _error = "An unexpected error occurred";
+      });
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 300,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: _emailController,
+              validator: validateEmail,
+              decoration: const InputDecoration(
+                labelText: "Email",
+                hintText: "Enter your registered email",
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (_error != null)
+              Text(_error!, style: const TextStyle(color: Colors.red)),
+            if (_success != null)
+              Text(_success!, style: const TextStyle(color: Colors.green)),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: _isLoading ? null : _sendResetEmail,
+              child: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text("Send Reset Email"),
+            ),
+          ],
+        ),
       ),
     );
   }
