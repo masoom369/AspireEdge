@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:aspire_edge/models/resource.dart';
 import 'package:aspire_edge/services/resource_repository_dao.dart';
+import 'package:aspire_edge/utils/image_picker.dart';
 import 'package:flutter/material.dart';
 // ---------------- Main Page ----------------
 class ManageResourcesHubPage extends StatefulWidget {
@@ -56,14 +58,41 @@ showDialog(
                         _dialogFields(titleController, descController, null, null),
                         _dialogFields(titleController, descController, linkController, "eBook Link"),
                         _dialogFields(titleController, descController, linkController, "Video Link"),
-                        Column(
-                          children: [
-                            _dialogFields(titleController, descController, null, null),
-                            const SizedBox(height: 10),
-                            // Placeholder for image upload
-                            Text("Image upload not implemented"),
-                          ],
-                        ),
+                            Column(
+                              children: [
+                                _dialogFields(titleController, descController, null, null),
+                                const SizedBox(height: 10),
+                                ElevatedButton.icon(
+                                  onPressed: () async {
+                                    // Use the custom ImagePickerUtils to pick images and convert to base64
+                                    final base64Image = await ImagePickerUtils.pickImageBase64();
+                                    if (base64Image.isNotEmpty) {
+                                      uploadedImages.add(base64Image);
+                                      setState(() {});
+                                    }
+                                  },
+                                  icon: const Icon(Icons.upload_file),
+                                  label: const Text("Upload Images"),
+                                ),
+                                const SizedBox(height: 10),
+                                Wrap(
+                                  spacing: 6,
+                                  children: uploadedImages
+                                      .map((img) => Container(
+                                            width: 60,
+                                            height: 60,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              image: DecorationImage(
+                                                image: MemoryImage(base64Decode(img)),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
+                              ],
+                            ),
                       ],
                     ),
                   ),
@@ -169,8 +198,35 @@ showDialog(
                               children: [
                                 _dialogFields(titleController, descController, null, null),
                                 const SizedBox(height: 10),
-                                // Placeholder for image upload
-                                Text("Image upload not implemented"),
+                                ElevatedButton.icon(
+                                  onPressed: () async {
+                                    // Use the custom ImagePickerUtils to pick images and convert to base64
+                                    final base64Image = await ImagePickerUtils.pickImageBase64();
+                                    if (base64Image.isNotEmpty) {
+                                      uploadedImages.add(base64Image);
+                                      setState(() {});
+                                    }
+                                  },
+                                  icon: const Icon(Icons.upload_file),
+                                  label: const Text("Upload Images"),
+                                ),
+                                const SizedBox(height: 10),
+                                Wrap(
+                                  spacing: 6,
+                                  children: uploadedImages
+                                      .map((img) => Container(
+                                            width: 60,
+                                            height: 60,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              image: DecorationImage(
+                                                image: MemoryImage(base64Decode(img)),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
                               ],
                             ),
                           ],
@@ -376,9 +432,16 @@ showDialog(
               Wrap(
                 spacing: 6,
                 children: r.images
-                    .map((img) => Chip(
-                          label: Text(img),
-                          backgroundColor: Colors.blueGrey.shade50,
+                    .map((img) => Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: MemoryImage(base64Decode(img)),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ))
                     .toList(),
               ),
