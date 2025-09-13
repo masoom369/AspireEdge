@@ -1,8 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
 import 'package:aspire_edge/constants.dart';
-import 'package:aspire_edge/utils/rive_utils.dart';
 import '../../models/menu.dart';
 import 'components/btm_nav_item.dart';
 import 'components/menu_btn.dart';
@@ -19,10 +17,7 @@ class EntryPoint extends StatefulWidget {
 class _EntryPointState extends State<EntryPoint>
     with SingleTickerProviderStateMixin {
   bool isSideBarOpen = false;
-   Menu selectedBottonNav = bottomNavItems.first;
-  // Menu selectedSideMenu = sidebarMenus.first;
-
-  SMIBool? isMenuOpenInput; // Nullable for safety
+  Menu selectedBottonNav = bottomNavItems.first;
 
   void updateSelectedBtmNav(Menu menu) {
     if (selectedBottonNav != menu) {
@@ -115,12 +110,8 @@ class _EntryPointState extends State<EntryPoint>
             left: isSideBarOpen ? 220 : 0,
             top: 16,
             child: MenuBtn(
+              isOpen: isSideBarOpen,
               press: () {
-                // Safely toggle Rive input
-                if (isMenuOpenInput != null) {
-                  isMenuOpenInput!.value = !isMenuOpenInput!.value;
-                }
-
                 if (_animationController.value == 0) {
                   _animationController.forward();
                 } else {
@@ -130,21 +121,6 @@ class _EntryPointState extends State<EntryPoint>
                 setState(() {
                   isSideBarOpen = !isSideBarOpen;
                 });
-              },
-              riveOnInit: (artboard) {
-                final controller = StateMachineController.fromArtboard(
-                  artboard,
-                  "State Machine",
-                );
-
-                artboard.addController(controller!);
-
-                // Safely get input
-                final input = controller.findInput<bool>("isOpen") as SMIBool?;
-                if (input != null) {
-                  isMenuOpenInput = input;
-                  isMenuOpenInput!.value = true;
-                }
               },
             ),
           ),
@@ -181,7 +157,6 @@ class _EntryPointState extends State<EntryPoint>
                   return BtmNavItem(
                     navBar: navBar,
                     press: () {
-                      RiveUtils.changeSMIBoolState(navBar.rive.status!);
                       updateSelectedBtmNav(navBar);
                       // Navigate to route based on navBar title
                       switch (navBar.title) {
@@ -203,12 +178,6 @@ class _EntryPointState extends State<EntryPoint>
                         default:
                           break;
                       }
-                    },
-                    riveOnInit: (artboard) {
-                      navBar.rive.status = RiveUtils.getRiveInput(
-                        artboard,
-                        stateMachineName: navBar.rive.stateMachineName,
-                      );
                     },
                     selectedNav: selectedBottonNav,
                   );

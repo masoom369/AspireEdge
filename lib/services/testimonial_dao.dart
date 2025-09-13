@@ -2,23 +2,29 @@ import 'package:firebase_database/firebase_database.dart';
 import '../models/testimonial.dart';
 
 class TestimonialDao {
-  TestimonialDao();
+  final DatabaseReference _testimonialsRef =
+      FirebaseDatabase.instance.ref().child("testimonials");
+  final DatabaseReference _approvedRef =
+      FirebaseDatabase.instance.ref().child("approved_testimonials");
 
-  final _databaseRef = FirebaseDatabase.instance.ref("testimonials");
-
-  void saveTestimonial(Testimonial testimonial) {
-    _databaseRef.push().set(testimonial.toJson());
+  /// Get pending testimonials
+  Stream<DatabaseEvent> getPendingTestimonials() {
+    return _testimonialsRef.onValue;
   }
 
-  Query getTestimonialList() {
-    return _databaseRef;
+  /// Approve testimonial (move to approved list)
+  Future<void> approveTestimonial(Testimonial t) async {
+    await _approvedRef.child(t.id).set(t.toMap());
+    await _testimonialsRef.child(t.id).remove();
   }
 
-  void deleteTestimonial(String key) {
-    _databaseRef.child(key).remove();
+  /// Reject testimonial (delete only from pending)
+  Future<void> rejectTestimonial(String id) async {
+    await _testimonialsRef.child(id).remove();
   }
 
-  void updateTestimonial(String key, Testimonial testimonial) {
-    _databaseRef.child(key).update(testimonial.toJson());
+  /// Add new testimonial (pending by default)
+  Future<void> addTestimonial(Testimonial t) async {
+    await _testimonialsRef.child(t.id).set(t.toMap());
   }
 }

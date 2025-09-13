@@ -1,17 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
 
-class MenuBtn extends StatelessWidget {
-  const MenuBtn({super.key, required this.press, required this.riveOnInit});
+class MenuBtn extends StatefulWidget {
+  const MenuBtn({super.key, required this.press, required this.isOpen});
 
   final VoidCallback press;
-  final ValueChanged<Artboard> riveOnInit;
+  final bool isOpen; // Whether the sidebar is open or not
+
+  @override
+  State<MenuBtn> createState() => _MenuBtnState();
+}
+
+class _MenuBtnState extends State<MenuBtn>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _iconController;
+
+  @override
+  void initState() {
+    super.initState();
+    _iconController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    if (widget.isOpen) {
+      _iconController.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant MenuBtn oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isOpen) {
+      _iconController.forward();
+    } else {
+      _iconController.reverse();
+    }
+  }
+
+  @override
+  void dispose() {
+    _iconController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: GestureDetector(
-        onTap: press,
+        onTap: widget.press,
         child: Container(
           margin: const EdgeInsets.only(left: 12),
           height: 40,
@@ -27,9 +63,13 @@ class MenuBtn extends StatelessWidget {
               ),
             ],
           ),
-          child: RiveAnimation.asset(
-            "assets/RiveAssets/menu_button.riv",
-            onInit: riveOnInit,
+          child: Center(
+            child: AnimatedIcon(
+              icon: AnimatedIcons.menu_close,
+              progress: _iconController,
+              size: 28,
+              color: Colors.black87,
+            ),
           ),
         ),
       ),

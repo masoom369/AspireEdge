@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class StreamSelectorPage extends StatefulWidget {
   const StreamSelectorPage({Key? key}) : super(key: key);
@@ -10,43 +12,161 @@ class StreamSelectorPage extends StatefulWidget {
 
 class _StreamSelectorPageState extends State<StreamSelectorPage> {
   int currentStep = 0;
-  List<String> selectedInterests = []; // For Step 1 (multiple)
-  String? selectedStrength; // For Step 2 (single)
-  String? selectedGoal; // For Step 3 (single)
+  List<String> selectedAnswers = [];
 
-  final List<Map<String, dynamic>> questions = [
-    {
-      'title': 'What are you most interested in?',
-      'options': [
-        {'text': 'Science & Technology', 'value': 'science'},
-        {'text': 'Business & Economics', 'value': 'commerce'},
-        {'text': 'Arts & Literature', 'value': 'arts'},
-        {'text': 'Skills & Hands-on Work', 'value': 'vocational'},
-      ],
-      'type': 'multiple',
-    },
-    {
-      'title': 'Which subject do you find easiest?',
-      'options': [
-        {'text': 'Mathematics', 'value': 'math'},
-        {'text': 'Science', 'value': 'science'},
-        {'text': 'Social Studies', 'value': 'social'},
-        {'text': 'Languages', 'value': 'language'},
-      ],
-      'type': 'single',
-    },
-    {
-      'title': 'What kind of future do you dream of?',
-      'options': [
-        {'text': 'Engineer or Doctor', 'value': 'technical'},
-        {'text': 'Business Owner or Accountant', 'value': 'business'},
-        {'text': 'Writer, Artist, or Teacher', 'value': 'creative'},
-        {'text': 'Skilled Worker or Technician', 'value': 'vocational'},
-      ],
-      'type': 'single',
-    },
-  ];
+  List<Map<String, dynamic>> questions = [];
+  bool isLoading = true;
 
+  @override
+  void initState() {
+    super.initState();
+    fetchQuestionsFromDB();
+  }
+
+  /// ---------------- FETCH QUESTIONS FROM FIREBASE ----------------
+  Future<void> fetchQuestionsFromDB() async {
+    final DatabaseReference ref = FirebaseDatabase.instance.ref("stream_questions");
+
+    final snapshot = await ref.get();
+    if (snapshot.exists) {
+      Map<String, dynamic> rawValue = {};
+
+      if (snapshot.value is List) {
+        // Firebase returned a List
+        final list = List.from(snapshot.value as List);
+        for (int i = 0; i < list.length; i++) {
+          if (list[i] != null) {
+            rawValue[i.toString()] = Map<String, dynamic>.from(list[i]);
+          }
+        }
+      } else if (snapshot.value is Map) {
+        // Firebase returned a Map
+        rawValue = Map<String, dynamic>.from(snapshot.value as Map);
+      }
+
+      List<Map<String, dynamic>> loadedQuestions = [];
+      rawValue.forEach((key, value) {
+        final q = Map<String, dynamic>.from(value);
+        Map<String, dynamic> options = {};
+
+        if (q['options'] != null) {
+          if (q['options'] is List) {
+            final list = List.from(q['options']);
+            for (int i = 0; i < list.length; i++) {
+              if (list[i] != null) {
+                options[i.toString()] = Map<String, dynamic>.from(list[i]);
+              }
+            }
+          } else {
+            options = Map<String, dynamic>.from(q['options']);
+          }
+        }
+
+        loadedQuestions.add({
+          "title": q["title"],
+          "type": q["type"],
+          "options": options, // Always a map
+        });
+      });
+
+      setState(() {
+        questions = loadedQuestions;
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  /// ---------------------- AI LOGIC ----------------------
+  Map<String, dynamic> recommendStreamChat(List<String> answers) {
+    Map<String, double> scores = {
+      "Science": 0,
+      "Commerce": 0,
+      "Arts": 0,
+      "Design": 0,
+      "Vocational": 0,
+    };
+
+    List<String> scienceKeywords = [
+      "math", "experiment", "physics", "chemistry",
+      "laboratory", "logical", "technology", "science_skill"
+    ];
+    List<String> commerceKeywords = [
+      "business", "finance", "accounts", "numbers",
+      "economics", "manage", "commerce_skill", "entrepreneur"
+    ];
+    List<String> artsKeywords = [
+      "history", "literature", "debate", "music",
+      "creative", "writing", "communication", "arts_skill"
+    ];
+    List<String> designKeywords = [
+      "design", "art", "ui", "ux", "creative",
+      "graphics", "visual"
+    ];
+    List<String> vocationalKeywords = [
+      "hands-on", "practical", "field", "agriculture",
+      "workshop", "vocational_skill", "practical_worker"
+    ];
+
+    for (String ans in answers) {
+      String a = ans.toLowerCase();
+
+      for (var k in scienceKeywords) {
+        if (a.contains(k)) scores["Science"] = scores["Science"]! + 2;
+      }
+      for (var k in commerceKeywords) {
+        if (a.contains(k)) scores["Commerce"] = scores["Commerce"]! + 2;
+      }
+      for (var k in artsKeywords) {
+        if (a.contains(k)) scores["Arts"] = scores["Arts"]! + 2;
+      }
+      for (var k in designKeywords) {
+        if (a.contains(k)) scores["Design"] = scores["Design"]! + 2;
+      }
+      for (var k in vocationalKeywords) {
+        if (a.contains(k)) scores["Vocational"] = scores["Vocational"]! + 2;
+      }
+
+      if (a.contains("yes") || a.contains("often") || a.contains("love")) {
+        scores["Science"] = scores["Science"]! + 0.1;
+        scores["Commerce"] = scores["Commerce"]! + 0.1;
+        scores["Arts"] = scores["Arts"]! + 0.1;
+      }
+    }
+
+    var sorted = scores.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    String best = sorted.isNotEmpty ? sorted.first.key : "Science";
+    String explanation =
+        "Based on your answers, $best is the most aligned stream. Scores: $scores";
+
+    return {
+      "recommended_stream": best,
+      "scores": scores,
+      "explanation": explanation,
+    };
+  }
+
+  /// ---------------------- REALTIME DATABASE SAVE ----------------------
+  Future<void> saveResultToRealtimeDB(
+      String stream, Map<String, double> scores) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference dbRef =
+          FirebaseDatabase.instance.ref("stream_results/${user.uid}");
+      await dbRef.set({
+        "recommended_stream": stream,
+        "scores": scores,
+        "timestamp": DateTime.now().toIso8601String(),
+      });
+    }
+  }
+
+  /// ---------------------- FLOW ----------------------
   void _nextStep() {
     if (currentStep < questions.length - 1) {
       setState(() {
@@ -68,23 +188,27 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
   void _selectOption(String value, String type) {
     setState(() {
       if (type == 'multiple') {
-        if (selectedInterests.contains(value)) {
-          selectedInterests.remove(value);
+        if (selectedAnswers.contains(value)) {
+          selectedAnswers.remove(value);
         } else {
-          selectedInterests.add(value);
+          selectedAnswers.add(value);
         }
       } else if (type == 'single') {
-        if (currentStep == 1) {
-          selectedStrength = value;
-        } else if (currentStep == 2) {
-          selectedGoal = value;
-        }
+        selectedAnswers.removeWhere((ans) => questions[currentStep]['options']
+            .values
+            .map((opt) => opt['value'])
+            .contains(ans));
+        selectedAnswers.add(value);
       }
     });
   }
 
   void _showResult() {
-    String recommendedStream = _getRecommendedStream();
+    var result = recommendStreamChat(selectedAnswers);
+    String recommendedStream = result["recommended_stream"];
+    Map<String, double> scores = Map<String, double>.from(result["scores"]);
+
+    saveResultToRealtimeDB(recommendedStream, scores);
 
     showDialog(
       context: context,
@@ -99,17 +223,17 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF2D3748),
+              color: const Color(0xFF2D3748),
             ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Color(0xFF8E2DE2).withOpacity(0.1),
+                  color: const Color(0xFF8E2DE2).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -117,25 +241,26 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF8E2DE2),
+                    color: const Color(0xFF8E2DE2),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
-                'Based on your interests, strengths, and goals, we suggest this path.',
-                style: GoogleFonts.poppins(color: Color(0xFF6B7280)),
+                result["explanation"],
+                style: GoogleFonts.poppins(color: const Color(0xFF6B7280)),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                   _resetQuiz();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF8E2DE2),
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  backgroundColor: const Color(0xFF8E2DE2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -155,34 +280,32 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
     );
   }
 
-  String _getRecommendedStream() {
-    if (selectedInterests.contains('science') ||
-        selectedStrength == 'math' ||
-        selectedStrength == 'science' ||
-        selectedGoal == 'technical') {
-      return 'Science (PCM/PCB)';
-    } else if (selectedInterests.contains('commerce') || selectedGoal == 'business') {
-      return 'Commerce';
-    } else if (selectedInterests.contains('arts') || selectedGoal == 'creative') {
-      return 'Arts & Humanities';
-    } else if (selectedInterests.contains('vocational') || selectedGoal == 'vocational') {
-      return 'Vocational / Technical';
-    } else {
-      return 'Explore All Streams';
-    }
-  }
-
   void _resetQuiz() {
     setState(() {
       currentStep = 0;
-      selectedInterests.clear();
-      selectedStrength = null;
-      selectedGoal = null;
+      selectedAnswers.clear();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (questions.isEmpty) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+            "No questions found in Firebase",
+            style: GoogleFonts.poppins(fontSize: 16),
+          ),
+        ),
+      );
+    }
+
     final question = questions[currentStep];
     final isMultiple = question['type'] == 'multiple';
 
@@ -191,7 +314,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF8E2DE2)),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF8E2DE2)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -199,35 +322,35 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF2D3748),
+            color: const Color(0xFF2D3748),
           ),
         ),
         centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Choose Your Academic Path',
                 style: GoogleFonts.poppins(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF2D3748),
+                  color: const Color(0xFF2D3748),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
-                'Answer a few quick questions to find the best stream for you.',
+                'Answer ${questions.length} questions to find the best stream for you.',
                 style: GoogleFonts.poppins(
                   fontSize: 14,
-                  color: Color(0xFF6B7280),
+                  color: const Color(0xFF6B7280),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               // Progress Bar
               Row(
@@ -237,7 +360,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
                     '${currentStep + 1}/${questions.length}',
                     style: GoogleFonts.poppins(
                       fontSize: 16,
-                      color: Color(0xFF8E2DE2),
+                      color: const Color(0xFF8E2DE2),
                     ),
                   ),
                   Container(
@@ -251,14 +374,14 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
                       width: ((currentStep + 1) / questions.length) * 200,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: Color(0xFF8E2DE2),
+                        color: const Color(0xFF8E2DE2),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               // Question Card
               Expanded(
@@ -268,13 +391,13 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF8E2DE2).withOpacity(0.1),
+                        color: const Color(0xFF8E2DE2).withOpacity(0.1),
                         blurRadius: 12,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -283,59 +406,59 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D3748),
+                          color: const Color(0xFF2D3748),
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: question['options'].length,
-                          itemBuilder: (context, index) {
-                            final option = question['options'][index];
-                            bool isSelected;
-
-                            if (isMultiple) {
-                              isSelected = selectedInterests.contains(option['value']);
-                            } else {
-                              if (currentStep == 1) {
-                                isSelected = selectedStrength == option['value'];
-                              } else {
-                                isSelected = selectedGoal == option['value'];
-                              }
-                            }
+                        child: ListView(
+                          children: question['options'].entries.map<Widget>((entry) {
+                            final option = entry.value;
+                            bool isSelected =
+                                selectedAnswers.contains(option['value']);
 
                             return Padding(
-                              padding: EdgeInsets.only(bottom: 12),
+                              padding: const EdgeInsets.only(bottom: 12),
                               child: GestureDetector(
-                                onTap: () => _selectOption(option['value'], question['type']),
+                                onTap: () => _selectOption(
+                                    option['value'], question['type']),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: isSelected
-                                        ? Color(0xFF8E2DE2)
+                                        ? const Color(0xFF8E2DE2)
                                         : Colors.white,
                                     border: Border.all(
-                                      color: isSelected ? Colors.white : Color(0xFFE5E7EB),
+                                      color: isSelected
+                                          ? Colors.white
+                                          : const Color(0xFFE5E7EB),
                                       width: 2,
                                     ),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
                                   child: Row(
                                     children: [
                                       Icon(
                                         isSelected
                                             ? Icons.check_circle
-                                            : (isMultiple ? Icons.circle_outlined : Icons.radio_button_unchecked),
-                                        color: isSelected ? Colors.white : Color(0xFF8E2DE2),
+                                            : (isMultiple
+                                                ? Icons.circle_outlined
+                                                : Icons.radio_button_unchecked),
+                                        color: isSelected
+                                            ? Colors.white
+                                            : const Color(0xFF8E2DE2),
                                         size: 20,
                                       ),
-                                      SizedBox(width: 12),
+                                      const SizedBox(width: 12),
                                       Expanded(
                                         child: Text(
                                           option['text'],
                                           style: GoogleFonts.poppins(
                                             fontSize: 16,
-                                            color: isSelected ? Colors.white : Color(0xFF2D3748),
+                                            color: isSelected
+                                                ? Colors.white
+                                                : const Color(0xFF2D3748),
                                           ),
                                         ),
                                       ),
@@ -344,7 +467,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
                                 ),
                               ),
                             );
-                          },
+                          }).toList(),
                         ),
                       ),
                     ],
@@ -352,7 +475,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Navigation Buttons
               Row(
@@ -360,11 +483,14 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: _prevStep,
-                    icon: Icon(Icons.arrow_back, color: Colors.white),
-                    label: Text('Back', style: GoogleFonts.poppins(color: Colors.white)),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    label: Text('Back',
+                        style: GoogleFonts.poppins(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF8E2DE2).withOpacity(0.8),
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      backgroundColor:
+                          const Color(0xFF8E2DE2).withOpacity(0.8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -372,11 +498,13 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
                   ),
                   ElevatedButton.icon(
                     onPressed: _nextStep,
-                    icon: Icon(Icons.arrow_forward, color: Colors.white),
-                    label: Text('Next', style: GoogleFonts.poppins(color: Colors.white)),
+                    icon: const Icon(Icons.arrow_forward, color: Colors.white),
+                    label: Text('Next',
+                        style: GoogleFonts.poppins(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF8E2DE2),
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      backgroundColor: const Color(0xFF8E2DE2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

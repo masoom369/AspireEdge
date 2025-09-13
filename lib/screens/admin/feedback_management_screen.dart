@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
-
-class FeedbackItem {
-  final String userName;
-  final String feedbackText;
-  final DateTime date;
-  bool resolved;
-  String? response;
-
-  FeedbackItem({
-    required this.userName,
-    required this.feedbackText,
-    required this.date,
-    this.resolved = false,
-    this.response,
-  });
-}
+import 'package:firebase_database/firebase_database.dart';
+import '../../models/feedback.dart';
+import '../../services/feedback_dao.dart';
 
 class ManageFeedbackPage extends StatefulWidget {
   const ManageFeedbackPage({super.key});
@@ -23,80 +10,96 @@ class ManageFeedbackPage extends StatefulWidget {
   State<ManageFeedbackPage> createState() => _ManageFeedbackPageState();
 }
 
-class _ManageFeedbackPageState extends State<ManageFeedbackPage> {
-  final List<FeedbackItem> feedbackList = [
-    FeedbackItem(
-      userName: "Ali Khan",
-      feedbackText: "Great app, but could use dark mode.",
-      date: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-    FeedbackItem(
-      userName: "Sara Ahmed",
-      feedbackText: "I found a bug in quiz section.",
-      date: DateTime.now().subtract(const Duration(days: 2)),
-    ),
-    FeedbackItem(
-      userName: "John Doe",
-      feedbackText: "Loving the smooth UI. Keep it up!",
-      date: DateTime.now().subtract(const Duration(days: 5)),
-      resolved: true,
-      response: "Thank you John for your kind words!",
-    ),
-  ];
+class _ManageFeedbackPageState extends State<ManageFeedbackPage>
+    with SingleTickerProviderStateMixin {
+  final FeedbackDao _feedbackDao = FeedbackDao();
+  late TabController _tabController;
 
-  void _respondToFeedback(FeedbackItem item) {
-    final responseController = TextEditingController(text: item.response);
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
 
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: const Text(
-          "Respond to Feedback",
-          style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF3D455B)),
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Manage User Feedbacks",
+            style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF3D455B),
+        centerTitle: true,
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: "Pending"),
+            Tab(text: "Resolved"),
+          ],
         ),
-        content: TextField(
-          controller: responseController,
-          maxLines: 4,
-          decoration: InputDecoration(
-            hintText: "Type your response here...",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.grey),
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: Navigator.of(context).pop,
-            child: const Text("Cancel", style: TextStyle(color: Colors.black54)),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3D455B),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              elevation: 0,
-            ),
-            onPressed: () {
-              setState(() {
-                item.response = responseController.text;
-                item.resolved = true;
-              });
-              Navigator.pop(context);
-            },
-            child: const Text("Send", style: TextStyle(color: Colors.white)),
-          ),
-        ],
+      ),
+      body: StreamBuilder<DatabaseEvent>(
+        stream: _feedbackDao.getFeedbackList().onValue,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+                child: Text("Error loading feedbacks",
+                    style: TextStyle(color: Colors.red)));
+          }
+
+          if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
+            return _buildEmptyState();
+          }
+
+          final data =
+              Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
+
+          final feedbacks = data.entries
+              .map((entry) =>
+                  FeedbackModel.fromJson(Map<String, dynamic>.from(entry.value)))
+              .toList()
+            ..sort((a, b) => b.id.compareTo(a.id));
+
+          // Separate pending and resolved feedbacks
+          final pendingFeedbacks =
+              feedbacks.where((f) => f.status != "resolved").toList();
+          final resolvedFeedbacks =
+              feedbacks.where((f) => f.status == "resolved").toList();
+
+          return TabBarView(
+            controller: _tabController,
+            children: [
+              _buildFeedbackList(pendingFeedbacks),
+              _buildFeedbackList(resolvedFeedbacks),
+            ],
+          );
+        },
       ),
     );
   }
 
-  void _toggleResolved(FeedbackItem item) {
-    setState(() => item.resolved = !item.resolved);
+  Widget _buildFeedbackList(List<FeedbackModel> feedbacks) {
+    if (feedbacks.isEmpty) return _buildEmptyState();
+
+    return ListView.builder(
+      itemCount: feedbacks.length,
+      itemBuilder: (context, index) {
+        final item = feedbacks[index];
+        return _buildFeedbackCard(item);
+      },
+    );
   }
 
-  Widget _buildFeedbackCard(FeedbackItem item) {
+  Widget _buildFeedbackCard(FeedbackModel item) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
@@ -108,12 +111,12 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // User + Date
+          // Name + Email
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                item.userName,
+                item.name,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
@@ -121,71 +124,75 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage> {
                 ),
               ),
               Text(
-                "${item.date.day}/${item.date.month}/${item.date.year}",
+                item.email,
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
               ),
             ],
           ),
           const SizedBox(height: 10),
 
-          // Feedback text
+          // Subject
           Text(
-            item.feedbackText,
+            "Subject: ${item.subject}",
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 6),
+
+          // Inquiry Type
+          Text("Inquiry: ${item.inquiryType}",
+              style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+
+          const SizedBox(height: 10),
+
+          // Message
+          Text(
+            item.message,
             style: const TextStyle(fontSize: 14, color: Colors.black87),
           ),
 
-          if (item.response != null && item.response!.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.reply, size: 18, color: Color(0xFF3D455B)),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      item.response!,
-                      style: const TextStyle(fontSize: 13, color: Color(0xFF3D455B)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          const SizedBox(height: 10),
 
-          const SizedBox(height: 12),
-
-          // Action buttons
+          // Status
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton.icon(
-                onPressed: () => _respondToFeedback(item),
-                icon: const Icon(Icons.reply, color: Color(0xFF3D455B)),
-                label: const Text("Respond", style: TextStyle(color: Color(0xFF3D455B))),
+              const Text(
+                "Status: ",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
               ),
-              const SizedBox(width: 12),
-              OutlinedButton.icon(
-                onPressed: () => _toggleResolved(item),
-                icon: Icon(
-                  item.resolved ? Icons.check_circle : Icons.pending,
-                  color: item.resolved ? Colors.green : Colors.grey.shade700,
-                ),
-                label: Text(item.resolved ? "Resolved" : "Mark Resolved"),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: item.resolved ? Colors.green : Colors.grey.shade400),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  foregroundColor: item.resolved ? Colors.green : Colors.grey.shade700,
+              Text(
+                item.status == "resolved" ? "Resolved" : "Pending",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: item.status == "resolved"
+                      ? Colors.green
+                      : Colors.orange,
                 ),
               ),
             ],
           ),
+
+          const SizedBox(height: 16),
+
+          // Admin Actions
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (item.status != "resolved") ...[
+                TextButton.icon(
+                  icon: const Icon(Icons.check_circle, color: Colors.green),
+                  label: const Text("Mark Resolved"),
+                  onPressed: () => _markAsResolved(item.id),
+                ),
+                const SizedBox(width: 8),
+              ],
+              TextButton.icon(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                label: const Text("Delete"),
+                onPressed: () => _deleteFeedback(item.id),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -207,21 +214,19 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-         appBar: AppBar(
-        title: Text("Manage Feedback", style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF3D455B),
-        centerTitle: true,
-      ),
-      body: feedbackList.isEmpty
-          ? _buildEmptyState()
-          : ListView.builder(
-              itemCount: feedbackList.length,
-              itemBuilder: (context, index) => _buildFeedbackCard(feedbackList[index]),
-            ),
+  void _markAsResolved(String id) async {
+    await _feedbackDao.updateFeedback(id, {"status": "resolved"});
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Feedback marked as resolved")),
     );
+    setState(() {}); // refresh tabs automatically
+  }
+
+  void _deleteFeedback(String id) async {
+     _feedbackDao.deleteFeedback(id);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Feedback deleted")),
+    );
+    setState(() {}); // refresh tabs automatically
   }
 }

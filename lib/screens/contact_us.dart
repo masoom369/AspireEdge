@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../models/feedback.dart';
+import '../services/feedback_dao.dart';
 
 class ContactUsPage extends StatefulWidget {
   const ContactUsPage({super.key});
@@ -16,28 +19,12 @@ class ContactUsPageState extends State<ContactUsPage> {
   final _messageController = TextEditingController();
   String _selectedInquiryType = 'Select inquiry type';
 
+  final FeedbackDao _feedbackDao = FeedbackDao();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF3D455B),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
-          onPressed: () {},
-        ),
-        title: Center(
-          child: const Text(
-            'Contact Us',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
+      appBar: AppBar(title: const Text("Contact Us")),
       body: _buildBody(),
     );
   }
@@ -76,7 +63,7 @@ class ContactUsPageState extends State<ContactUsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'We\'re here to help you succeed. Reach out to our team for support, questions, or to learn more about how AspireEdge can accelerate your career.',
+            'We\'re here to help you succeed. Reach out to our team for support, questions, or to learn more about AspireEdge.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
@@ -113,18 +100,8 @@ class ContactUsPageState extends State<ContactUsPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Fill out the form below and we\'ll get back to you as soon as possible',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w400,
-              ),
-            ),
             const SizedBox(height: 24),
 
-            // Name + Email
             Row(
               children: [
                 Expanded(child: _buildTextField("Name *", _nameController, "Your full name")),
@@ -160,6 +137,10 @@ class ContactUsPageState extends State<ContactUsPage> {
         TextFormField(
           controller: controller,
           maxLines: maxLines,
+          validator: (value) {
+            if (value == null || value.isEmpty) return "$label is required";
+            return null;
+          },
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey[400], fontSize: 16),
@@ -233,16 +214,7 @@ class ContactUsPageState extends State<ContactUsPage> {
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Message sent successfully!'),
-                backgroundColor: Color(0xFF4CAF50),
-              ),
-            );
-          }
-        },
+        onPressed: _handleSubmit,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF4CAF50),
           foregroundColor: Colors.white,
@@ -259,6 +231,39 @@ class ContactUsPageState extends State<ContactUsPage> {
         ),
       ),
     );
+  }
+
+  void _handleSubmit() {
+    if (_formKey.currentState!.validate()) {
+      if (_selectedInquiryType == 'Select inquiry type') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please select an inquiry type")),
+        );
+        return;
+      }
+
+      final user = FirebaseAuth.instance.currentUser;
+      final feedback = FeedbackModel(
+        id: '', // will be set in DAO
+        userId: user?.uid ?? 'anonymous',
+        name: _nameController.text,
+        email: _emailController.text,
+        subject: _subjectController.text,
+        inquiryType: _selectedInquiryType,
+        message: _messageController.text,
+      );
+
+      _feedbackDao.saveFeedback(feedback);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Message sent successfully!"), backgroundColor: Colors.green),
+      );
+
+      _formKey.currentState!.reset();
+      setState(() {
+        _selectedInquiryType = 'Select inquiry type';
+      });
+    }
   }
 
   Widget _buildLocations() {
@@ -292,7 +297,7 @@ class ContactUsPageState extends State<ContactUsPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    _launchURL('https://share.google/1EQiYWRIrJVhQibUY');  // Replace with the real URL
+                    _launchURL('https://maps.google.com'); // replace with real location
                   },
                   child: Container(
                     width: 60,

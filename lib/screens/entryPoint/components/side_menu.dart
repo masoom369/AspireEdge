@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
-
 import '../../../models/menu.dart';
 
 class SideMenu extends StatelessWidget {
-  const SideMenu(
-      {super.key,
-      required this.menu,
-      required this.press,
-      required this.riveOnInit,
-      required this.selectedMenu});
+  const SideMenu({
+    super.key,
+    required this.menu,
+    required this.press,
+    required this.selectedMenu,
+  });
 
   final Menu menu;
   final VoidCallback press;
-  final ValueChanged<Artboard> riveOnInit;
   final Menu selectedMenu;
 
   @override
@@ -41,14 +38,10 @@ class SideMenu extends StatelessWidget {
             ),
             ListTile(
               onTap: press,
-              leading: SizedBox(
-                height: 36,
-                width: 36,
-                child: RiveAnimation.asset(
-                  menu.rive.src,
-                  artboard: menu.rive.artboard,
-                  onInit: riveOnInit,
-                ),
+              leading: Icon(
+                menu.icon,
+                size: 36,
+                color: Colors.white,
               ),
               title: Text(
                 menu.title,

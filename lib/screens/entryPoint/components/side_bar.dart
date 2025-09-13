@@ -3,10 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/services/user_dao.dart';
 import '../../../models/menu.dart';
-import '../../../utils/rive_utils.dart';
 import 'side_menu.dart';
-
-// ========= SIDEBAR WIDGET =========
 
 class SideBar extends StatefulWidget {
   const SideBar({super.key});
@@ -16,12 +13,11 @@ class SideBar extends StatefulWidget {
 }
 
 class _SideBarState extends State<SideBar> {
-  Menu? selectedSideMenu; // ✅ Nullable until initialized
-
   String? userName;
   String? userBio = "Loading...";
   String? userRole;
   bool _isLoading = true;
+  Menu? selectedSideMenu;
 
   final UserDao _userDao = UserDao();
 
@@ -43,6 +39,7 @@ class _SideBarState extends State<SideBar> {
         if (dbUser != null) {
           final tier = dbUser.tier ?? "Student";
           final role = dbUser.role ?? "User";
+
           setState(() {
             userName = displayName;
             userBio = tier;
@@ -56,28 +53,26 @@ class _SideBarState extends State<SideBar> {
         debugPrint("Error fetching user from DB: $e");
       }
 
-      // Fallback if DB fails
       setState(() {
         userName = displayName;
         userBio = "Member";
         userRole = "User";
         _isLoading = false;
-        selectedSideMenu = userSidebarMenus.first;
+        selectedSideMenu = _getSidebarMenus().first;
       });
     } else {
-      // Guest
       setState(() {
         userName = "Guest";
         userBio = "Not logged in";
         userRole = null;
         _isLoading = false;
-        selectedSideMenu = guestSidebarMenus.first;
+        selectedSideMenu = _getSidebarMenus().first;
       });
     }
   }
 
   List<Menu> _getSidebarMenus() {
-    if (userRole == "Admin") {
+    if (userRole == "admin") {
       return adminSidebarMenus;
     } else if (userRole == null) {
       return guestSidebarMenus;
@@ -91,14 +86,29 @@ class _SideBarState extends State<SideBar> {
       case "Home":
         Navigator.pushNamed(context, '/');
         break;
+      case "Manage Testimonials":
+        Navigator.pushNamed(context, '/testimonials_management');
+        break;
       case "Dashboard":
         Navigator.pushNamed(context, '/DashboardPage');
         break;
       case "Resources Management":
         Navigator.pushNamed(context, '/resources_management');
         break;
+      case "Stream selector":
+        Navigator.pushNamed(context, '/StreamSelectorPage');
+        break;
       case "Career Guidance":
         Navigator.pushNamed(context, '/CareerGuidancePage');
+        break;
+      case "Manage Career Questions":
+        Navigator.pushNamed(context, '/career_questions_management');
+        break;
+      case "Manage Stream Questions":
+        Navigator.pushNamed(context, '/stream_questions_management');
+        break;
+      case "Testemonials":
+        Navigator.pushNamed(context, '/WriteTestimonialPage');
         break;
       case "Interview Prep":
         Navigator.pushNamed(context, '/InterviewPrepPage');
@@ -116,7 +126,7 @@ class _SideBarState extends State<SideBar> {
         Navigator.pushNamed(context, '/contact');
         break;
       case "Quiz Management":
-        Navigator.pushNamed(context, '/quiz_management'); // ⚠️ Confirm this is correct
+        Navigator.pushNamed(context, '/quiz_management');
         break;
       case "Notifications":
         Navigator.pushNamed(context, '/ManagePushNotificationsPage');
@@ -133,6 +143,8 @@ class _SideBarState extends State<SideBar> {
       case "Logout":
         Navigator.pushNamed(context, '/logout');
         break;
+      default:
+        debugPrint("Unknown menu title: $title");
     }
   }
 
@@ -156,13 +168,10 @@ class _SideBarState extends State<SideBar> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 👤 User Info Card
                 InfoCard(
                   name: userName ?? "Unknown",
                   bio: userBio ?? "No bio",
                 ),
-
-                // 🧭 Browse Section
                 Padding(
                   padding: const EdgeInsets.only(left: 24, top: 32, bottom: 16),
                   child: Text(
@@ -173,24 +182,15 @@ class _SideBarState extends State<SideBar> {
                         .copyWith(color: Colors.white70),
                   ),
                 ),
-
-                // ✅ Single Dynamic Menu Section
                 ..._getSidebarMenus().map(
                   (menu) => SideMenu(
                     menu: menu,
                     selectedMenu: selectedSideMenu!,
                     press: () {
-                      RiveUtils.changeSMIBoolState(menu.rive.status!);
                       setState(() {
                         selectedSideMenu = menu;
                       });
                       _navigateToPage(context, menu.title);
-                    },
-                    riveOnInit: (artboard) {
-                      menu.rive.status = RiveUtils.getRiveInput(
-                        artboard,
-                        stateMachineName: menu.rive.stateMachineName,
-                      );
                     },
                   ),
                 ),
@@ -205,6 +205,5 @@ class _SideBarState extends State<SideBar> {
   @override
   void dispose() {
     super.dispose();
-    // Add cleanup logic here if needed (e.g., stream subscriptions)
   }
 }

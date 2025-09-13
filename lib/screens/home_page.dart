@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
           ),
           CircleAvatar(
             radius: 18,
-            backgroundImage: NetworkImage('https://via.placeholder.com/100/8E2DE2/FFFFFF?text=U'),
+            backgroundImage: AssetImage('assets/avaters/Avatar Default.jpg'),
           ),
         ],
       ),

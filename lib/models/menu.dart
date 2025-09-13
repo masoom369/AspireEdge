@@ -1,288 +1,125 @@
-import 'rive_model.dart';
+import 'package:flutter/material.dart';
 
+import 'rive_model.dart';
 class Menu {
   final String title;
-  final RiveModel rive;
+  final IconData icon;  // Change this to use an IconData instead of RiveModel
 
-  Menu({required this.title, required this.rive});
+  Menu({
+    required this.title,
+    required this.icon,
+  });
 }
+
 
 // ========= ROLE-BASED MENUS =========
 
-// 👑 ADMIN MENUS
 List<Menu> adminSidebarMenus = [
   Menu(
     title: "Home",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "HOME",
-      stateMachineName: "HOME_interactivity",
-    ),
+    icon: Icons.home,
   ),
   Menu(
-    title: "Dashboard",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "SEARCH",
-      stateMachineName: "SEARCH_Interactivity",
-    ),
+    title: "About Us",
+    icon: Icons.info,
+  ),
+  Menu(
+    title: "Contact Us",
+    icon: Icons.contact_mail,
+  ),
+  Menu(
+    title: "Feedback Management",
+    icon: Icons.feedback,
+  ),
+  Menu(
+    title: "Quiz Management",
+    icon: Icons.quiz,
+  ),
+  Menu(
+    title: "Wishlist Management",
+    icon: Icons.favorite_border,
   ),
   Menu(
     title: "Resources Management",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "LIKE/STAR",
-      stateMachineName: "STAR_Interactivity",
-    ),
+    icon: Icons.book,
   ),
   Menu(
-    title: "Career Guidance",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "HOME",
-      stateMachineName: "HOME_interactivity",
-    ),
+    title: "Testimonial Management",
+    icon: Icons.star_border,
   ),
   Menu(
-    title: "Interview Prep",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "SEARCH",
-      stateMachineName: "SEARCH_Interactivity",
-    ),
+    title: "Stream Management",
+    icon: Icons.live_tv,
   ),
   Menu(
-    title: "CV Guidance",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "LIKE/STAR",
-      stateMachineName: "STAR_Interactivity",
-    ),
+    title: "Career Management",
+    icon: Icons.work,
   ),
   Menu(
     title: "Career Bank",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "CHAT",
-      stateMachineName: "CHAT_Interactivity",
-    ),
+    icon: Icons.business_center,
+  ),
+  Menu(
+    title: "Interview Preparation",
+    icon: Icons.school,
+  ),
+  Menu(
+    title: "Career Guidance",
+    icon: Icons.person_search,
+  ),
+  Menu(
+    title: "CV Guidance",
+    icon: Icons.insert_drive_file,
   ),
   Menu(
     title: "Success Stories",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "HOME",
-      stateMachineName: "HOME_interactivity",
-    ),
+    icon: Icons.celebration,
   ),
   Menu(
-    title: "Contact",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "SEARCH",
-      stateMachineName: "SEARCH_Interactivity",
-    ),
+    title: "Stream Guidance",
+    icon: Icons.lightbulb,
   ),
-  Menu(
-    title: "User Management", // 👑 Admin-only
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "USER",
-      stateMachineName: "USER_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Analytics", // 👑 Admin-only
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "TIMER",
-      stateMachineName: "TIMER_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "History",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "TIMER",
-      stateMachineName: "TIMER_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Notifications",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "BELL",
-      stateMachineName: "BELL_Interactivity",
-    ),
+    Menu(
+    title: "BookMark",
+    icon: Icons.bookmark_border,
   ),
   Menu(
     title: "Logout",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "BELL",
-      stateMachineName: "BELL_Interactivity",
-    ),
+    icon: Icons.exit_to_app,
   ),
 ];
+
 
 // 👤 USER MENUS
+// USER MENUS
 List<Menu> userSidebarMenus = [
-  Menu(
-    title: "Home",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "HOME",
-      stateMachineName: "HOME_interactivity",
-    ),
-  ),
-  Menu(
-    title: "Dashboard",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "SEARCH",
-      stateMachineName: "SEARCH_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Career Guidance",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "HOME",
-      stateMachineName: "HOME_interactivity",
-    ),
-  ),
-  Menu(
-    title: "Interview Prep",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "SEARCH",
-      stateMachineName: "SEARCH_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "CV Guidance",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "LIKE/STAR",
-      stateMachineName: "STAR_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Career Bank",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "CHAT",
-      stateMachineName: "CHAT_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Success Stories",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "HOME",
-      stateMachineName: "HOME_interactivity",
-    ),
-  ),
-  Menu(
-    title: "Contact",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "SEARCH",
-      stateMachineName: "SEARCH_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "History",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "TIMER",
-      stateMachineName: "TIMER_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Notifications",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "BELL",
-      stateMachineName: "BELL_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Logout",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "BELL",
-      stateMachineName: "BELL_Interactivity",
-    ),
-  ),
+  Menu(title: "Home", icon: Icons.home),
+  Menu(title: "Stream selector", icon: Icons.tv),
+  Menu(title: "Testemonials", icon: Icons.star),
+  Menu(title: "Dashboard", icon: Icons.dashboard),
+  Menu(title: "Career Guidance", icon: Icons.work),
+  Menu(title: "Interview Prep", icon: Icons.school),
+  Menu(title: "CV Guidance", icon: Icons.file_copy),
+  Menu(title: "Career Bank", icon: Icons.business),
+  Menu(title: "Success Stories", icon: Icons.celebration),
+  Menu(title: "Contact", icon: Icons.contact_mail),
+  Menu(title: "History", icon: Icons.history),
+  Menu(title: "Notifications", icon: Icons.notifications),
+  Menu(title: "Logout", icon: Icons.exit_to_app),
 ];
 
-// 👻 GUEST MENUS (optional — can redirect to login or show limited access)
+// GUEST MENUS
 List<Menu> guestSidebarMenus = [
-  Menu(
-    title: "Home",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "HOME",
-      stateMachineName: "HOME_interactivity",
-    ),
-  ),
-  Menu(
-    title: "Contact",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "SEARCH",
-      stateMachineName: "SEARCH_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Login",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "BELL",
-      stateMachineName: "BELL_Interactivity",
-    ),
-  ),
+  Menu(title: "Home", icon: Icons.home),
+  Menu(title: "Contact", icon: Icons.contact_mail),
+  Menu(title: "Login", icon: Icons.login),
 ];
+
+// BOTTOM NAV ITEMS
 List<Menu> bottomNavItems = [
-  Menu(
-    title: "Home",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "HOME",
-      stateMachineName: "HOME_interactivity",
-    ),
-  ),
-  Menu(
-    title: "Search",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "SEARCH",
-      stateMachineName: "SEARCH_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Profile",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "USER",
-      stateMachineName: "USER_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Notifications",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "BELL",
-      stateMachineName: "BELL_Interactivity",
-    ),
-  ),
-  Menu(
-    title: "Help",
-    rive: RiveModel(
-      src: "assets/RiveAssets/icons.riv",
-      artboard: "CHAT",
-      stateMachineName: "CHAT_Interactivity",
-    ),
-  ),
+  Menu(title: "Home", icon: Icons.home),
+  Menu(title: "Search", icon: Icons.search),
+  Menu(title: "Profile", icon: Icons.person),
+  Menu(title: "Notifications", icon: Icons.notifications),
+  Menu(title: "Contact", icon: Icons.contact_mail),
 ];
