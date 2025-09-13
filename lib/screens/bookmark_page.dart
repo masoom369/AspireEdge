@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:aspire_edge/services/bookmark_dao.dart';
 import 'package:aspire_edge/services/auth_service.dart';
 import 'package:aspire_edge/services/resource_repository_dao.dart';
-import 'package:aspire_edge/models/resource.dart';
 import 'package:aspire_edge/models/bookmark.dart';
 
 // Resource model (remove tier)
@@ -128,7 +127,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
     const gradientColors = [Color(0xFF764BA2), Color(0xFF667EEA)];
 
     return Scaffold(
-      appBar: CustomAppBar(title: "Bookmarks"),
+      appBar: CustomAppBar(title: "Bookmark"),
       body: SafeArea(
         child: Column(
           children: [

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:aspire_edge/models/resource.dart';
+import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:aspire_edge/services/resource_repository_dao.dart';
 import 'package:aspire_edge/utils/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -478,14 +479,7 @@ showDialog(
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Resource Hub Management",
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Color(0xFF3D455B),
-        centerTitle: true,
-      ),
+      appBar: CustomAppBar(title:"Resources Hub Management"),
       body: Column(
         children: [
           // Add Resource Button

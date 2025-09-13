@@ -1,62 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:async'; // Import for Timer
+import 'dart:async';
+import 'dart:convert';
+import '../../models/testimonial.dart';
+import '../../services/testimonial_dao.dart';
 
-class SuccessStoriesPage extends StatefulWidget {
-  const SuccessStoriesPage({super.key}); // Fix for super constructor
+class ApprovedTestimonialsPage extends StatefulWidget {
+  const ApprovedTestimonialsPage({super.key});
 
   @override
-  State<SuccessStoriesPage> createState() => _SuccessStoriesPageState();
+  State<ApprovedTestimonialsPage> createState() =>
+      _ApprovedTestimonialsPageState();
 }
 
-class _SuccessStoriesPageState extends State<SuccessStoriesPage> {
-  final List<Map<String, dynamic>> testimonials = [
-    {
-      'name': 'Aisha Rahman',
-      'image': 'https://via.placeholder.com/80/8E2DE2/FFFFFF?text=AR',
-      'tier': 'Graduate',
-      'story': 'I was unsure about my career path after college. AspireEdge helped me choose Computer Science. Now I work as a Software Engineer at a top tech company!',
-    },
-    {
-      'name': 'Raj Patel',
-      'image': 'https://via.placeholder.com/80/5B6CF1/FFFFFF?text=RP',
-      'tier': 'Graduate',
-      'story': 'Thanks to the interview prep module, I cracked my first job interview in just two weeks. I’m now working as a Data Analyst.',
-    },
-    {
-      'name': 'Priya Singh',
-      'image': 'https://via.placeholder.com/80/8E2DE2/FFFFFF?text=PS',
-      'tier': 'Graduate',
-      'story': 'I used the CV tips section to build a strong resume. Within a month, I landed a job in marketing. AspireEdge changed my life!',
-    },
-    {
-      'name': 'Arjun Mehta',
-      'image': 'https://via.placeholder.com/80/5B6CF1/FFFFFF?text=AM',
-      'tier': 'Graduate',
-      'story': 'The Career Bank helped me explore options beyond engineering. I chose Business Management and now run my own startup.',
-    },
-  ];
-
+class _ApprovedTestimonialsPageState extends State<ApprovedTestimonialsPage> {
+  final TestimonialDao _testimonialDao = TestimonialDao();
+  List<Testimonial> testimonials = [];
   int currentIndex = 0;
-  late Timer _timer;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    _loadTestimonials();
     _startAutoRotation();
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
+  }
+
+  void _loadTestimonials() {
+    _testimonialDao.getApprovedTestimonials().listen((event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        final List<Testimonial> loadedTestimonials = data.entries.map((e) {
+          final value = Map<String, dynamic>.from(e.value as Map);
+          return Testimonial(
+            id: e.key,
+            userName: value["name"] ?? "",
+            message: value["testimonial"] ?? "",
+            status: value["status"] ?? "approved",
+            date: value["timestamp"] ?? "",
+            image: value["image"],
+            rating: 0,
+          );
+        }).toList();
+
+        setState(() {
+          testimonials = loadedTestimonials;
+          if (currentIndex >= testimonials.length) {
+            currentIndex = 0;
+          }
+        });
+      } else {
+        setState(() {
+          testimonials = [];
+          currentIndex = 0;
+        });
+      }
+    });
   }
 
   void _startAutoRotation() {
     _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      setState(() {
-        currentIndex = (currentIndex + 1) % testimonials.length;
-      });
+      if (testimonials.isNotEmpty) {
+        setState(() {
+          currentIndex = (currentIndex + 1) % testimonials.length;
+        });
+      }
     });
   }
 
@@ -70,134 +84,121 @@ class _SuccessStoriesPageState extends State<SuccessStoriesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF8E2DE2)),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Success Stories',
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF2D3748),
-          ),
-        ),
+        title: const Text("Approved Testimonials"),
+        backgroundColor: const Color(0xFF8E2DE2),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 16),
-            Text(
-              'Real Stories from Graduates',
-              style: GoogleFonts.poppins(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2D3748),
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'See how AspireEdge helped others find their dream careers.',
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: Color(0xFF6B7280),
-              ),
-            ),
-            SizedBox(height: 30),
-
-            // Testimonial Card
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0xFF8E2DE2).withValues(alpha: 0.1), // Correct usage of withValues
-                    blurRadius: 12,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: testimonials.isEmpty
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundImage: NetworkImage(testimonials[currentIndex]['image']),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  // Testimonial Card
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF8E2DE2).withOpacity(0.1),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
-                            Text(
-                              testimonials[currentIndex]['name'],
-                              style: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF2D3748),
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xFF8E2DE2),
                               ),
+                              child: testimonials[currentIndex].image != null &&
+                                      testimonials[currentIndex]
+                                          .image!
+                                          .isNotEmpty
+                                  ? ClipOval(
+                                      child: Image.memory(
+                                        base64Decode(
+                                            testimonials[currentIndex].image!),
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Text(
+                                        testimonials[currentIndex]
+                                                .userName
+                                                .isNotEmpty
+                                            ? testimonials[currentIndex]
+                                                .userName[0]
+                                            : '',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
                             ),
-                            SizedBox(height: 4),
-                            Chip(
-                              label: Text(
-                                testimonials[currentIndex]['tier'],
-                                style: GoogleFonts.poppins(fontSize: 12),
-                              ),
-                              backgroundColor: Color(0xFF8E2DE2).withValues(alpha: 0.1), // Correct usage of withValues
-                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                testimonials[currentIndex].userName,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF2D3748),
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    testimonials[currentIndex]['story'],
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: Color(0xFF2D3748),
+                        const SizedBox(height: 16),
+                        Text(
+                          testimonials[currentIndex].message,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color: const Color(0xFF2D3748),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.left,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Dots Indicator
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(testimonials.length, (index) {
+                      return GestureDetector(
+                        onTap: () => _goToIndex(index),
+                        child: Container(
+                          width: 12,
+                          height: 12,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            color: index == currentIndex
+                                ? const Color(0xFF8E2DE2)
+                                : Colors.grey[300],
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      );
+                    }),
                   ),
                 ],
               ),
-            ),
-
-            SizedBox(height: 30),
-
-            // Dots Indicator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(testimonials.length, (index) {
-                return GestureDetector(
-                  onTap: () => _goToIndex(index),
-                  child: Container(
-                    width: 12,
-                    height: 12,
-                    margin: EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      color: index == currentIndex ? Color(0xFF8E2DE2) : Colors.grey[300],
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ],
-        ),
       ),
     );
   }

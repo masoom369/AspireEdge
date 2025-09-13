@@ -1,3 +1,4 @@
+import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,23 +13,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF8E2DE2)),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Interview Prep',
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF2D3748),
-          ),
-        ),
-        centerTitle: true,
-      ),
+          appBar: CustomAppBar(title: "Interview Preparation"),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Column(

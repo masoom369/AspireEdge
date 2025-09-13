@@ -5,7 +5,8 @@ class Testimonial {
   final int rating;
   final String status;
   final String date;
-  final String? image; // <-- Add image field
+  final String? image;
+  final String? tier; // ✅ Add this
 
   Testimonial({
     required this.id,
@@ -14,7 +15,8 @@ class Testimonial {
     required this.rating,
     required this.status,
     required this.date,
-    this.image, // <-- Add to constructor
+    this.image,
+    this.tier, // ✅ Add this to constructor
   });
 
   /// Convert Testimonial object to a Map for Firebase
@@ -25,7 +27,8 @@ class Testimonial {
       "rating": rating,
       "status": status,
       "date": date,
-      "image": image ?? "", // <-- Add image to map
+      "image": image ?? "",
+      "tier": tier ?? "", // ✅ Add tier to map
     };
   }
 
@@ -38,7 +41,8 @@ class Testimonial {
       rating: map["rating"] ?? 0,
       status: map["status"] ?? "pending",
       date: map["date"] ?? "",
-      image: map["image"], // <-- Add image from map
+      image: map["image"],
+      tier: map["tier"], // ✅ Fetch tier from Firebase
     );
   }
 }

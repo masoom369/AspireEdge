@@ -1,3 +1,4 @@
+import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../../models/feedback.dart';
@@ -30,19 +31,7 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Manage User Feedbacks",
-            style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF3D455B),
-        centerTitle: true,
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: "Pending"),
-            Tab(text: "Resolved"),
-          ],
-        ),
-      ),
+          appBar: CustomAppBar(title:"Feedback Management"),
       body: StreamBuilder<DatabaseEvent>(
         stream: _feedbackDao.getFeedbackList().onValue,
         builder: (context, snapshot) {

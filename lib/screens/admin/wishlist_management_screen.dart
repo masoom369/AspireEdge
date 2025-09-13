@@ -28,12 +28,7 @@ class _AdminWishlistPageState extends State<AdminWishlistPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar:AppBar(
-        title: Text("Wishlist Management", style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF3D455B),
-        centerTitle: true,
-      ),
-      body: Padding(
+       appBar: CustomAppBar(title:"Wishlist Management"),     body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder(
           stream: _dao.getWishlistItemList().onValue,

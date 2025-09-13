@@ -37,8 +37,8 @@ class _SideBarState extends State<SideBar> {
       try {
         final dbUser = await _userDao.getUserById(user.uid);
         if (dbUser != null) {
-          final tier = dbUser.tier ?? "Student";
-          final role = dbUser.role ?? "User";
+          final tier = dbUser.tier;
+          final role = dbUser.role;
 
           setState(() {
             userName = displayName;
@@ -80,73 +80,75 @@ class _SideBarState extends State<SideBar> {
       return userSidebarMenus;
     }
   }
-
-  void _navigateToPage(BuildContext context, String title) {
-    switch (title) {
-      case "Home":
-        Navigator.pushNamed(context, '/');
-        break;
-      case "Manage Testimonials":
-        Navigator.pushNamed(context, '/testimonials_management');
-        break;
-      case "Dashboard":
-        Navigator.pushNamed(context, '/DashboardPage');
-        break;
-      case "Resources Management":
-        Navigator.pushNamed(context, '/resources_management');
-        break;
-      case "Stream selector":
-        Navigator.pushNamed(context, '/StreamSelectorPage');
-        break;
-      case "Career Guidance":
-        Navigator.pushNamed(context, '/CareerGuidancePage');
-        break;
-      case "Manage Career Questions":
-        Navigator.pushNamed(context, '/career_questions_management');
-        break;
-      case "Manage Stream Questions":
-        Navigator.pushNamed(context, '/stream_questions_management');
-        break;
-      case "Testemonials":
-        Navigator.pushNamed(context, '/WriteTestimonialPage');
-        break;
-      case "Interview Prep":
-        Navigator.pushNamed(context, '/InterviewPrepPage');
-        break;
-      case "CV Guidance":
-        Navigator.pushNamed(context, '/CVGuidancePage');
-        break;
-      case "Career Bank":
-        Navigator.pushNamed(context, '/CareerBankPage');
-        break;
-      case "Success Stories":
-        Navigator.pushNamed(context, '/SuccessStoriesPage');
-        break;
-      case "Contact":
-        Navigator.pushNamed(context, '/contact');
-        break;
-      case "Quiz Management":
-        Navigator.pushNamed(context, '/quiz_management');
-        break;
-      case "Notifications":
-        Navigator.pushNamed(context, '/ManagePushNotificationsPage');
-        break;
-      case "User Management":
-        Navigator.pushNamed(context, '/user_management');
-        break;
-      case "Analytics":
-        Navigator.pushNamed(context, '/analytics');
-        break;
-      case "Login":
-        Navigator.pushNamed(context, '/login');
-        break;
-      case "Logout":
-        Navigator.pushNamed(context, '/logout');
-        break;
-      default:
-        debugPrint("Unknown menu title: $title");
-    }
+void _navigateToPage(BuildContext context, String title) {
+  switch (title) {
+    case "Home":
+      Navigator.pushNamed(context, '/');
+      break;
+        case "Write Testimonials":
+      Navigator.pushNamed(context, '/WriteTestimonialPage');
+      break;
+    case "About Us":
+      Navigator.pushNamed(context, '/about');
+      break;
+    case "Contact Us":
+      Navigator.pushNamed(context, '/contact');
+      break;
+    case "Feedback Management":
+      Navigator.pushNamed(context, '/feedback_management');
+      break;
+    case "Quiz Management":
+      Navigator.pushNamed(context, '/quiz_management');
+      break;
+    case "Wishlist Management":
+      Navigator.pushNamed(context, '/wishlist_management');
+      break;
+    case "Resources Management":
+      Navigator.pushNamed(context, '/resources_management');
+      break;
+    case "Testimonial Management":
+      Navigator.pushNamed(context, '/testimonials_management');
+      break;
+    case "Stream Management":
+      Navigator.pushNamed(context, '/stream_management');
+      break;
+    case "Career Management":
+      Navigator.pushNamed(context, '/career_management');
+      break;
+    case "Resources Hub":
+      Navigator.pushNamed(context, '/resources_hub');
+      break;
+    case "Career Bank":
+      Navigator.pushNamed(context, '/career_bank');
+      break;
+    case "Interview Preparation":
+      Navigator.pushNamed(context, '/interview_preparation');
+      break;
+    case "Career Guidance":
+      Navigator.pushNamed(context, '/career_guidance');
+      break;
+    case "Stream Guidance":
+      Navigator.pushNamed(context, '/stream_guidance');
+      break;
+    case "CV Guidance":
+      Navigator.pushNamed(context, '/cv_guidance');
+      break;
+    case "Success Stories":
+      Navigator.pushNamed(context, '/success_stories');
+      break;
+    case "BookMark":
+      Navigator.pushNamed(context, '/bookmark');
+      break;
+    case "Wishlist":
+      Navigator.pushNamed(context, '/wishlist');
+      break;
+    case "Logout":
+      Navigator.pushNamed(context, '/logout');
+      break;
+    default:
+      debugPrint("Unknown menu title: $title");
   }
+}
 
   @override
   Widget build(BuildContext context) {

@@ -24,12 +24,12 @@ class BtmNavItem extends StatelessWidget {
           AnimatedBar(isActive: selectedNav == navBar),
           SizedBox(
             height: 36,
-            width: 36,
+            width: 90,
             child: Opacity(
               opacity: selectedNav == navBar ? 1 : 0.5,
               child: Icon(
                 navBar.icon, // Use the Flutter Icon widget instead of Rive
-                size: 36,
+                size: 28,
                 color: Colors.white,
               ),
             ),

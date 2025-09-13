@@ -1,110 +1,54 @@
 import 'package:flutter/material.dart';
 
-import 'rive_model.dart';
 class Menu {
   final String title;
-  final IconData icon;  // Change this to use an IconData instead of RiveModel
+  final IconData icon; // Change this to use an IconData instead of RiveModel
 
-  Menu({
-    required this.title,
-    required this.icon,
-  });
+  Menu({required this.title, required this.icon});
 }
-
 
 // ========= ROLE-BASED MENUS =========
 
 List<Menu> adminSidebarMenus = [
-  Menu(
-    title: "Home",
-    icon: Icons.home,
-  ),
-  Menu(
-    title: "About Us",
-    icon: Icons.info,
-  ),
-  Menu(
-    title: "Contact Us",
-    icon: Icons.contact_mail,
-  ),
-  Menu(
-    title: "Feedback Management",
-    icon: Icons.feedback,
-  ),
-  Menu(
-    title: "Quiz Management",
-    icon: Icons.quiz,
-  ),
-  Menu(
-    title: "Wishlist Management",
-    icon: Icons.favorite_border,
-  ),
-  Menu(
-    title: "Resources Management",
-    icon: Icons.book,
-  ),
-  Menu(
-    title: "Testimonial Management",
-    icon: Icons.star_border,
-  ),
-  Menu(
-    title: "Stream Management",
-    icon: Icons.live_tv,
-  ),
-  Menu(
-    title: "Career Management",
-    icon: Icons.work,
-  ),
-  Menu(
-    title: "Career Bank",
-    icon: Icons.business_center,
-  ),
-  Menu(
-    title: "Interview Preparation",
-    icon: Icons.school,
-  ),
-  Menu(
-    title: "Career Guidance",
-    icon: Icons.person_search,
-  ),
-  Menu(
-    title: "CV Guidance",
-    icon: Icons.insert_drive_file,
-  ),
-  Menu(
-    title: "Success Stories",
-    icon: Icons.celebration,
-  ),
-  Menu(
-    title: "Stream Guidance",
-    icon: Icons.lightbulb,
-  ),
-    Menu(
-    title: "BookMark",
-    icon: Icons.bookmark_border,
-  ),
-  Menu(
-    title: "Logout",
-    icon: Icons.exit_to_app,
-  ),
+  Menu(title: "Home", icon: Icons.home),
+  Menu(title: "Write Testimonials", icon: Icons.home),
+  Menu(title: "About Us", icon: Icons.info),
+  Menu(title: "Contact Us", icon: Icons.contact_mail),
+  Menu(title: "Feedback Management", icon: Icons.feedback),
+  Menu(title: "Quiz Management", icon: Icons.quiz),
+  Menu(title: "Wishlist Management", icon: Icons.favorite_border),
+  Menu(title: "Resources Management", icon: Icons.book),
+  Menu(title: "Testimonial Management", icon: Icons.star_border),
+  Menu(title: "Stream Management", icon: Icons.live_tv),
+  Menu(title: "Career Management", icon: Icons.work),
+  Menu(title: "Resources Hub", icon: Icons.menu_book),
+  Menu(title: "Career Bank", icon: Icons.business_center),
+  Menu(title: "Interview Preparation", icon: Icons.school),
+  Menu(title: "Career Guidance", icon: Icons.person_search),
+  Menu(title: "Stream Guidance", icon: Icons.lightbulb),
+  Menu(title: "CV Guidance", icon: Icons.insert_drive_file),
+ Menu(title: "Success Stories", icon: Icons.celebration),
+  Menu(title: "BookMark", icon: Icons.bookmark_border),
+  Menu(title: "Wishlist", icon: Icons.favorite),
+  Menu(title: "Logout", icon: Icons.exit_to_app),
 ];
-
 
 // 👤 USER MENUS
 // USER MENUS
 List<Menu> userSidebarMenus = [
   Menu(title: "Home", icon: Icons.home),
-  Menu(title: "Stream selector", icon: Icons.tv),
-  Menu(title: "Testemonials", icon: Icons.star),
-  Menu(title: "Dashboard", icon: Icons.dashboard),
-  Menu(title: "Career Guidance", icon: Icons.work),
-  Menu(title: "Interview Prep", icon: Icons.school),
-  Menu(title: "CV Guidance", icon: Icons.file_copy),
-  Menu(title: "Career Bank", icon: Icons.business),
-  Menu(title: "Success Stories", icon: Icons.celebration),
-  Menu(title: "Contact", icon: Icons.contact_mail),
-  Menu(title: "History", icon: Icons.history),
-  Menu(title: "Notifications", icon: Icons.notifications),
+  Menu(title: "About Us", icon: Icons.info),
+  Menu(title: "Contact Us", icon: Icons.contact_mail),
+  Menu(title: "Profile", icon: Icons.person),
+  Menu(title: "Resources Hub", icon: Icons.menu_book),
+  Menu(title: "Career Bank", icon: Icons.business_center),
+  Menu(title: "Interview Preparation", icon: Icons.school),
+  Menu(title: "Career Guidance", icon: Icons.person_search),
+  Menu(title: "Stream Guidance", icon: Icons.lightbulb),
+  Menu(title: "CV Guidance", icon: Icons.insert_drive_file),
+ // Menu(title: "Success Stories", icon: Icons.celebration),
+  Menu(title: "BookMark", icon: Icons.bookmark_border),
+  Menu(title: "Wishlist", icon: Icons.favorite),
   Menu(title: "Logout", icon: Icons.exit_to_app),
 ];
 

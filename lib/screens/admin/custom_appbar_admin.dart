@@ -25,7 +25,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           style: GoogleFonts.poppins(
             fontSize: 22,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF8E2DE2),
+            color: const Color(0xFF3D455B),
           ),
         ),
       ),
@@ -33,7 +33,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(
             Icons.logout,
-            color: Color(0xFF8E2DE2),
+            color: Color(0xFF3D455B),
             size: 26,
           ),
           onPressed: () {

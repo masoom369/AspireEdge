@@ -1,3 +1,4 @@
+import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:aspire_edge/services/auth_service.dart';
@@ -87,24 +88,7 @@ class _LogoutPageState extends State<LogoutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF8E2DE2)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Logging Out',
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF8E2DE2),
-          ),
-        ),
-      ),
+         appBar: CustomAppBar(title: "Logout"),
       body: Container(
         padding: EdgeInsets.all(24),
         child: Center(

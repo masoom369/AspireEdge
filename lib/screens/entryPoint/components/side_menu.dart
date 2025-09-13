@@ -31,7 +31,7 @@ class SideMenu extends StatelessWidget {
               left: 0,
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Color(0xFF6792FF),
+                  color: Color(0xFF8E2DE2),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
               ),
@@ -40,7 +40,7 @@ class SideMenu extends StatelessWidget {
               onTap: press,
               leading: Icon(
                 menu.icon,
-                size: 36,
+                size: 20,
                 color: Colors.white,
               ),
               title: Text(

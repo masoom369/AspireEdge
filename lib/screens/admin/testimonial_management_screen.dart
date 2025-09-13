@@ -1,6 +1,7 @@
+import 'dart:convert';
+import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'dart:convert'; // <-- Add for base64 decoding
 import '../../models/testimonial.dart';
 import '../../services/testimonial_dao.dart';
 
@@ -12,13 +13,7 @@ class ManageTestimonialsPage extends StatelessWidget {
     final dao = TestimonialDao();
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF3D455B),
-        title: const Text(
-          "Manage Testimonials",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      appBar: CustomAppBar(title: "Testimonial Management"),
       body: StreamBuilder<DatabaseEvent>(
         stream: dao.getPendingTestimonials(),
         builder: (context, snapshot) {
@@ -26,20 +21,21 @@ class ManageTestimonialsPage extends StatelessWidget {
             return const Center(child: Text("No pending testimonials"));
           }
 
-          final data = Map<String, dynamic>.from(
-            snapshot.data!.snapshot.value as Map,
-          );
+          final data =
+              Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
 
           final testimonials = data.entries.map((e) {
             final value = Map<String, dynamic>.from(e.value as Map);
+
             return Testimonial(
               id: e.key,
-              userName: value["name"] ?? "",
-              message: value["testimonial"] ?? "",
-              rating: 0, // not used anymore
+              userName: value["userName"] ?? "",
+              message: value["message"] ?? "",
+              rating: value["rating"] ?? 0,
               status: value["status"] ?? "pending",
-              date: value["timestamp"] ?? "",
-              image: value["image"], // <-- Fetch image
+              date: value["date"] ?? "",
+              image: value["image"],
+              tier: value["tier"], // ✅ added tier
             );
           }).toList();
 
@@ -66,20 +62,32 @@ class ManageTestimonialsPage extends StatelessWidget {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                          if (t.image != null && t.image!.isNotEmpty)
-                            const SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Expanded(
-                            child: Text(
-                              t.userName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  t.userName,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                if (t.tier != null && t.tier!.isNotEmpty)
+                                  Text(
+                                    t.tier!,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 8),
                       Text(t.message),
                       const SizedBox(height: 10),
                       Row(

@@ -1,3 +1,4 @@
+import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/models/resource.dart';
 import 'package:aspire_edge/services/resource_repository_dao.dart';
@@ -89,14 +90,7 @@ class _ResourcesHubPageState extends State<ResourcesHubPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF3D455B),
-        title: const Text(
-          'Resources Hub',
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-      ),
+       appBar: CustomAppBar(title: "Resources Hub"),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(12.0),

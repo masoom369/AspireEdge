@@ -1,3 +1,4 @@
+import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/services/career_dao.dart';
 import 'package:aspire_edge/models/career.dart';
@@ -123,19 +124,7 @@ class _CareerBankPageState extends State<CareerBankPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Icon(Icons.arrow_back, color: Colors.grey[700]),
-        title: Text(
-          'Career Bank',
-          style: TextStyle(
-            color: Colors.grey[800],
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
+      appBar: CustomAppBar(title: "Career Bank"),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(

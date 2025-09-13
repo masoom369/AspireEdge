@@ -172,8 +172,8 @@ class _EntryPointState extends State<EntryPoint>
                         case "Notifications":
                           Navigator.pushNamed(context, '/BookmarksPage');
                           break;
-                        case "Help":
-                          Navigator.pushNamed(context, '/WishlistPage');
+                        case "Contact":
+                          Navigator.pushNamed(context, '/contact');
                           break;
                         default:
                           break;

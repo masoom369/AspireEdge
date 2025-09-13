@@ -1,3 +1,4 @@
+import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -9,34 +10,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black),
-          onPressed: () {},
-        ),
-        title: Text(
-          _getAppBarTitle(),
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.black),
-            onPressed: () {},
-          ),
-          const CircleAvatar(
-            radius: 16,
-            backgroundImage: NetworkImage(
-              'https://via.placeholder.com/100/667EEA/FFFFFF?text=U',
-            ),
-          ),
-        ],
-      ),
+    appBar: CustomAppBar(title: _getAppBarTitle()),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/utils/image_picker.dart';
 import '../../services/career_dao.dart';
@@ -380,10 +381,7 @@ class _CareerFormPageState extends State<CareerFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.careerItem == null ? "Add Career" : "Edit Career"),
-        backgroundColor: Color(0xFF3D455B),
-      ),
+      appBar: CustomAppBar(title:"Career Bank Management"),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(

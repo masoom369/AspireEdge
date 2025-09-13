@@ -1,3 +1,4 @@
+import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -310,23 +311,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
     final isMultiple = question['type'] == 'multiple';
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF8E2DE2)),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Stream Selector',
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: const Color(0xFF2D3748),
-          ),
-        ),
-        centerTitle: true,
-      ),
+    appBar: CustomAppBar(title: "Stream Selector"),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),

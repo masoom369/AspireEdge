@@ -37,11 +37,7 @@ class _UserNotificationPageState extends State<UserNotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar:CustomAppBar(
-        title: "Notification Center",
-    
-     
-      ),
+         appBar: CustomAppBar(title: "User Notifications"),
       body: ListView.builder(
         padding: const EdgeInsets.all(12),
         itemCount: notifications.length,

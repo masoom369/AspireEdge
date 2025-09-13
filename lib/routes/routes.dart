@@ -4,6 +4,7 @@ import 'package:aspire_edge/screens/Interview_Preparation_Page.dart';
 import 'package:aspire_edge/screens/Stream_Selector_Screen.dart';
 import 'package:aspire_edge/screens/Success_Stories_Screen.dart';
 import 'package:aspire_edge/screens/Write_Testimonial_Screen.dart';
+import 'package:aspire_edge/screens/about_us.dart';
 import 'package:aspire_edge/screens/admin/admin_career_questions_page.dart';
 import 'package:aspire_edge/screens/admin/admin_stream_questions_page.dart';
 import 'package:aspire_edge/screens/admin/career_bank_management_screen.dart';
@@ -34,14 +35,14 @@ final UserDao _userDao = UserDao();
 // Protected routes (authentication required)
 final Map<String, WidgetBuilder> protectedRoutes = {
   '/contact': (context) => EntryPoint(child: const ContactUsPage()),
-  '/about': (context) => EntryPoint(child: const ContactUsPage()),
-  '/success': (context) => EntryPoint(child: const SuccessStoriesPage()),
+  '/about': (context) => EntryPoint(child: const AboutUsPage()),
+  // '/success': (context) => EntryPoint(child: const SuccessStoriesPage()),
   '/WriteTestimonialPage': (context) =>
       EntryPoint(child: const WriteTestimonialPage()),
   '/StreamSelectorPage': (context) =>
       EntryPoint(child: const StreamSelectorPage()),
-  '/SuccessStoriesPage': (context) =>
-      EntryPoint(child: const SuccessStoriesPage()),
+  // '/SuccessStoriesPage': (context) =>
+  //     EntryPoint(child: const SuccessStoriesPage()),
   '/ManagePushNotificationsPage': (context) =>
       EntryPoint(child: const ManagePushNotificationsPage()),
   '/CareerGuidancePage': (context) =>

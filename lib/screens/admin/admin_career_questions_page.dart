@@ -1,4 +1,5 @@
 // admin_career_questions_page.dart
+import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -91,20 +92,7 @@ class _AdminCareerQuestionsPageState extends State<AdminCareerQuestionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Manage Career Questions"),
-        actions: [
-          ElevatedButton.icon(
-            onPressed: _addQuestion,
-            icon: const Icon(Icons.add),
-            label: const Text("Add Question"),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-            ),
-          ),
-        ],
-      ),
+           appBar: CustomAppBar(title:"Career Questions Management"),
       body: StreamBuilder<DatabaseEvent>(
         stream: _ref.onValue,
         builder: (context, snapshot) {

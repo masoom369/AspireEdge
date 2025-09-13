@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_database/firebase_database.dart';
+import '../models/testimonial.dart';
+import '../utils/image_picker.dart'; // <-- Your helper for picking images
 
 class WriteTestimonialPage extends StatefulWidget {
   const WriteTestimonialPage({Key? key}) : super(key: key);
@@ -10,14 +14,25 @@ class WriteTestimonialPage extends StatefulWidget {
 
 class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _storyController = TextEditingController();
-  String _selectedTier = 'Graduate'; // Default for graduates
+  final TextEditingController _testimonialController = TextEditingController();
+  String _selectedTier = 'Graduate'; // Default tier
   bool _isUploading = false;
+  String? _imageBase64; // Store image as Base64
 
   final List<String> _tierOptions = ['Graduate', 'Student', 'Professional'];
 
-  void _submitTestimonial() {
-    if (_nameController.text.trim().isEmpty || _storyController.text.trim().isEmpty) {
+  Future<void> _pickImage() async {
+    final img = await ImagePickerUtils.pickImageBase64();
+    if (img.isNotEmpty) {
+      setState(() {
+        _imageBase64 = img;
+      });
+    }
+  }
+
+  void _submitTestimonial() async {
+    if (_nameController.text.trim().isEmpty ||
+        _testimonialController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
@@ -31,10 +46,26 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
       _isUploading = true;
     });
 
-    // Simulate API call or database save
-    Future.delayed(const Duration(seconds: 2), () {
+    try {
+      final ref = FirebaseDatabase.instance.ref("testimonials");
+
+      // ✅ Create Testimonial object that follows your model
+      final testimonial = Testimonial(
+        id: "", // Firebase will generate key
+        userName: _nameController.text.trim(),
+        message: _testimonialController.text.trim(),
+        rating: 0, // Default for now
+        status: "pending", // Default until admin approves
+        date: DateTime.now().toIso8601String(),
+        image: _imageBase64,
+        tier: _selectedTier,
+      );
+
+      await ref.push().set(testimonial.toMap());
+
       setState(() {
         _isUploading = false;
+        _imageBase64 = null;
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -47,10 +78,19 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
         ),
       );
 
-      // Clear form
       _nameController.clear();
-      _storyController.clear();
-    });
+      _testimonialController.clear();
+    } catch (e) {
+      setState(() {
+        _isUploading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('❌ Failed to submit. Please try again.'),
+        ),
+      );
+    }
   }
 
   @override
@@ -64,7 +104,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Share Your Story',
+          'Write a Testimonial',
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.w700,
@@ -80,7 +120,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
           children: [
             SizedBox(height: 16),
             Text(
-              'Inspire Others with Your Success',
+              'Share Your Testimonial',
               style: GoogleFonts.poppins(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -89,7 +129,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
             ),
             SizedBox(height: 8),
             Text(
-              'Share how AspireEdge helped you achieve your goals.',
+              'Tell us how AspireEdge made an impact for you.',
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 color: Color(0xFF6B7280),
@@ -147,7 +187,8 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
                 value: _selectedTier,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
                 icon: Icon(Icons.arrow_drop_down, color: Color(0xFF8E2DE2)),
                 style: GoogleFonts.poppins(),
@@ -166,9 +207,9 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
             ),
             SizedBox(height: 20),
 
-            // Story Field
+            // Testimonial Field
             Text(
-              'Your Success Story *',
+              'Your Testimonial *',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -177,7 +218,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
             ),
             SizedBox(height: 8),
             TextFormField(
-              controller: _storyController,
+              controller: _testimonialController,
               maxLines: 6,
               decoration: InputDecoration(
                 filled: true,
@@ -190,46 +231,51 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: Color(0xFF8E2DE2), width: 2),
                 ),
-                hintText: 'How did AspireEdge help you? What’s your success story?',
+                hintText: 'Write your testimonial here...',
                 hintStyle: GoogleFonts.poppins(color: Color(0xFF9CA3AF)),
               ),
               style: GoogleFonts.poppins(),
             ),
             SizedBox(height: 20),
 
-            // Optional: Upload Photo
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Color(0xFFE5E7EB)),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  Icon(Icons.image, color: Color(0xFF8E2DE2), size: 20),
-                  SizedBox(width: 12),
-                  Text(
-                    'Upload Photo (Optional)',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Color(0xFF2D3748),
-                    ),
-                  ),
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(Icons.add_a_photo, color: Color(0xFF8E2DE2)),
-                    onPressed: () {
-                      // TODO: Implement image picker
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Image picker not implemented yet')),
-                      );
-                    },
-                  ),
-                ],
+            // Image Picker
+            Text(
+              'Add a Photo (optional)',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF2D3748),
               ),
             ),
-
+            SizedBox(height: 8),
+            Row(
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _isUploading ? null : _pickImage,
+                  icon: Icon(Icons.image),
+                  label: Text('Upload Image'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF8E2DE2),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                if (_imageBase64 != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.memory(
+                      UriData.parse('data:image/png;base64,$_imageBase64')
+                          .contentAsBytes(),
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+              ],
+            ),
             SizedBox(height: 30),
 
             // Submit Button
@@ -238,7 +284,8 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
               child: ElevatedButton(
                 onPressed: _submitTestimonial,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _isUploading ? Colors.grey : Color(0xFF8E2DE2),
+                  backgroundColor:
+                      _isUploading ? Colors.grey : Color(0xFF8E2DE2),
                   padding: EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -265,7 +312,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
   @override
   void dispose() {
     _nameController.dispose();
-    _storyController.dispose();
+    _testimonialController.dispose();
     super.dispose();
   }
 }

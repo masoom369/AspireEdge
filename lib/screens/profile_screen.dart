@@ -1,4 +1,5 @@
 import 'package:aspire_edge/models/user.dart' as user_model;
+import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:aspire_edge/services/user_dao.dart';
 import 'package:aspire_edge/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -431,19 +432,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profile"),
-        actions: [
-          if (error != null)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                error!,
-                style: const TextStyle(color: Colors.red, fontSize: 12),
-              ),
-            ),
-        ],
-      ),
+         appBar: CustomAppBar(title: "Profile Screen"),
       body: SingleChildScrollView(
         child: Column(
           children: [

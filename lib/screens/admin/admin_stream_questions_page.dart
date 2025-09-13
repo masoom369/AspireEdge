@@ -1,3 +1,4 @@
+import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -84,16 +85,7 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Manage Stream Questions"),
-        actions: [
-          ElevatedButton.icon(
-            onPressed: _addQuestion,
-            icon: const Icon(Icons.add),
-            label: const Text("Add Question"),
-          ),
-        ],
-      ),
+          appBar: CustomAppBar(title:"Stream Questions Management"),
       body: StreamBuilder<DatabaseEvent>(
         stream: _ref.onValue,
         builder: (context, snapshot) {

@@ -1,3 +1,4 @@
+import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:flutter/material.dart';
 
 class QuizQuestion {
@@ -138,11 +139,7 @@ class _ManageQuizPageState extends State<ManageQuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text("Manage Quiz", style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF3D455B),
-        centerTitle: true,
-      ),
+            appBar: CustomAppBar(title:"Quiz Management"),
       body: Column(
         children: [
           // ✅ Full-width Add Button on Top

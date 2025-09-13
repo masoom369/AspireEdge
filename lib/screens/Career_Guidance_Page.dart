@@ -1,4 +1,5 @@
 // career_guidance_page.dart
+import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -230,19 +231,7 @@ class _CareerGuidancePageState extends State<CareerGuidancePage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7FB),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF8E2DE2)),
-          onPressed: _previous,
-        ),
-        title: Text('Career Path Selector',
-            style: GoogleFonts.poppins(
-                color: const Color(0xFF2D3748),
-                fontWeight: FontWeight.w700)),
-        centerTitle: true,
-      ),
+         appBar: CustomAppBar(title: "Career Guidance"),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
