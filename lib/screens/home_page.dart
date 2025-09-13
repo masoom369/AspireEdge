@@ -56,11 +56,13 @@ class _HomePageState extends State<HomePage> {
       'title': 'How to Choose Your Stream?',
       'duration': 'Watch video - 15 mins',
       'color': Color(0xFF8E2DE2),
+      'icon': Icons.play_circle_fill,
     },
     {
       'title': 'Top 5 Tech Careers in 2024',
       'duration': 'Read blog - 8 mins',
       'color': Color(0xFF5B6CF1),
+      'icon': Icons.article,
     }
   ];
 
@@ -293,47 +295,71 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 16),
-            Column(
-              children: recentContent.map((content) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: content['color'],
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: content['color'].withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
+            SizedBox(
+              height: 150,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: recentContent.length,
+                itemBuilder: (context, index) {
+                  final content = recentContent[index];
+                  return Container(
+                    width: 220,
+                    margin: const EdgeInsets.only(right: 16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          content['color'],
+                          content['color'].withOpacity(0.8),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          content['title'],
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          content['duration'],
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            color: Colors.white.withValues(alpha: 0.9),
-                          ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: content['color'].withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                  ),
-                );
-              }).toList(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.white.withOpacity(0.2),
+                            child: Icon(
+                              content['icon'],
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            content['title'],
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            content['duration'],
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
 
             // 🔹 Success Stories

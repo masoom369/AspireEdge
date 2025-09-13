@@ -24,7 +24,7 @@ class BtmNavItem extends StatelessWidget {
           AnimatedBar(isActive: selectedNav == navBar),
           SizedBox(
             height: 36,
-            width: 90,
+            width: 36,
             child: Opacity(
               opacity: selectedNav == navBar ? 1 : 0.5,
               child: Icon(
