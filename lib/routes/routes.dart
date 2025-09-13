@@ -2,7 +2,6 @@ import 'package:aspire_edge/screens/CV_Guidance_Page.dart';
 import 'package:aspire_edge/screens/Career_Guidance_Page.dart';
 import 'package:aspire_edge/screens/Interview_Preparation_Page.dart';
 import 'package:aspire_edge/screens/Stream_Selector_Screen.dart';
-import 'package:aspire_edge/screens/Success_Stories_Screen.dart';
 import 'package:aspire_edge/screens/Write_Testimonial_Screen.dart';
 import 'package:aspire_edge/screens/about_us.dart';
 import 'package:aspire_edge/screens/admin/admin_career_questions_page.dart';
@@ -12,6 +11,8 @@ import 'package:aspire_edge/screens/admin/feedback_management_screen.dart';
 import 'package:aspire_edge/screens/admin/quiz_management_screen.dart';
 import 'package:aspire_edge/screens/admin/resources_hub_management_screen.dart';
 import 'package:aspire_edge/screens/admin/testimonial_management_screen.dart';
+import 'package:aspire_edge/screens/admin/wishlist_management_screen.dart';
+import 'package:aspire_edge/screens/bookmark_page.dart';
 import 'package:aspire_edge/screens/dashboard_screen.dart';
 import 'package:aspire_edge/screens/career_bank.dart';
 import 'package:aspire_edge/screens/contact_us.dart';
@@ -19,6 +20,8 @@ import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
 import 'package:aspire_edge/screens/home_page.dart';
 import 'package:aspire_edge/screens/logout_screen.dart';
 import 'package:aspire_edge/screens/push_notification_screen.dart';
+import 'package:aspire_edge/screens/resource_hub_screen.dart';
+import 'package:aspire_edge/screens/wishlist.dart';
 import 'package:aspire_edge/services/auth_service.dart';
 import 'package:aspire_edge/services/user_dao.dart';
 import 'package:flutter/material.dart';
@@ -35,14 +38,16 @@ final UserDao _userDao = UserDao();
 // Protected routes (authentication required)
 final Map<String, WidgetBuilder> protectedRoutes = {
   '/contact': (context) => EntryPoint(child: const ContactUsPage()),
+  '/bookmark': (context) => EntryPoint(child: const BookmarksPage()),
+  '/wishlist': (context) => EntryPoint(child: const WishlistPage()), 
+  '/ResourcesHubPage': (context) => EntryPoint(child:  ResourcesHubPage()),
+  '/wishlist_management': (context) =>
+      EntryPoint(child: const AdminWishlistPage()),
   '/about': (context) => EntryPoint(child: const AboutUsPage()),
-  // '/success': (context) => EntryPoint(child: const SuccessStoriesPage()),
   '/WriteTestimonialPage': (context) =>
       EntryPoint(child: const WriteTestimonialPage()),
   '/StreamSelectorPage': (context) =>
       EntryPoint(child: const StreamSelectorPage()),
-  // '/SuccessStoriesPage': (context) =>
-  //     EntryPoint(child: const SuccessStoriesPage()),
   '/ManagePushNotificationsPage': (context) =>
       EntryPoint(child: const ManagePushNotificationsPage()),
   '/CareerGuidancePage': (context) =>
@@ -81,9 +86,9 @@ final Map<String, WidgetBuilder> adminRoutes = {
       EntryPoint(child: ManageResourcesHubPage()),
   '/testimonials_management': (context) =>
       EntryPoint(child: ManageTestimonialsPage()),
-       '/stream_questions_management': (context) =>
+  '/stream_questions_management': (context) =>
       EntryPoint(child: AdminStreamQuestionsPage()),
-     '/career_questions_management': (context) =>
+  '/career_questions_management': (context) =>
       EntryPoint(child: AdminCareerQuestionsPage()),
   '/feedback_management': (context) => EntryPoint(child: ManageFeedbackPage()),
 };
@@ -96,9 +101,7 @@ final Map<String, WidgetBuilder> routes = {
 };
 
 // List of routes that do NOT require authentication
-const List<String> unprotectedRoutes = [
-  '/auth',
-];
+const List<String> unprotectedRoutes = ['/auth'];
 
 // List of routes that DO require authentication
 const List<String> protectedRoutesList = ['/profile', '/', '/logout'];
@@ -112,5 +115,5 @@ const List<String> adminOnlyRoutes = [
   '/feedback_management',
   '/user_management',
   '/career_management',
-  '/stream_questions_management'
+  '/stream_questions_management',
 ];
