@@ -70,7 +70,7 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
         SnackBar(
           backgroundColor: Color(0xFF8E2DE2),
           content: Text(
-            '✅ Testimonial submitted successfully!',
+            'Testimonial submitted successfully!',
             style: TextStyle(fontFamily: 'Poppins', color: Colors.white),
           ),
         ),
@@ -85,7 +85,7 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
-          content: Text('❌ Failed to submit. Please try again.'),
+          content: Text('Failed to submit. Please try again.'),
         ),
       );
     }
@@ -299,7 +299,7 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
                 child: _isUploading
                     ? CircularProgressIndicator(color: Colors.white)
                     : Text(
-                        '📤 Submit Testimonial',
+                        'Submit Testimonial',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 18,

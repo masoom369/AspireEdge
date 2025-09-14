@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
       'description': 'AI-powered quiz to match your interests and strengths.',
       'color': Color(0xFF5B6CF1),
       'icon': Icons.quiz,
-      'route': '/quiz_management',
+      'route': '/stream_guidance',
     },
     {
       'title': 'CV Tips',

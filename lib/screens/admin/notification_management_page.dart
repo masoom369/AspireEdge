@@ -49,13 +49,13 @@ class _NotificationManagementPageState extends State<NotificationManagementPage>
 
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("✅ Notification sent successfully!")),
+        const SnackBar(content: Text("Notification sent successfully!")),
       );
       _titleController.clear();
       _bodyController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Failed: ${response.body}")),
+        SnackBar(content: Text("Failed: ${response.body}")),
       );
     }
   }

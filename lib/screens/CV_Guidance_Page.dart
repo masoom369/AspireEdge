@@ -134,7 +134,7 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
               children: [
                 Expanded(
                   child: _buildTipCard(
-                    title: "✅ Do’s",
+                    title: "Dos",
                     color: const Color(0xFF8E2DE2),
                     tips:
                         "• Use clear headings and bullet points\n• Include relevant skills and achievements\n• Keep it to 1 page\n• Use professional fonts like Arial or Calibri\n• Tailor your CV to the job you’re applying for",
@@ -143,7 +143,7 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildTipCard(
-                    title: "❌ Don’ts",
+                    title: "Donts",
                     color: const Color(0xFF5B6CF1),
                     tips:
                         "• Avoid spelling and grammar errors\n• Don’t include photos unless required\n• Avoid personal details like age or religion\n• Don’t use overly creative formats\n• Never lie about experience",

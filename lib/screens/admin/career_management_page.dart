@@ -77,7 +77,7 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
             try {
               loaded.add(CareerItem(key: key, career: Career.fromJson(value)));
             } catch (e) {
-              debugPrint('❌ Parse error career $key: $e');
+              debugPrint('Parse error career $key: $e');
             }
           });
           setState(() {
@@ -174,7 +174,7 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
                                   : career.imageBase64;
                               imageBytes = base64Decode(clean);
                             } catch (e) {
-                              debugPrint("❌ Preview decode error: $e");
+                              debugPrint("Preview decode error: $e");
                             }
                           }
 

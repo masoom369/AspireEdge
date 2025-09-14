@@ -578,8 +578,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ]),
             if (selectedTabIndex == 3)
               _infoCard("Achievements", [
-                _infoRow("Top Student of 2023", "🏆"),
-                _infoRow("Completed Flutter Bootcamp", "✅"),
+                _infoRow("Top Student of 2023", "Award"),
+                _infoRow("Completed Flutter Bootcamp", "Completed"),
               ]),
           ],
         ),

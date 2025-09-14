@@ -61,7 +61,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '✅ Do’s',
+                          'Dos',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 18,
@@ -104,7 +104,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '❌ Don’ts',
+                          'Donts',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 18,

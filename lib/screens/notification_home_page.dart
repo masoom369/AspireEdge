@@ -27,7 +27,7 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
 
 
 
-      debugPrint("📩 Firebase notification: ${data['title']} - ${data['body']}");
+      debugPrint("Firebase notification: ${data['title']} - ${data['body']}");
     });
 
 
@@ -47,7 +47,7 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
 
 
     OneSignal.Notifications.addClickListener((event) {
-      debugPrint("👉 Notification opened: ${event.notification.jsonRepresentation()}");
+      debugPrint("Notification opened: ${event.notification.jsonRepresentation()}");
     });
   }
 
