@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/utils/image_picker.dart';
 import '../../services/career_dao.dart';
 import '../../models/career.dart';
 
 class CareerManagementPage extends StatefulWidget {
+  const CareerManagementPage({super.key});
   @override
   _CareerManagementPageState createState() => _CareerManagementPageState();
 }
@@ -75,7 +77,7 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
             try {
               loaded.add(CareerItem(key: key, career: Career.fromJson(value)));
             } catch (e) {
-              print('❌ Parse error career $key: $e');
+              debugPrint('❌ Parse error career $key: $e');
             }
           });
           setState(() {
@@ -90,7 +92,7 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
         }
       },
       onError: (err) {
-        print('Firebase error: $err');
+        debugPrint('Firebase error: $err');
         setState(() => _isLoading = false);
       },
     );
@@ -172,7 +174,7 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
                                   : career.imageBase64;
                               imageBytes = base64Decode(clean);
                             } catch (e) {
-                              print("❌ Preview decode error: $e");
+                              debugPrint("❌ Preview decode error: $e");
                             }
                           }
 
@@ -184,7 +186,7 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.grey.withOpacity(0.1),
+                                  color: Colors.grey.withValues(alpha: 0.1),
                                   blurRadius: 4,
                                   offset: Offset(0, 2),
                                 ),

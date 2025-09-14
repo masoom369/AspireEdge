@@ -45,6 +45,8 @@ dependencies:
   image_picker: ^1.2.0
   universal_html: ^2.2.4
   onesignal_flutter: ^5.3.4
+  path_provider: ^2.1.5
+  permission_handler: ^12.0.1
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +74,7 @@ flutter:
     - assets/icons/ # Make sure this folder exists
     - assets/RiveAssets/ # Make sure this folder exists
     - assets/Images/ # Added for images like gym.jpg etc.
+    - assets/cvtemplates/
 
   fonts:
     - family: Inter

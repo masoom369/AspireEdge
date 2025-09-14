@@ -134,11 +134,11 @@ class _EntryPointState extends State<EntryPoint>
             padding: const EdgeInsets.all(12),
             margin: const EdgeInsets.symmetric(horizontal: 24),
             decoration: BoxDecoration(
-              color: backgroundColor2.withOpacity(0.8),
+              color: backgroundColor2.withValues(alpha: 0.8),
               borderRadius: const BorderRadius.all(Radius.circular(24)),
               boxShadow: [
                 BoxShadow(
-                  color: backgroundColor2.withOpacity(0.3),
+                  color: backgroundColor2.withValues(alpha: 0.3),
                   offset: const Offset(0, 20),
                   blurRadius: 20,
                 ),

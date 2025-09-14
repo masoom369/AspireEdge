@@ -192,7 +192,7 @@ class _CareerGuidancePageState extends State<CareerGuidancePage> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF8E2DE2).withOpacity(0.08),
+                  color: const Color(0xFF8E2DE2).withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(recommended,

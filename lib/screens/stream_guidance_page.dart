@@ -234,7 +234,7 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF8E2DE2).withOpacity(0.1),
+                  color: const Color(0xFF8E2DE2).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -381,7 +381,7 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF8E2DE2).withOpacity(0.1),
+                        color: const Color(0xFF8E2DE2).withValues(alpha: 0.1),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -480,7 +480,7 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
                         style: TextStyle(fontFamily: 'Poppins', color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          const Color(0xFF8E2DE2).withOpacity(0.8),
+                          const Color(0xFF8E2DE2).withValues(alpha: 0.8),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(

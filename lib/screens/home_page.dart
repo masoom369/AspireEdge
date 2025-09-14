@@ -224,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: module['color'].withOpacity(0.2),
+                          color: module['color'].withValues(alpha: 0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -253,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               CircleAvatar(
                                 radius: 14,
-                                backgroundColor: Colors.white.withOpacity(0.15),
+                                backgroundColor: Colors.white.withValues(alpha: 0.15),
                                 child: Icon(
                                   module['icon'],
                                   size: 18,
@@ -268,7 +268,7 @@ class _HomePageState extends State<HomePage> {
                               fontFamily: 'Poppins',
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
-                              color: Colors.white.withOpacity(0.95),
+                              color: Colors.white.withValues(alpha: 0.95),
                             ),
                           ),
                           Text(
@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 12,
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -315,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                       gradient: LinearGradient(
                         colors: [
                           content['color'],
-                          content['color'].withOpacity(0.8),
+                          content['color'].withValues(alpha: 0.8),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -323,7 +323,7 @@ class _HomePageState extends State<HomePage> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: content['color'].withOpacity(0.2),
+                          color: content['color'].withValues(alpha: 0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -337,7 +337,7 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           CircleAvatar(
                             radius: 20,
-                            backgroundColor: Colors.white.withOpacity(0.2),
+                            backgroundColor: Colors.white.withValues(alpha: 0.2),
                             child: Icon(
                               content['icon'],
                               color: Colors.white,
@@ -359,7 +359,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 13,
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                             ),
                           ),
                         ],
@@ -393,7 +393,7 @@ class _HomePageState extends State<HomePage> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF8E2DE2).withOpacity(0.1),
+                          color: const Color(0xFF8E2DE2).withValues(alpha: 0.1),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),

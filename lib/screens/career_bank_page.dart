@@ -1,4 +1,5 @@
 import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/services/career_dao.dart';
 import 'package:aspire_edge/models/career.dart';
@@ -7,6 +8,7 @@ import 'dart:typed_data';
 import 'dart:async';
 
 class CareerBankPage extends StatefulWidget {
+  const CareerBankPage({super.key});
   @override
   _CareerBankPageState createState() => _CareerBankPageState();
 }
@@ -68,7 +70,7 @@ class _CareerBankPageState extends State<CareerBankPage> {
             final career = Career.fromJson(value);
             loaded.add(career);
           } catch (e) {
-            print('Parse error for career $key: $e');
+            debugPrint('Parse error for career $key: $e');
           }
         });
 
@@ -227,7 +229,7 @@ class _CareerBankPageState extends State<CareerBankPage> {
                                     : career.imageBase64;
                                 imageBytes = base64Decode(clean);
                               } catch (e) {
-                                print('Image decode error: $e');
+                                debugPrint('Image decode error: $e');
                               }
                             }
                             return Container(
@@ -238,7 +240,7 @@ class _CareerBankPageState extends State<CareerBankPage> {
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
+                                    color: Colors.grey.withValues(alpha: 0.1),
                                     blurRadius: 4,
                                     offset: Offset(0, 2),
                                   ),

@@ -236,7 +236,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CircleAvatar(
-                                backgroundColor: _getCategoryColor(resource.category).withOpacity(0.15),
+                                backgroundColor: _getCategoryColor(resource.category).withValues(alpha: 0.15),
                                 child: Icon(
                                   _getCategoryIcon(resource.category),
                                   color: _getCategoryColor(resource.category),

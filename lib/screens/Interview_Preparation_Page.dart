@@ -49,7 +49,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF8E2DE2).withOpacity(0.2),
+                          color: Color(0xFF8E2DE2).withValues(alpha: 0.2),
                           blurRadius: 8,
                           offset: Offset(0, 4),
                         ),
@@ -75,7 +75,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 14,
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                             ),
                             textAlign: TextAlign.left,
                           ),
@@ -92,7 +92,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF5B6CF1).withOpacity(0.2),
+                          color: Color(0xFF5B6CF1).withValues(alpha: 0.2),
                           blurRadius: 8,
                           offset: Offset(0, 4),
                         ),
@@ -118,7 +118,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 14,
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                             ),
                             textAlign: TextAlign.left,
                           ),
@@ -151,7 +151,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF8E2DE2).withOpacity(0.1),
+                        color: Color(0xFF8E2DE2).withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: Offset(0, 4),
                       ),
@@ -189,7 +189,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF8E2DE2).withOpacity(0.1),
+                        color: Color(0xFF8E2DE2).withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: Offset(0, 4),
                       ),
@@ -227,7 +227,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF8E2DE2).withOpacity(0.1),
+                        color: Color(0xFF8E2DE2).withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: Offset(0, 4),
                       ),
@@ -280,7 +280,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0xFF8E2DE2).withOpacity(0.1),
+                    color: Color(0xFF8E2DE2).withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: Offset(0, 4),
                   ),
@@ -337,7 +337,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0xFF8E2DE2).withOpacity(0.1),
+                    color: Color(0xFF8E2DE2).withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: Offset(0, 4),
                   ),
