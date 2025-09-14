@@ -4,14 +4,14 @@ import 'package:firebase_database/firebase_database.dart';
 import '../../models/feedback.dart';
 import '../../services/feedback_dao.dart';
 
-class ManageFeedbackPage extends StatefulWidget {
-  const ManageFeedbackPage({super.key});
+class FeedbackManagementPage extends StatefulWidget {
+  const FeedbackManagementPage({super.key});
 
   @override
-  State<ManageFeedbackPage> createState() => _ManageFeedbackPageState();
+  State<FeedbackManagementPage> createState() => _FeedbackManagementPageState();
 }
 
-class _ManageFeedbackPageState extends State<ManageFeedbackPage>
+class _FeedbackManagementPageState extends State<FeedbackManagementPage>
     with SingleTickerProviderStateMixin {
   final FeedbackDao _feedbackDao = FeedbackDao();
   late TabController _tabController;
@@ -31,7 +31,7 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: CustomAppBar(title:"Feedback Management"),
+      appBar: CustomAppBar(title: "Feedback Management"),
       body: StreamBuilder<DatabaseEvent>(
         stream: _feedbackDao.getFeedbackList().onValue,
         builder: (context, snapshot) {
@@ -57,7 +57,6 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
                   FeedbackModel.fromJson(Map<String, dynamic>.from(entry.value)))
               .toList()
             ..sort((a, b) => b.id.compareTo(a.id));
-
 
           final pendingFeedbacks =
               feedbacks.where((f) => f.status != "resolved").toList();
@@ -120,19 +119,16 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
           ),
           const SizedBox(height: 10),
 
-
           Text(
             "Subject: ${item.subject}",
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 6),
 
-
           Text("Inquiry: ${item.inquiryType}",
               style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
 
           const SizedBox(height: 10),
-
 
           Text(
             item.message,
@@ -140,7 +136,6 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
           ),
 
           const SizedBox(height: 10),
-
 
           Row(
             children: [
@@ -162,7 +157,6 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
           ),
 
           const SizedBox(height: 16),
-
 
           Row(
             mainAxisAlignment: MainAxisAlignment.end,

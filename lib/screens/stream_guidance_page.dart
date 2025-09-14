@@ -4,14 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class StreamSelectorPage extends StatefulWidget {
-  const StreamSelectorPage({Key? key}) : super(key: key);
+class StreamGuidancePage extends StatefulWidget {
+  const StreamGuidancePage({Key? key}) : super(key: key);
 
   @override
-  State<StreamSelectorPage> createState() => _StreamSelectorPageState();
+  State<StreamGuidancePage> createState() => _StreamGuidancePageState();
 }
 
-class _StreamSelectorPageState extends State<StreamSelectorPage> {
+class _StreamGuidancePageState extends State<StreamGuidancePage> {
   int currentStep = 0;
   List<String> selectedAnswers = [];
 

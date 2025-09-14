@@ -2,18 +2,17 @@ import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class AdminStreamQuestionsPage extends StatefulWidget {
-  const AdminStreamQuestionsPage({super.key});
+class StreamManagementPage extends StatefulWidget {
+  const StreamManagementPage({super.key});
 
   @override
-  State<AdminStreamQuestionsPage> createState() =>
-      _AdminStreamQuestionsPageState();
+  State<StreamManagementPage> createState() =>
+      _StreamManagementPageState();
 }
 
-class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
+class _StreamManagementPageState extends State<StreamManagementPage> {
   final DatabaseReference _ref =
       FirebaseDatabase.instance.ref("stream_questions");
-
 
   void _addQuestion() {
     final newRef = _ref.push();
@@ -27,21 +26,17 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
     });
   }
 
-
   void _editQuestionTitle(String id, String title) {
     _ref.child(id).update({"title": title});
   }
-
 
   void _editQuestionType(String id, String type) {
     _ref.child(id).update({"type": type});
   }
 
-
   void _deleteQuestion(String id) {
     _ref.child(id).remove();
   }
-
 
   Future<void> _addOption(String questionId) async {
     final snap = await _ref.child(questionId).child("options").get();
@@ -49,7 +44,6 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
 
     if (snap.exists && snap.value != null) {
       if (snap.value is List) {
-
         final list = List.from(snap.value as List);
         for (int i = 0; i < list.length; i++) {
           if (list[i] != null) {
@@ -67,7 +61,6 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
     await _ref.child(questionId).child("options").set(options);
   }
 
-
   Future<void> _editOption(
       String questionId, String optionKey, String newText, String newValue) async {
     await _ref
@@ -77,7 +70,6 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
         .set({"text": newText, "value": newValue});
   }
 
-
   Future<void> _deleteOption(String questionId, String optionKey) async {
     await _ref.child(questionId).child("options").child(optionKey).remove();
   }
@@ -85,7 +77,7 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: CustomAppBar(title:"Stream Questions Management"),
+      appBar: CustomAppBar(title: "Stream Management"),
       body: StreamBuilder<DatabaseEvent>(
         stream: _ref.onValue,
         builder: (context, snapshot) {
@@ -97,14 +89,12 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
           Map<String, dynamic> rawValue = {};
 
           if (val is List) {
-
             for (int i = 0; i < val.length; i++) {
               if (val[i] != null) {
                 rawValue[i.toString()] = Map<String, dynamic>.from(val[i]);
               }
             }
           } else if (val is Map) {
-
             rawValue = Map<String, dynamic>.from(val as Map);
           }
 
@@ -144,7 +134,6 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       TextFormField(
                         initialValue: q["title"],
                         decoration: const InputDecoration(
@@ -157,7 +146,6 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
                         },
                       ),
                       const SizedBox(height: 10),
-
 
                       DropdownButton<String>(
                         value: q["type"],
@@ -229,4 +217,3 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
     );
   }
 }
-

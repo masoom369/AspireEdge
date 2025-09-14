@@ -5,14 +5,14 @@ import 'package:aspire_edge/services/resource_repository_dao.dart';
 import 'package:aspire_edge/utils/image_picker.dart';
 import 'package:flutter/material.dart';
 
-class ManageResourcesHubPage extends StatefulWidget {
-  const ManageResourcesHubPage({super.key});
+class ResourcesManagementPage extends StatefulWidget {
+  const ResourcesManagementPage({super.key});
 
   @override
-  State<ManageResourcesHubPage> createState() => _ManageResourcesHubPageState();
+  State<ResourcesManagementPage> createState() => _ResourcesManagementPageState();
 }
 
-class _ManageResourcesHubPageState extends State<ManageResourcesHubPage> {
+class _ResourcesManagementPageState extends State<ResourcesManagementPage> {
   final ResourceRepository _repository = ResourceRepository();
   String selectedTab = "Blog";
 
@@ -21,7 +21,6 @@ class _ManageResourcesHubPageState extends State<ManageResourcesHubPage> {
     super.initState();
   }
 
-
   void _openAddDialog() {
     final formKey = GlobalKey<FormState>();
     final titleController = TextEditingController();
@@ -29,43 +28,41 @@ class _ManageResourcesHubPageState extends State<ManageResourcesHubPage> {
     final linkController = TextEditingController();
     final uploadedImages = <String>[];
 
-   
-showDialog(
-  context: context,
-  builder: (context) {
-    return DefaultTabController(
-      length: 4,
-      child: Builder(
-        builder: (ctx) => AlertDialog(
-          content: SizedBox(
-            width: 400,
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TabBar(
-                    tabs: const [
-                      Tab(text: "Blog"),
-                      Tab(text: "eBook"),
-                      Tab(text: "Video"),
-                      Tab(text: "Gallery"),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 300,
-                    child: TabBarView(
-                      children: [
-                        _dialogFields(titleController, descController, null, null),
-                        _dialogFields(titleController, descController, linkController, "eBook Link"),
-                        _dialogFields(titleController, descController, linkController, "Video Link"),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DefaultTabController(
+          length: 4,
+          child: Builder(
+            builder: (ctx) => AlertDialog(
+              content: SizedBox(
+                width: 400,
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TabBar(
+                        tabs: const [
+                          Tab(text: "Blog"),
+                          Tab(text: "eBook"),
+                          Tab(text: "Video"),
+                          Tab(text: "Gallery"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 300,
+                        child: TabBarView(
+                          children: [
+                            _dialogFields(titleController, descController, null, null),
+                            _dialogFields(titleController, descController, linkController, "eBook Link"),
+                            _dialogFields(titleController, descController, linkController, "Video Link"),
                             Column(
                               children: [
                                 _dialogFields(titleController, descController, null, null),
                                 const SizedBox(height: 10),
                                 ElevatedButton.icon(
                                   onPressed: () async {
-
                                     final base64Image = await ImagePickerUtils.pickImageBase64();
                                     if (base64Image.isNotEmpty) {
                                       uploadedImages.add(base64Image);
@@ -94,62 +91,60 @@ showDialog(
                                 ),
                               ],
                             ),
-                      ],
-                    ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final currentTab = DefaultTabController.of(ctx)!.index;
+                    final category = ["Blog", "eBook", "Video", "Gallery"][currentTab];
+                    if (formKey.currentState!.validate()) {
+                      if (category == "Blog") {
+                        await _repository.add(Blog(
+                          title: titleController.text,
+                          description: descController.text,
+                        ));
+                      } else if (category == "eBook") {
+                        await _repository.add(EBook(
+                          title: titleController.text,
+                          description: descController.text,
+                          link: linkController.text,
+                        ));
+                      } else if (category == "Video") {
+                        await _repository.add(Video(
+                          title: titleController.text,
+                          description: descController.text,
+                          link: linkController.text,
+                        ));
+                      } else if (category == "Gallery") {
+                        await _repository.add(Gallery(
+                          title: titleController.text,
+                          description: descController.text,
+                          images: uploadedImages,
+                        ));
+                      }
+                      Navigator.pop(ctx);
+                      setState(() {});
+                    }
+                  },
+                  child: const Text("Save"),
+                ),
+              ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final currentTab = DefaultTabController.of(ctx)!.index;
-                final category = ["Blog", "eBook", "Video", "Gallery"][currentTab];
-                if (formKey.currentState!.validate()) {
-                  if (category == "Blog") {
-                    await _repository.add(Blog(
-                      title: titleController.text,
-                      description: descController.text,
-                    ));
-                  } else if (category == "eBook") {
-                    await _repository.add(EBook(
-                      title: titleController.text,
-                      description: descController.text,
-                      link: linkController.text,
-                    ));
-                  } else if (category == "Video") {
-                    await _repository.add(Video(
-                      title: titleController.text,
-                      description: descController.text,
-                      link: linkController.text,
-                    ));
-                  } else if (category == "Gallery") {
-                    await _repository.add(Gallery(
-                      title: titleController.text,
-                      description: descController.text,
-                      images: uploadedImages,
-                    ));
-                  }
-                  Navigator.pop(ctx);
-                  setState(() {});
-                }
-              },
-              child: const Text("Save"),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
-  },
-);
-
   }
-
 
   void _openEditDialog(Resource resource) {
     final formKey = GlobalKey<FormState>();
@@ -201,7 +196,6 @@ showDialog(
                                 const SizedBox(height: 10),
                                 ElevatedButton.icon(
                                   onPressed: () async {
-
                                     final base64Image = await ImagePickerUtils.pickImageBase64();
                                     if (base64Image.isNotEmpty) {
                                       uploadedImages.add(base64Image);
@@ -287,7 +281,6 @@ showDialog(
     );
   }
 
-
   void _confirmDelete(Resource resource) {
     showDialog(
       context: context,
@@ -312,7 +305,6 @@ showDialog(
       ),
     );
   }
-
 
   static Widget _dialogFields(
     TextEditingController title,
@@ -354,7 +346,6 @@ showDialog(
       ),
     );
   }
-
 
   Widget _buildResourceCard(Resource r) {
     return Card(
@@ -461,7 +452,6 @@ showDialog(
     );
   }
 
-
   Widget _tabButton(String type) {
     final isActive = selectedTab == type;
     return ElevatedButton(
@@ -475,14 +465,12 @@ showDialog(
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title:"Resources Hub Management"),
+      appBar: CustomAppBar(title: "Resources Management"),
       body: Column(
         children: [
-
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: SizedBox(
@@ -508,7 +496,6 @@ showDialog(
               ),
             ),
           ),
-
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -536,7 +523,6 @@ showDialog(
           ),
 
           const SizedBox(height: 8),
-
 
           Expanded(
             child: FutureBuilder<List<Resource>>(

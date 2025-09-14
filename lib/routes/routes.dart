@@ -1,70 +1,77 @@
-import 'package:aspire_edge/screens/cv_guidance_page.dart';
-import 'package:aspire_edge/screens/career_guidance_page.dart';
-import 'package:aspire_edge/screens/interview_preparation_page.dart';
-import 'package:aspire_edge/screens/notification_home_page.dart';
-import 'package:aspire_edge/screens/stream_selector_screen.dart';
-import 'package:aspire_edge/screens/write_testimonial_screen.dart';
-import 'package:aspire_edge/screens/about_us.dart';
-import 'package:aspire_edge/screens/admin/admin_notification_page.dart';
-import 'package:aspire_edge/screens/admin/admin_career_questions_page.dart';
-import 'package:aspire_edge/screens/admin/admin_stream_questions_page.dart';
-import 'package:aspire_edge/screens/admin/career_bank_management_screen.dart';
-import 'package:aspire_edge/screens/admin/feedback_management_screen.dart';
-import 'package:aspire_edge/screens/admin/quiz_management_screen.dart';
-import 'package:aspire_edge/screens/admin/resources_hub_management_screen.dart';
-import 'package:aspire_edge/screens/admin/testimonial_management_screen.dart';
-import 'package:aspire_edge/screens/admin/wishlist_management_screen.dart';
-import 'package:aspire_edge/screens/bookmark_page.dart';
-import 'package:aspire_edge/screens/dashboard_screen.dart';
-import 'package:aspire_edge/screens/career_bank.dart';
-import 'package:aspire_edge/screens/contact_us.dart';
-import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
-import 'package:aspire_edge/screens/home_page.dart';
-import 'package:aspire_edge/screens/logout_screen.dart';
-import 'package:aspire_edge/screens/push_notification_screen.dart';
-import 'package:aspire_edge/screens/resource_hub_screen.dart';
-import 'package:aspire_edge/screens/wishlist.dart';
-import 'package:aspire_edge/services/auth_service.dart';
-import 'package:aspire_edge/services/user_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/screens/onboarding/onboarding_screen.dart';
-import 'package:aspire_edge/screens/profile_screen.dart';
+import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
+import 'package:aspire_edge/screens/home_page.dart';
+import 'package:aspire_edge/screens/about_us_page.dart';
+import 'package:aspire_edge/screens/contact_us_page.dart';
+import 'package:aspire_edge/screens/profile_page.dart';
+import 'package:aspire_edge/screens/logout_screen.dart';
+import 'package:aspire_edge/screens/bookmark_page.dart';
+import 'package:aspire_edge/screens/wishlist_page.dart';
+import 'package:aspire_edge/screens/notification_home_page.dart';
+import 'package:aspire_edge/screens/resources_hub_page.dart';
+import 'package:aspire_edge/screens/write_testimonials_page.dart';
+import 'package:aspire_edge/screens/stream_guidance_page.dart';
+import 'package:aspire_edge/screens/career_guidance_page.dart';
+import 'package:aspire_edge/screens/career_bank_page.dart';
+import 'package:aspire_edge/screens/interview_preparation_page.dart';
+import 'package:aspire_edge/screens/cv_guidance_page.dart';
+import 'package:aspire_edge/screens/push_notification_screen.dart';
+import 'package:aspire_edge/screens/dashboard_screen.dart';
 
+// Admin pages
+import 'package:aspire_edge/screens/admin/notification_management_page.dart';
+import 'package:aspire_edge/screens/admin/career_management_page.dart';
+import 'package:aspire_edge/screens/admin/stream_management_page.dart';
+import 'package:aspire_edge/screens/admin/feedback_management_page.dart';
+import 'package:aspire_edge/screens/admin/quiz_management_page.dart';
+import 'package:aspire_edge/screens/admin/resources_management_page.dart';
+import 'package:aspire_edge/screens/admin/testimonial_management_page.dart';
+import 'package:aspire_edge/screens/admin/wishlist_management_page.dart';
 
-final Map<String, WidgetBuilder> publicRoutes = {
-  '/auth': (context) => const OnboardingScreen(),
-};
+import 'package:aspire_edge/services/auth_service.dart';
+import 'package:aspire_edge/services/user_dao.dart';
+
 final AuthService _authService = AuthService();
 final UserDao _userDao = UserDao();
 
+/// ==========================
+/// PUBLIC ROUTES
+/// ==========================
+final Map<String, WidgetBuilder> publicRoutes = {
+  '/auth': (context) => const OnboardingScreen(),
+};
 
+/// ==========================
+/// PROTECTED ROUTES
+/// ==========================
 final Map<String, WidgetBuilder> protectedRoutes = {
+  '/': (context) => EntryPoint(child: const HomePage()),
+  '/about': (context) => EntryPoint(child: const AboutUsPage()),
   '/contact': (context) => EntryPoint(child: const ContactUsPage()),
+  '/profile': (context) => EntryPoint(child: const ProfilePage()),
+  '/logout': (context) => EntryPoint(child: const LogoutPage()),
+
   '/bookmark': (context) => EntryPoint(child: const BookmarksPage()),
   '/wishlist': (context) => EntryPoint(child: const WishlistPage()),
   '/notification': (context) => EntryPoint(child: const NotificationHomePage()),
-  '/notification_management': (context) =>
-      EntryPoint(child: const AdminNotificationPage()),
-  '/ResourcesHubPage': (context) => EntryPoint(child: ResourcesHubPage()),
-  '/wishlist_management': (context) =>
-      EntryPoint(child: const AdminWishlistPage()),
-  '/about': (context) => EntryPoint(child: const AboutUsPage()),
-  '/WriteTestimonialPage': (context) =>
-      EntryPoint(child: const WriteTestimonialPage()),
-  '/StreamSelectorPage': (context) =>
-      EntryPoint(child: const StreamSelectorPage()),
-  '/ManagePushNotificationsPage': (context) =>
-      EntryPoint(child: const ManagePushNotificationsPage()),
-  '/CareerGuidancePage': (context) =>
+  '/resources': (context) => EntryPoint(child: ResourcesHubPage()),
+
+  '/write_testimonial': (context) =>
+      EntryPoint(child: const WriteTestimonialsPage()),
+  '/stream_guidance': (context) =>
+      EntryPoint(child: const StreamGuidancePage()),
+  '/career_guidance': (context) =>
       EntryPoint(child: const CareerGuidancePage()),
-  '/InterviewPrepPage': (context) =>
+  '/career_bank': (context) => EntryPoint(child: CareerBankPage()),
+  '/interview_preparation': (context) =>
       EntryPoint(child: const InterviewPrepPage()),
-  '/CareerBankPage': (context) => EntryPoint(child: CareerBankPage()),
-  '/CVGuidancePage': (context) => EntryPoint(child: const CVGuidancePage()),
-  '/profile': (context) => EntryPoint(child: const ProfileScreen()),
-  '/logout': (context) => EntryPoint(child: const LogoutPage()),
-  '/': (context) => EntryPoint(child: const HomePage()),
-  '/DashboardPage': (context) => FutureBuilder<String?>(
+  '/cv_guidance': (context) => EntryPoint(child: const CVGuidancePage()),
+
+  '/manage_push_notifications': (context) =>
+      EntryPoint(child: const ManagePushNotificationsPage()),
+
+  '/dashboard': (context) => FutureBuilder<String?>(
     future: _userDao.getUserRole(_authService.currentUser!.uid),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -77,49 +84,76 @@ final Map<String, WidgetBuilder> protectedRoutes = {
         );
       }
 
-      final role = snapshot.data ?? "user"; // default if null
+      final role = snapshot.data ?? "user";
       return EntryPoint(child: DashboardPage(role: role));
     },
   ),
 };
 
-
+/// ==========================
+/// ADMIN ROUTES
+/// ==========================
 final Map<String, WidgetBuilder> adminRoutes = {
+  '/notification_management': (context) =>
+      EntryPoint(child: const NotificationManagementPage()),
   '/career_management': (context) => EntryPoint(child: CareerManagementPage()),
-  '/quiz_management': (context) => EntryPoint(child: ManageQuizPage()),
+  '/stream_management': (context) =>
+      EntryPoint(child: const StreamManagementPage()),
+  '/feedback_management': (context) =>
+      EntryPoint(child: const FeedbackManagementPage()),
+  '/quiz_management': (context) => EntryPoint(child: QuizManagementPage()),
   '/resources_management': (context) =>
-      EntryPoint(child: ManageResourcesHubPage()),
-  '/testimonials_management': (context) =>
-      EntryPoint(child: ManageTestimonialsPage()),
-  '/stream_questions_management': (context) =>
-      EntryPoint(child: AdminStreamQuestionsPage()),
-  '/career_questions_management': (context) =>
-      EntryPoint(child: AdminCareerQuestionsPage()),
-  '/feedback_management': (context) => EntryPoint(child: ManageFeedbackPage()),
+      EntryPoint(child: const ResourcesManagementPage()),
+  '/testimonial_management': (context) =>
+      EntryPoint(child: const TestimonialManagementPage()),
+  '/wishlist_management': (context) =>
+      EntryPoint(child: const WishlistManagementPage()),
 };
 
-
+/// ==========================
+/// MERGED ROUTES
+/// ==========================
 final Map<String, WidgetBuilder> routes = {
   ...publicRoutes,
   ...protectedRoutes,
   ...adminRoutes,
 };
 
-
+/// ==========================
+/// ROUTE ACCESS LISTS
+/// ==========================
 const List<String> unprotectedRoutes = ['/auth'];
 
+const List<String> protectedRoutesList = [
+  '/', // Home
+  '/about',
+  '/contact',
+  '/profile',
+  '/logout',
 
-const List<String> protectedRoutesList = ['/profile', '/', '/logout'];
+  '/bookmark',
+  '/wishlist',
+  '/notification',
+  '/resources',
 
+  '/write_testimonial',
+  '/stream_guidance',
+  '/career_guidance',
+  '/career_bank',
+  '/interview_preparation',
+  '/cv_guidance',
 
-const List<String> adminOnlyRoutes = [
-  '/quiz_management',
-  '/resources_management',
-  '/career_questions_management',
-  '/testimonials_management',
-  '/feedback_management',
-  '/user_management',
-  '/career_management',
-  '/stream_questions_management',
+  '/manage_push_notifications',
+  '/dashboard',
 ];
 
+const List<String> adminOnlyRoutes = [
+  '/notification_management',
+  '/career_management',
+  '/stream_management',
+  '/feedback_management',
+  '/quiz_management',
+  '/resources_management',
+  '/testimonial_management',
+  '/wishlist_management',
+];

@@ -1,20 +1,20 @@
+import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class AdminNotificationPage extends StatefulWidget {
-  const AdminNotificationPage({super.key});
+class NotificationManagementPage extends StatefulWidget {
+  const NotificationManagementPage({super.key});
 
   @override
-  State<AdminNotificationPage> createState() => _AdminNotificationPageState();
+  State<NotificationManagementPage> createState() => _NotificationManagementPageState();
 }
 
-class _AdminNotificationPageState extends State<AdminNotificationPage> {
+class _NotificationManagementPageState extends State<NotificationManagementPage> {
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
   final _db = FirebaseDatabase.instance.ref('notifications');
-
 
   static const String oneSignalAppId = "bfd0fb79-5c68-441e-b78d-063271b0d492";
   static const String restApiKey =
@@ -25,14 +25,12 @@ class _AdminNotificationPageState extends State<AdminNotificationPage> {
     final body = _bodyController.text.trim();
     if (title.isEmpty || body.isEmpty) return;
 
-
     final newRef = _db.push();
     await newRef.set({
       'title': title,
       'body': body,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     });
-
 
     final url = Uri.parse('https://onesignal.com/api/v1/notifications');
     final response = await http.post(
@@ -65,7 +63,7 @@ class _AdminNotificationPageState extends State<AdminNotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Admin Notifications")),
+      appBar: CustomAppBar(title: "Notification Management"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -90,4 +88,3 @@ class _AdminNotificationPageState extends State<AdminNotificationPage> {
     );
   }
 }
-

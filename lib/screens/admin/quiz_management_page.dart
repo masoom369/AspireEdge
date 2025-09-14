@@ -15,12 +15,12 @@ class QuizQuestion {
   });
 }
 
-class ManageQuizPage extends StatefulWidget {
+class QuizManagementPage extends StatefulWidget {
   @override
-  _ManageQuizPageState createState() => _ManageQuizPageState();
+  _QuizManagementPageState createState() => _QuizManagementPageState();
 }
 
-class _ManageQuizPageState extends State<ManageQuizPage> {
+class _QuizManagementPageState extends State<QuizManagementPage> {
   List<QuizQuestion> quizQuestions = [
     QuizQuestion(
       question: "What is Flutter?",
@@ -139,7 +139,7 @@ class _ManageQuizPageState extends State<ManageQuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-            appBar: CustomAppBar(title:"Quiz Management"),
+      appBar: CustomAppBar(title: "Quiz Management"),
       body: Column(
         children: [
 
@@ -236,4 +236,3 @@ class _ManageQuizPageState extends State<ManageQuizPage> {
     );
   }
 }
-

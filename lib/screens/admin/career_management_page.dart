@@ -123,11 +123,7 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text("Career Management", style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF3D455B),
-        centerTitle: true,
-      ),
+      appBar: CustomAppBar(title: "Career Management"),
       body: Column(
         children: [
           Padding(
@@ -381,7 +377,7 @@ class _CareerFormPageState extends State<CareerFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title:"Career Bank Management"),
+      appBar: CustomAppBar(title: "Career Management"),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
@@ -470,4 +466,3 @@ class _CareerFormPageState extends State<CareerFormPage> {
     );
   }
 }
-

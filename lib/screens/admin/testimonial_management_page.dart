@@ -5,8 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import '../../models/testimonial.dart';
 import '../../services/testimonial_dao.dart';
 
-class ManageTestimonialsPage extends StatelessWidget {
-  const ManageTestimonialsPage({super.key});
+class TestimonialManagementPage extends StatelessWidget {
+  const TestimonialManagementPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -116,4 +116,3 @@ class ManageTestimonialsPage extends StatelessWidget {
     );
   }
 }
-

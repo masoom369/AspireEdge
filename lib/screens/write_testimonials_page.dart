@@ -5,14 +5,14 @@ import 'package:firebase_database/firebase_database.dart';
 import '../models/testimonial.dart';
 import '../utils/image_picker.dart'; // <-- Your helper for picking images
 
-class WriteTestimonialPage extends StatefulWidget {
-  const WriteTestimonialPage({Key? key}) : super(key: key);
+class WriteTestimonialsPage extends StatefulWidget {
+  const WriteTestimonialsPage({Key? key}) : super(key: key);
 
   @override
-  State<WriteTestimonialPage> createState() => _WriteTestimonialPageState();
+  State<WriteTestimonialsPage> createState() => _WriteTestimonialsPageState();
 }
 
-class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
+class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _testimonialController = TextEditingController();
   String _selectedTier = 'Graduate'; // Default tier

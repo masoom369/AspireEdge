@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
+import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:aspire_edge/models/wishlist_item.dart';
 import 'package:aspire_edge/services/wishlist_item_dao.dart';
 
-class AdminWishlistPage extends StatefulWidget {
-  const AdminWishlistPage({super.key});
+class WishlistManagementPage extends StatefulWidget {
+  const WishlistManagementPage({super.key});
 
   @override
-  State<AdminWishlistPage> createState() => _AdminWishlistPageState();
+  State<WishlistManagementPage> createState() => _WishlistManagementPageState();
 }
 
-class _AdminWishlistPageState extends State<AdminWishlistPage> {
+class _WishlistManagementPageState extends State<WishlistManagementPage> {
   final WishlistItemDao _dao = WishlistItemDao();
 
   void _deleteItem(String key) {
@@ -28,7 +28,8 @@ class _AdminWishlistPageState extends State<AdminWishlistPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-       appBar: CustomAppBar(title:"Wishlist Management"),     body: Padding(
+      appBar: CustomAppBar(title: "Wishlist Management"),
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder(
           stream: _dao.getWishlistItemList().onValue,
@@ -116,4 +117,3 @@ class _AdminWishlistPageState extends State<AdminWishlistPage> {
     );
   }
 }
-
