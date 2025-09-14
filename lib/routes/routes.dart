@@ -30,14 +30,14 @@ import 'package:flutter/material.dart';
 import 'package:aspire_edge/screens/onboding/onboding_screen.dart';
 import 'package:aspire_edge/screens/profile_screen.dart';
 
-// Public routes (no authentication required)
+
 final Map<String, WidgetBuilder> publicRoutes = {
   '/auth': (context) => const OnbodingScreen(),
 };
 final AuthService _authService = AuthService();
 final UserDao _userDao = UserDao();
 
-// Protected routes (authentication required)
+
 final Map<String, WidgetBuilder> protectedRoutes = {
   '/contact': (context) => EntryPoint(child: const ContactUsPage()),
   '/bookmark': (context) => EntryPoint(child: const BookmarksPage()),
@@ -83,7 +83,7 @@ final Map<String, WidgetBuilder> protectedRoutes = {
   ),
 };
 
-// Admin routes (admin access required)
+
 final Map<String, WidgetBuilder> adminRoutes = {
   '/career_management': (context) => EntryPoint(child: CareerManagementPage()),
   '/quiz_management': (context) => EntryPoint(child: ManageQuizPage()),
@@ -98,20 +98,20 @@ final Map<String, WidgetBuilder> adminRoutes = {
   '/feedback_management': (context) => EntryPoint(child: ManageFeedbackPage()),
 };
 
-// Combined routes map
+
 final Map<String, WidgetBuilder> routes = {
   ...publicRoutes,
   ...protectedRoutes,
   ...adminRoutes,
 };
 
-// List of routes that do NOT require authentication
+
 const List<String> unprotectedRoutes = ['/auth'];
 
-// List of routes that DO require authentication
+
 const List<String> protectedRoutesList = ['/profile', '/', '/logout'];
 
-// List of routes that ONLY admin users can access
+
 const List<String> adminOnlyRoutes = [
   '/quiz_management',
   '/resources_management',
@@ -122,3 +122,4 @@ const List<String> adminOnlyRoutes = [
   '/career_management',
   '/stream_questions_management',
 ];
+

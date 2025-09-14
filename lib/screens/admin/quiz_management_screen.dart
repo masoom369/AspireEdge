@@ -142,7 +142,7 @@ class _ManageQuizPageState extends State<ManageQuizPage> {
             appBar: CustomAppBar(title:"Quiz Management"),
       body: Column(
         children: [
-          // ✅ Full-width Add Button on Top
+
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
@@ -236,3 +236,4 @@ class _ManageQuizPageState extends State<ManageQuizPage> {
     );
   }
 }
+

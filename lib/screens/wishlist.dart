@@ -108,7 +108,7 @@ class WishlistPageState extends State<WishlistPage> {
             ),
             const SizedBox(height: 24),
 
-            // Category Dropdown
+
             _buildCategoryDropdown(),
 
             const SizedBox(height: 20),
@@ -322,3 +322,4 @@ class WishlistPageState extends State<WishlistPage> {
     super.dispose();
   }
 }
+

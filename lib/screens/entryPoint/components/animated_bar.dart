@@ -23,3 +23,4 @@ class AnimatedBar extends StatelessWidget {
     );
   }
 }
+

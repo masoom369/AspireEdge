@@ -14,7 +14,7 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
   final DatabaseReference _ref =
       FirebaseDatabase.instance.ref("stream_questions");
 
-  /// Add new blank question
+
   void _addQuestion() {
     final newRef = _ref.push();
     newRef.set({
@@ -27,29 +27,29 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
     });
   }
 
-  /// Edit question title
+
   void _editQuestionTitle(String id, String title) {
     _ref.child(id).update({"title": title});
   }
 
-  /// Edit question type
+
   void _editQuestionType(String id, String type) {
     _ref.child(id).update({"type": type});
   }
 
-  /// Delete a whole question
+
   void _deleteQuestion(String id) {
     _ref.child(id).remove();
   }
 
-  /// Add new option
+
   Future<void> _addOption(String questionId) async {
     final snap = await _ref.child(questionId).child("options").get();
     Map<String, dynamic> options = {};
 
     if (snap.exists && snap.value != null) {
       if (snap.value is List) {
-        // Convert list → map
+
         final list = List.from(snap.value as List);
         for (int i = 0; i < list.length; i++) {
           if (list[i] != null) {
@@ -67,7 +67,7 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
     await _ref.child(questionId).child("options").set(options);
   }
 
-  /// Edit option
+
   Future<void> _editOption(
       String questionId, String optionKey, String newText, String newValue) async {
     await _ref
@@ -77,7 +77,7 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
         .set({"text": newText, "value": newValue});
   }
 
-  /// Delete option
+
   Future<void> _deleteOption(String questionId, String optionKey) async {
     await _ref.child(questionId).child("options").child(optionKey).remove();
   }
@@ -97,14 +97,14 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
           Map<String, dynamic> rawValue = {};
 
           if (val is List) {
-            // Firebase returned List
+
             for (int i = 0; i < val.length; i++) {
               if (val[i] != null) {
                 rawValue[i.toString()] = Map<String, dynamic>.from(val[i]);
               }
             }
           } else if (val is Map) {
-            // Firebase returned Map
+
             rawValue = Map<String, dynamic>.from(val as Map);
           }
 
@@ -144,7 +144,7 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Title input
+
                       TextFormField(
                         initialValue: q["title"],
                         decoration: const InputDecoration(
@@ -158,7 +158,7 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
                       ),
                       const SizedBox(height: 10),
 
-                      // Question type dropdown
+
                       DropdownButton<String>(
                         value: q["type"],
                         items: const [
@@ -229,3 +229,4 @@ class _AdminStreamQuestionsPageState extends State<AdminStreamQuestionsPage> {
     );
   }
 }
+

@@ -7,7 +7,7 @@ class Menu {
   Menu({required this.title, required this.icon});
 }
 
-// ========= ROLE-BASED MENUS =========
+
 
 List<Menu> adminSidebarMenus = [
   Menu(title: "Home", icon: Icons.home),
@@ -34,8 +34,8 @@ List<Menu> adminSidebarMenus = [
   Menu(title: "Logout", icon: Icons.exit_to_app),
 ];
 
-// 👤 USER MENUS
-// USER MENUS
+
+
 List<Menu> userSidebarMenus = [
   Menu(title: "Home", icon: Icons.home),
   Menu(title: "About Us", icon: Icons.info),
@@ -52,14 +52,14 @@ List<Menu> userSidebarMenus = [
   Menu(title: "Logout", icon: Icons.exit_to_app),
 ];
 
-// GUEST MENUS
+
 List<Menu> guestSidebarMenus = [
   Menu(title: "Home", icon: Icons.home),
   Menu(title: "Contact", icon: Icons.contact_mail),
   Menu(title: "Login", icon: Icons.login),
 ];
 
-// BOTTOM NAV ITEMS
+
 List<Menu> bottomNavItems = [
   Menu(title: "Home", icon: Icons.home),
   Menu(title: "Search", icon: Icons.search),
@@ -67,3 +67,4 @@ List<Menu> bottomNavItems = [
   Menu(title: "Notifications", icon: Icons.notifications),
   Menu(title: "Contact", icon: Icons.contact_mail),
 ];
+

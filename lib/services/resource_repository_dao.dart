@@ -1,4 +1,4 @@
-// dao/resource_repository.dart
+
 import '../models/resource.dart';
 import 'resource_dao.dart';
 
@@ -8,7 +8,7 @@ class ResourceRepository {
   final VideoDAO _videoDAO = VideoDAO();
   final GalleryDAO _galleryDAO = GalleryDAO();
 
-  // Add any resource
+
   Future<void> add(Resource resource) async {
     switch (resource.runtimeType) {
       case Blog:
@@ -28,7 +28,7 @@ class ResourceRepository {
     }
   }
 
-  // Get all resources as a list of Resource (base type)
+
   Future<List<Resource>> getAll() async {
     final blogs = await _blogDAO.getAll().then((list) => list.map((b) => b as Resource));
     final ebooks = await _eBookDAO.getAll().then((list) => list.map((e) => e as Resource));
@@ -38,10 +38,10 @@ class ResourceRepository {
     return [...blogs, ...ebooks, ...videos, ...galleries];
   }
 
-  // Filter by category/type
+
   Future<List<Resource>> getByCategory(String category) async {
     final all = await getAll();
-    // Map tab names to runtime type names
+
     final typeMap = {
       'Blog': 'Blog',
       'eBook': 'EBook',
@@ -52,7 +52,7 @@ class ResourceRepository {
     return all.where((r) => r.runtimeType.toString().split('.').last == runtimeTypeName).toList();
   }
 
-  // Delete by title
+
   Future<void> deleteByTitle(String title) async {
     final resource = await getById(title);
     if (resource == null) return;
@@ -73,7 +73,7 @@ class ResourceRepository {
     }
   }
 
-  // Update any resource
+
   Future<void> update(Resource resource) async {
     switch (resource.runtimeType) {
       case Blog:
@@ -93,7 +93,7 @@ class ResourceRepository {
     }
   }
 
-  // Get one by title
+
   Future<Resource?> getById(String title) async {
     final all = await getAll();
     try {

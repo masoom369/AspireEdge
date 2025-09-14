@@ -30,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isSaving = false;
   String? error;
 
-  // Define tier options — ensure "-" fallback
+
   final List<String> tierOptions = [
     "Student",
     "UnderGraduate",
@@ -78,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Prompt for current password before sensitive ops
+
   Future<String?> _promptPassword(String action) async {
     final ctrl = TextEditingController();
     String? result;
@@ -116,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return result;
   }
 
-  // Reauthenticate user with current password
+
   Future<bool> _reauthenticate(String currentPassword) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || user.email == null) return false;
@@ -185,10 +185,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             username: newValue,
           );
 
-          // 1. Update Firestore
+
           _userDao.updateUser(user.uid, updatedProfile);
 
-          // 2. Update Firebase Auth displayName
+
           await _authService.updateDisplayName(newValue);
           if (mounted) {
             setState(() => fullName = newValue);
@@ -341,7 +341,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // ✅ NEW: Send Password Reset Email
+
   Future<void> _sendPasswordResetEmail() async {
     if (!mounted) return;
 
@@ -814,3 +814,4 @@ Widget _infoRow(String label, String value) {
     ),
   );
 }
+

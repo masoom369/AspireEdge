@@ -49,7 +49,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
     try {
       final ref = FirebaseDatabase.instance.ref("testimonials");
 
-      // ✅ Create Testimonial object that follows your model
+
       final testimonial = Testimonial(
         id: "", // Firebase will generate key
         userName: _nameController.text.trim(),
@@ -137,7 +137,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
             ),
             SizedBox(height: 30),
 
-            // Name Field
+
             Text(
               'Your Name *',
               style: GoogleFonts.poppins(
@@ -167,7 +167,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
             ),
             SizedBox(height: 20),
 
-            // Tier Dropdown
+
             Text(
               'Your Tier *',
               style: GoogleFonts.poppins(
@@ -207,7 +207,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
             ),
             SizedBox(height: 20),
 
-            // Testimonial Field
+
             Text(
               'Your Testimonial *',
               style: GoogleFonts.poppins(
@@ -238,7 +238,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
             ),
             SizedBox(height: 20),
 
-            // Image Picker
+
             Text(
               'Add a Photo (optional)',
               style: GoogleFonts.poppins(
@@ -278,7 +278,7 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
             ),
             SizedBox(height: 30),
 
-            // Submit Button
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -316,3 +316,4 @@ class _WriteTestimonialPageState extends State<WriteTestimonialPage> {
     super.dispose();
   }
 }
+

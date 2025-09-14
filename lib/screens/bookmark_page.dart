@@ -5,7 +5,7 @@ import 'package:aspire_edge/services/auth_service.dart';
 import 'package:aspire_edge/services/resource_repository_dao.dart';
 import 'package:aspire_edge/models/bookmark.dart';
 
-// Resource model (remove tier)
+
 class Resource {
   final String title;
   final String description;
@@ -131,7 +131,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header Section
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -164,7 +164,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
               ),
             ),
 
-            // Search & Filters
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Column(
@@ -215,7 +215,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
 
             const SizedBox(height: 12),
 
-            // Bookmark List
+
             Expanded(
               child: filteredBookmarks.isEmpty
                   ? const Center(child: Text('No bookmarks found.'))
@@ -297,3 +297,4 @@ class _BookmarksPageState extends State<BookmarksPage> {
     );
   }
 }
+

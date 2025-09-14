@@ -17,20 +17,20 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
   void initState() {
     super.initState();
 
-    // ✅ Listen to Firebase notifications in realtime
+
     _db.onChildAdded.listen((event) {
       final data = Map<String, dynamic>.from(event.snapshot.value as Map);
       setState(() {
         notifications.insert(0, data);
       });
 
-      // ❌ No local postNotification in new SDK
-      // Instead, you would trigger push from your server/OneSignal dashboard
-      // Here we just log or show in-app
+
+
+
       debugPrint("📩 Firebase notification: ${data['title']} - ${data['body']}");
     });
 
-    // ✅ Listen to foreground OneSignal notifications
+
     OneSignal.Notifications.addForegroundWillDisplayListener((event) {
       event.preventDefault(); // stop auto-display
       event.notification.display(); // manually display
@@ -45,7 +45,7 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
       });
     });
 
-    // ✅ Notification clicked
+
     OneSignal.Notifications.addClickListener((event) {
       debugPrint("👉 Notification opened: ${event.notification.jsonRepresentation()}");
     });
@@ -76,3 +76,4 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
     );
   }
 }
+

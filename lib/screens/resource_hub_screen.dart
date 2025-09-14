@@ -66,7 +66,7 @@ class _ResourcesHubPageState extends State<ResourcesHubPage> {
 
     final resourceId = resource.title; // ✅ use resource object id
     if (bookmarkedResourceIds.contains(resourceId)) {
-      // remove
+
       await _bookmarkDao.removeBookmark(user.uid, resourceId);
       setState(() {
         bookmarkedResourceIds.remove(resourceId);
@@ -75,7 +75,7 @@ class _ResourcesHubPageState extends State<ResourcesHubPage> {
         context,
       ).showSnackBar(const SnackBar(content: Text('Bookmark removed')));
     } else {
-      // add
+
       final bookmark = Bookmark(uuid: user.uid, resourceId: resourceId);
       _bookmarkDao.saveBookmark(bookmark);
       setState(() {
@@ -96,7 +96,7 @@ class _ResourcesHubPageState extends State<ResourcesHubPage> {
           padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
-              // Search
+
               TextField(
                 decoration: InputDecoration(
                   hintText: 'Search resources...',
@@ -111,7 +111,7 @@ class _ResourcesHubPageState extends State<ResourcesHubPage> {
               ),
               const SizedBox(height: 12),
 
-              // Category
+
               DropdownButtonFormField<String>(
                 isExpanded: true,
                 value: selectedCategory,
@@ -132,7 +132,7 @@ class _ResourcesHubPageState extends State<ResourcesHubPage> {
               ),
               const SizedBox(height: 12),
 
-              // Resource list
+
               Expanded(
                 child: FutureBuilder<List<Resource>>(
                   future: filteredResources,
@@ -275,3 +275,4 @@ class _ResourcesHubPageState extends State<ResourcesHubPage> {
     );
   }
 }
+

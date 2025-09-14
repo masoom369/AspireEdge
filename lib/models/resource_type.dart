@@ -21,3 +21,4 @@ class ResourceType {
   @override
   String toString() => 'ResourceType(id: $id, type: $type)';
 }
+

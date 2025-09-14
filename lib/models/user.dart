@@ -33,3 +33,4 @@ class User {
   String toString() =>
       'User(uuid: $uuid, role: $role, tier: $tier, username: $username)';
 }
+

@@ -72,7 +72,7 @@ class _EntryPointState extends State<EntryPoint>
       backgroundColor: backgroundColor2,
       body: Stack(
         children: [
-          // Sidebar animation
+
           AnimatedPositioned(
             width: 288,
             height: MediaQuery.of(context).size.height,
@@ -83,7 +83,7 @@ class _EntryPointState extends State<EntryPoint>
             child: const SideBar(),
           ),
 
-          // Main content animation
+
           Transform(
             alignment: Alignment.center,
             transform: Matrix4.identity()
@@ -103,7 +103,7 @@ class _EntryPointState extends State<EntryPoint>
             ),
           ),
 
-          // Menu button
+
           AnimatedPositioned(
             duration: const Duration(milliseconds: 200),
             curve: Curves.fastOutSlowIn,
@@ -126,7 +126,7 @@ class _EntryPointState extends State<EntryPoint>
           ),
         ],
       ),
-      // Bottom Navigation
+
       bottomNavigationBar: Transform.translate(
         offset: Offset(0, 100 * animation.value),
         child: SafeArea(
@@ -158,7 +158,7 @@ class _EntryPointState extends State<EntryPoint>
                     navBar: navBar,
                     press: () {
                       updateSelectedBtmNav(navBar);
-                      // Navigate to route based on navBar title
+
                       switch (navBar.title) {
                         case "Home":
                           Navigator.pushNamed(context, '/');
@@ -190,3 +190,4 @@ class _EntryPointState extends State<EntryPoint>
     );
   }
 }
+

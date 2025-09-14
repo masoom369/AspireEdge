@@ -17,12 +17,12 @@ class DashboardPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Welcome Section
+
               _buildWelcomeBanner(context),
 
               const SizedBox(height: 20),
 
-              // Stats Grid
+
               GridView.count(
                 crossAxisCount: 2,
                 shrinkWrap: true,
@@ -45,23 +45,23 @@ class DashboardPage extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // Quick Actions
+
               _buildQuickActions(context),
 
               const SizedBox(height: 20),
 
-              // Recommended Courses/Paths
+
               _buildRecommendedSection(context),
 
               const SizedBox(height: 20),
 
-              // Profile Completion (for user only)
+
               if (role != 'admin') ...[
                 _buildProfileCompletion(context),
                 const SizedBox(height: 20),
               ],
 
-              // Bottom Section: Admin → Reports, User → Success & Events
+
               _buildBottomSection(context),
 
               const SizedBox(height: 24),
@@ -854,7 +854,7 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // --- Reusable Widgets ---
+
 
   Widget _buildStatCard(
     String title,
@@ -1088,3 +1088,4 @@ class DashboardPage extends StatelessWidget {
     );
   }
 }
+

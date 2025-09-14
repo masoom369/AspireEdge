@@ -22,7 +22,7 @@ class BookmarkDao {
     _databaseRef.child(key).update(bookmark.toJson());
   }
 
-  // Get all bookmarks for a user
+
   Future<List<Bookmark>> getBookmarksByUser(String uuid) async {
     final snapshot = await _databaseRef.get();
     final List<Bookmark> bookmarks = [];
@@ -41,7 +41,7 @@ class BookmarkDao {
     return bookmarks;
   }
 
-  // Remove bookmark by user and resourceId
+
   Future<void> removeBookmark(String uuid, String resourceId) async {
     final snapshot = await _databaseRef.get();
     if (snapshot.exists) {
@@ -56,7 +56,7 @@ class BookmarkDao {
     }
   }
 
-  // Check if a resource is bookmarked by user
+
   Future<bool> isBookmarked(String uuid, String resourceId) async {
     final snapshot = await _databaseRef.get();
     if (snapshot.exists) {
@@ -69,3 +69,4 @@ class BookmarkDao {
     return false;
   }
 }
+

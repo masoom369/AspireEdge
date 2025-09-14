@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
     }
   ];
 
-  /// 🔹 Testimonials
+
   final TestimonialDao _testimonialDao = TestimonialDao();
   List<Testimonial> testimonials = [];
   int currentIndex = 0;
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
 
-      // 🔹 Sort by newest first
+
       loadedTestimonials.sort((a, b) => b.date.compareTo(a.date));
 
       setState(() {
@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔹 Hero Title
+
             const SizedBox(height: 20),
             Text(
               'Your Future Starts Here',
@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // 🔹 Featured Tools
+
             const SizedBox(height: 30),
             Text(
               'Featured Tools',
@@ -284,7 +284,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
-            // 🔹 Recent
+
             const SizedBox(height: 30),
             Text(
               'Recent',
@@ -362,7 +362,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // 🔹 Success Stories
+
             const SizedBox(height: 30),
             Text(
               'Success Stories',
@@ -394,7 +394,7 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 🔹 Avatar + Info
+
                         Row(
                           children: [
                             Container(
@@ -465,7 +465,7 @@ class _HomePageState extends State<HomePage> {
 
                         const SizedBox(height: 16),
 
-                        // 🔹 Message
+
                         Text(
                           currentTestimonial.message,
                           style: GoogleFonts.poppins(
@@ -479,7 +479,7 @@ class _HomePageState extends State<HomePage> {
 
                         const SizedBox(height: 12),
 
-                        // 🔹 Rating stars
+
                         if (currentTestimonial.rating > 0)
                           Row(
                             children: List.generate(5, (index) {
@@ -496,7 +496,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // 🔹 Dots Indicator
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(testimonials.length, (index) {
@@ -525,3 +525,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+

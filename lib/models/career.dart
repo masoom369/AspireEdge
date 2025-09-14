@@ -88,3 +88,4 @@ class EducationPath {
   String toString() =>
       'EducationPath(recommendedDegrees: $recommendedDegrees, certifications: $certifications)';
 }
+

@@ -6,19 +6,16 @@ import 'dart:convert';
 import 'package:universal_html/html.dart' as html;
 
 class ImagePickerUtils {
-  /// Picks an image from gallery and returns it as Base64 string (no prefix)
   static Future<String> pickImageBase64() async {
     final bytes = await _pickImageAsBytes();
     if (bytes == null) return "";
-    return base64Encode(bytes); // ✅ always returns pure base64
+    return base64Encode(bytes);
   }
 
-  /// Picks an image and returns raw bytes
   static Future<Uint8List?> pickImageAsBytes() async {
     return await _pickImageAsBytes();
   }
 
-  // Internal: Platform-aware implementation
   static Future<Uint8List?> _pickImageAsBytes() async {
     if (kIsWeb) {
       return await _pickImageWeb();
@@ -27,7 +24,6 @@ class ImagePickerUtils {
     }
   }
 
-  // Mobile
   static Future<Uint8List?> _pickImageMobile() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
@@ -35,7 +31,6 @@ class ImagePickerUtils {
     return await picked.readAsBytes();
   }
 
-  // Web
   static Future<Uint8List?> _pickImageWeb() async {
     final completer = Completer<Uint8List?>();
 
@@ -48,7 +43,7 @@ class ImagePickerUtils {
       }
 
       final reader = html.FileReader();
-      reader.readAsArrayBuffer(file); // ✅ return bytes directly
+      reader.readAsArrayBuffer(file);
 
       reader.onLoadEnd.listen((_) {
         if (reader.result is Uint8List) {
@@ -65,3 +60,4 @@ class ImagePickerUtils {
     return completer.future;
   }
 }
+

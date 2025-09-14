@@ -10,28 +10,28 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Enable offline persistence for Realtime Database on non-web platforms
+
   if (!kIsWeb) {
     FirebaseDatabase.instance.setPersistenceEnabled(true);
   }
 
-  // ====== OneSignal Setup ======
+
   if (!kIsWeb) {
     OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
 
     OneSignal.initialize("bfd0fb79-5c68-441e-b78d-063271b0d492");
 
-    // iOS: request permission
+
     OneSignal.Notifications.requestPermission(true);
 
-    // Foreground handler
+
     OneSignal.Notifications.addForegroundWillDisplayListener((event) {
       event.preventDefault();
       event.notification.display();
       debugPrint("📩 Foreground Notification: ${event.notification.jsonRepresentation()}");
     });
 
-    // Notification clicked
+
     OneSignal.Notifications.addClickListener((event) {
       debugPrint("👉 Notification opened: ${event.notification.jsonRepresentation()}");
     });
@@ -88,3 +88,4 @@ class NoScrollbarBehavior extends ScrollBehavior {
     return child; // disables scrollbar
   }
 }
+

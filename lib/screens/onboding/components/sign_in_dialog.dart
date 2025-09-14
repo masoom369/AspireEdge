@@ -93,7 +93,7 @@ void showCustomDialog(BuildContext context, {required ValueChanged onValue}) {
   ).then(onValue);
 }
 
-// Function to show the Register dialog
+
 void showSignUpDialog(BuildContext context, {required ValueChanged onValue}) {
   showGeneralDialog(
     context: context,
@@ -163,3 +163,4 @@ void showSignUpDialog(BuildContext context, {required ValueChanged onValue}) {
     },
   ).then(onValue);
 }
+

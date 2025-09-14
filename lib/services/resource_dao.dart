@@ -1,4 +1,4 @@
-// dao/resource_dao.dart
+
 
 import 'package:firebase_database/firebase_database.dart';
 import '../models/resource.dart';
@@ -280,3 +280,4 @@ class GalleryDAO implements ResourceDAO<Gallery> {
     return null;
   }
 }
+

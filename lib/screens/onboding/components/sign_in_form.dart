@@ -79,7 +79,7 @@ class _SignInFormState extends State<SignInForm> {
       );
 
       if (user != null) {
-        // Save uid to SharedPreferences
+
         await _saveUserToPrefs(user.uid);
 
         success.fire();
@@ -88,7 +88,7 @@ class _SignInFormState extends State<SignInForm> {
             isShowLoading = false;
           });
           confetti.fire();
-          // Navigate & hide confetti
+
           Future.delayed(const Duration(seconds: 1), () {
             if (!context.mounted) return;
             Navigator.pushReplacementNamed(context, '/');
@@ -362,3 +362,4 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
     );
   }
 }
+

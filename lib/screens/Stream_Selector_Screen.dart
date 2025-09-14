@@ -24,7 +24,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
     fetchQuestionsFromDB();
   }
 
-  /// ---------------- FETCH QUESTIONS FROM FIREBASE ----------------
+
   Future<void> fetchQuestionsFromDB() async {
     final DatabaseReference ref = FirebaseDatabase.instance.ref("stream_questions");
 
@@ -33,7 +33,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
       Map<String, dynamic> rawValue = {};
 
       if (snapshot.value is List) {
-        // Firebase returned a List
+
         final list = List.from(snapshot.value as List);
         for (int i = 0; i < list.length; i++) {
           if (list[i] != null) {
@@ -41,7 +41,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
           }
         }
       } else if (snapshot.value is Map) {
-        // Firebase returned a Map
+
         rawValue = Map<String, dynamic>.from(snapshot.value as Map);
       }
 
@@ -81,7 +81,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
     }
   }
 
-  /// ---------------------- AI LOGIC ----------------------
+
   Map<String, dynamic> recommendStreamChat(List<String> answers) {
     Map<String, double> scores = {
       "Science": 0,
@@ -152,7 +152,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
     };
   }
 
-  /// ---------------------- REALTIME DATABASE SAVE ----------------------
+
   Future<void> saveResultToRealtimeDB(
       String stream, Map<String, double> scores) async {
     final user = FirebaseAuth.instance.currentUser;
@@ -167,7 +167,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
     }
   }
 
-  /// ---------------------- FLOW ----------------------
+
   void _nextStep() {
     if (currentStep < questions.length - 1) {
       setState(() {
@@ -337,7 +337,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
               ),
               const SizedBox(height: 30),
 
-              // Progress Bar
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -368,7 +368,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
               ),
               const SizedBox(height: 30),
 
-              // Question Card
+
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -462,7 +462,7 @@ class _StreamSelectorPageState extends State<StreamSelectorPage> {
 
               const SizedBox(height: 20),
 
-              // Navigation Buttons
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

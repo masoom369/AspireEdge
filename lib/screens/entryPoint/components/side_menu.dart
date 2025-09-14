@@ -54,3 +54,4 @@ class SideMenu extends StatelessWidget {
     );
   }
 }
+

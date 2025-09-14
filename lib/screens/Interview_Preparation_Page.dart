@@ -38,7 +38,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
             ),
             SizedBox(height: 30),
 
-            // Tip Cards
+
             Row(
               children: [
                 Expanded(
@@ -127,7 +127,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
 
             SizedBox(height: 30),
 
-            // Common Questions
+
             Text(
               'Common Interview Questions',
               style: GoogleFonts.poppins(
@@ -251,7 +251,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
 
             SizedBox(height: 30),
 
-            // Video Section
+
             Text(
               'Watch Mock Interview Videos',
               style: GoogleFonts.poppins(
@@ -314,7 +314,7 @@ class _InterviewPrepPageState extends State<InterviewPrepPage> {
 
             SizedBox(height: 30),
 
-            // Download Guide
+
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,

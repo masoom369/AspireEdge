@@ -15,7 +15,7 @@ class _AdminNotificationPageState extends State<AdminNotificationPage> {
   final _bodyController = TextEditingController();
   final _db = FirebaseDatabase.instance.ref('notifications');
 
-  // ⚠️ Keys (do not expose in production apps, better keep in backend)
+
   static const String oneSignalAppId = "bfd0fb79-5c68-441e-b78d-063271b0d492";
   static const String restApiKey =
       "os_v2_app_x7ipw6k4nbcb5n4nayzhdmgusk3pnxuqkegekl4a2gqvbzirikhvv54pqjenys5hceswwosb5dsgeppg7bdvofkdtbtf27zg5f4etbq";
@@ -25,7 +25,7 @@ class _AdminNotificationPageState extends State<AdminNotificationPage> {
     final body = _bodyController.text.trim();
     if (title.isEmpty || body.isEmpty) return;
 
-    // ✅ Save notification to Firebase
+
     final newRef = _db.push();
     await newRef.set({
       'title': title,
@@ -33,7 +33,7 @@ class _AdminNotificationPageState extends State<AdminNotificationPage> {
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     });
 
-    // ✅ Send push notification via OneSignal
+
     final url = Uri.parse('https://onesignal.com/api/v1/notifications');
     final response = await http.post(
       url,
@@ -90,3 +90,4 @@ class _AdminNotificationPageState extends State<AdminNotificationPage> {
     );
   }
 }
+

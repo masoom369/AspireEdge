@@ -34,7 +34,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Spline Image
+
           Positioned(
             width: size.width * 1.7,
             left: size.width * 0.1,
@@ -44,7 +44,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
               fit: BoxFit.cover,
             ),
           ),
-          // Background blur layers
+
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -73,7 +73,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: size.height * 0.1),
-                    // Headline and description
+
                     SizedBox(
                       width: double.infinity,
                       child: Column(
@@ -101,7 +101,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
                       ),
                     ),
                     const Spacer(flex: 2),
-                    // Sign In Button
+
                     Padding(
                       padding: EdgeInsets.only(bottom: size.height * 0.06),
                       child: AnimatedBtn(
@@ -135,3 +135,4 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
     );
   }
 }
+

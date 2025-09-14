@@ -1,4 +1,4 @@
-// career_guidance_page.dart
+
 import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,12 +42,12 @@ class _CareerGuidancePageState extends State<CareerGuidancePage> {
       final loadedQuestions = data.entries.map((e) {
         final q = Map<String, dynamic>.from(e.value);
 
-        // Convert options Map -> List
+
         Map<String, dynamic> optsMap = {};
         if (q["options"] is Map) {
           optsMap = Map<String, dynamic>.from(q["options"]);
         } else if (q["options"] is List) {
-          // Fallback if stored as List
+
           final list = q["options"] as List;
           for (int i = 0; i < list.length; i++) {
             optsMap[i.toString()] = list[i];
@@ -299,3 +299,4 @@ class _CareerGuidancePageState extends State<CareerGuidancePage> {
     );
   }
 }
+

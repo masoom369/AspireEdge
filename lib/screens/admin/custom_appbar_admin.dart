@@ -37,7 +37,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             size: 26,
           ),
           onPressed: () {
-            // 👇 Navigate to LogoutPage
+
             Navigator.pushNamed(context, '/logout');
           },
         ),
@@ -45,3 +45,4 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 }
+

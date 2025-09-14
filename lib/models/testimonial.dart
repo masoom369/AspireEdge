@@ -19,7 +19,7 @@ class Testimonial {
     this.tier, // ✅ Add this to constructor
   });
 
-  /// Convert Testimonial object to a Map for Firebase
+
   Map<String, dynamic> toMap() {
     return {
       "userName": userName,
@@ -32,7 +32,7 @@ class Testimonial {
     };
   }
 
-  /// Create Testimonial object from a Map
+
   factory Testimonial.fromMap(String id, Map<dynamic, dynamic> map) {
     return Testimonial(
       id: id,
@@ -46,3 +46,4 @@ class Testimonial {
     );
   }
 }
+

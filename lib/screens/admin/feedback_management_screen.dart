@@ -58,7 +58,7 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
               .toList()
             ..sort((a, b) => b.id.compareTo(a.id));
 
-          // Separate pending and resolved feedbacks
+
           final pendingFeedbacks =
               feedbacks.where((f) => f.status != "resolved").toList();
           final resolvedFeedbacks =
@@ -100,7 +100,7 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Name + Email
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -120,20 +120,20 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
           ),
           const SizedBox(height: 10),
 
-          // Subject
+
           Text(
             "Subject: ${item.subject}",
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 6),
 
-          // Inquiry Type
+
           Text("Inquiry: ${item.inquiryType}",
               style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
 
           const SizedBox(height: 10),
 
-          // Message
+
           Text(
             item.message,
             style: const TextStyle(fontSize: 14, color: Colors.black87),
@@ -141,7 +141,7 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
 
           const SizedBox(height: 10),
 
-          // Status
+
           Row(
             children: [
               const Text(
@@ -163,7 +163,7 @@ class _ManageFeedbackPageState extends State<ManageFeedbackPage>
 
           const SizedBox(height: 16),
 
-          // Admin Actions
+
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

@@ -21,7 +21,7 @@ class _CareerBankPageState extends State<CareerBankPage> {
   final TextEditingController searchController = TextEditingController();
   StreamSubscription? _careersStream;
 
-  // 👇 COPY THESE TWO HELPER METHODS FROM CAREER MANAGEMENT PAGE
+
   Map<String, dynamic> _convertToMap(dynamic value) {
     if (value == null) return {};
     if (value is Map<dynamic, dynamic>) {
@@ -58,13 +58,13 @@ class _CareerBankPageState extends State<CareerBankPage> {
     _careersStream = _careerDao.getCareerList().onValue.listen((event) {
       final snapshot = event.snapshot;
       if (snapshot.exists) {
-        // 👇 USE THE SAME SAFE CONVERSION AS IN CAREER MANAGEMENT PAGE
+
         final data = _convertToMap(snapshot.value); // ← This converts everything safely!
         final List<Career> loaded = [];
 
         data.forEach((key, value) {
           try {
-            // Now `value` is guaranteed to be Map<String, dynamic>
+
             final career = Career.fromJson(value);
             loaded.add(career);
           } catch (e) {

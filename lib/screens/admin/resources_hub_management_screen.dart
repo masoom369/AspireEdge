@@ -4,7 +4,7 @@ import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:aspire_edge/services/resource_repository_dao.dart';
 import 'package:aspire_edge/utils/image_picker.dart';
 import 'package:flutter/material.dart';
-// ---------------- Main Page ----------------
+
 class ManageResourcesHubPage extends StatefulWidget {
   const ManageResourcesHubPage({super.key});
 
@@ -21,7 +21,7 @@ class _ManageResourcesHubPageState extends State<ManageResourcesHubPage> {
     super.initState();
   }
 
-  // ---------------- Add Resource Dialog ----------------
+
   void _openAddDialog() {
     final formKey = GlobalKey<FormState>();
     final titleController = TextEditingController();
@@ -65,7 +65,7 @@ showDialog(
                                 const SizedBox(height: 10),
                                 ElevatedButton.icon(
                                   onPressed: () async {
-                                    // Use the custom ImagePickerUtils to pick images and convert to base64
+
                                     final base64Image = await ImagePickerUtils.pickImageBase64();
                                     if (base64Image.isNotEmpty) {
                                       uploadedImages.add(base64Image);
@@ -150,7 +150,7 @@ showDialog(
 
   }
 
-  // ---------------- Edit Resource Dialog ----------------
+
   void _openEditDialog(Resource resource) {
     final formKey = GlobalKey<FormState>();
     final titleController = TextEditingController(text: resource.title);
@@ -201,7 +201,7 @@ showDialog(
                                 const SizedBox(height: 10),
                                 ElevatedButton.icon(
                                   onPressed: () async {
-                                    // Use the custom ImagePickerUtils to pick images and convert to base64
+
                                     final base64Image = await ImagePickerUtils.pickImageBase64();
                                     if (base64Image.isNotEmpty) {
                                       uploadedImages.add(base64Image);
@@ -287,7 +287,7 @@ showDialog(
     );
   }
 
-  // ---------------- Confirm Delete Dialog ----------------
+
   void _confirmDelete(Resource resource) {
     showDialog(
       context: context,
@@ -313,7 +313,7 @@ showDialog(
     );
   }
 
-  // ---------------- Dialog Fields ----------------
+
   static Widget _dialogFields(
     TextEditingController title,
     TextEditingController desc,
@@ -355,7 +355,7 @@ showDialog(
     );
   }
 
-  // ---------------- Resource Card ----------------
+
   Widget _buildResourceCard(Resource r) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -461,7 +461,7 @@ showDialog(
     );
   }
 
-  // ---------------- Tab Buttons ----------------
+
   Widget _tabButton(String type) {
     final isActive = selectedTab == type;
     return ElevatedButton(
@@ -475,14 +475,14 @@ showDialog(
     );
   }
 
-  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title:"Resources Hub Management"),
       body: Column(
         children: [
-          // Add Resource Button
+
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: SizedBox(
@@ -509,7 +509,7 @@ showDialog(
             ),
           ),
 
-          // Tab Grid (2x2)
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Container(
@@ -537,7 +537,7 @@ showDialog(
 
           const SizedBox(height: 8),
 
-          // Dynamic Content
+
           Expanded(
             child: FutureBuilder<List<Resource>>(
               future: _repository.getByCategory(selectedTab),

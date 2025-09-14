@@ -173,7 +173,7 @@ class _ManagePushNotificationsPageState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title + Date
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -193,14 +193,14 @@ class _ManagePushNotificationsPageState
           ),
           const SizedBox(height: 8),
 
-          // Message
+
           Text(
             n.message,
             style: const TextStyle(fontSize: 14, color: Colors.black87),
           ),
           const SizedBox(height: 10),
 
-          // Status + Actions
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -266,7 +266,7 @@ class _ManagePushNotificationsPageState
       ),
       body: Column(
         children: [
-          // Add button top
+
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
@@ -287,7 +287,7 @@ class _ManagePushNotificationsPageState
             ),
           ),
 
-          // List of notifications
+
           Expanded(
             child: notifications.isEmpty
                 ? _buildEmptyState()
@@ -302,3 +302,4 @@ class _ManagePushNotificationsPageState
     );
   }
 }
+

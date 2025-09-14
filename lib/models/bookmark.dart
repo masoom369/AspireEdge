@@ -25,3 +25,4 @@ class Bookmark {
   String toString() =>
       'Bookmark(uuid: $uuid, resourceId: $resourceId)';
 }
+

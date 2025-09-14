@@ -123,7 +123,7 @@ class _SideBarState extends State<SideBar> {
         Navigator.pushNamed(context, '/career_management');
         break;
       case "Resources Hub":
-        // Not in routes yet, you can map to CareerBankPage or a new page
+
         Navigator.pushNamed(context, '/ResourcesHubPage');
         break;
       case "Career Bank":
@@ -213,3 +213,4 @@ class _SideBarState extends State<SideBar> {
     super.dispose();
   }
 }
+

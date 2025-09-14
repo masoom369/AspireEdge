@@ -1,4 +1,4 @@
-// models/resource.dart
+
 
 abstract class Resource {
   final String title;

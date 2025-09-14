@@ -19,26 +19,26 @@ class _RegisterFormState extends State<RegisterForm> {
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
 
-  // Default value set to empty string to trigger validation if not changed
+
   String? selectedTier = "";
 
   bool _isLoading = false;
   String? _error;
 
-  /// Save user UID locally using SharedPreferences
+
   Future<void> _saveUserToPrefs(String uid) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('uid', uid);
   }
 
-  /// Handles registration
+
   Future<void> signUp(BuildContext context) async {
     setState(() {
       _error = null;
     });
 
     if (_formKey.currentState?.validate() ?? false) {
-      // Extra null/empty checks
+
       if (_nameController.text.trim().isEmpty ||
           _emailController.text.trim().isEmpty ||
           _passwordController.text.isEmpty ||
@@ -68,7 +68,7 @@ class _RegisterFormState extends State<RegisterForm> {
             username: _nameController.text.trim(),
           );
 
-          // Save to Firestore
+
           final userDao = UserDao();
           userDao.saveUser(userObj);
 
@@ -94,7 +94,7 @@ class _RegisterFormState extends State<RegisterForm> {
     }
   }
 
-  /// ✅ Clean up controllers to prevent memory leaks
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -224,3 +224,4 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 }
+

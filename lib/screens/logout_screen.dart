@@ -24,7 +24,7 @@ class _LogoutPageState extends State<LogoutPage> {
     await prefs.remove('uid');
 
     if (mounted) {
-      // Show styled success dialog before navigating
+
       showDialog(
         context: context,
         builder: (context) => Dialog(

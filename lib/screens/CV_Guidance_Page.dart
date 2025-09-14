@@ -38,7 +38,7 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
             ),
             SizedBox(height: 30),
 
-            // Tip Cards
+
             Row(
               children: [
                 Expanded(
@@ -127,7 +127,7 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
 
             SizedBox(height: 30),
 
-            // Template Section
+
             Text(
               'Downloadable Templates',
               style: GoogleFonts.poppins(
@@ -245,7 +245,7 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
 
             SizedBox(height: 30),
 
-            // Video Section
+
             Text(
               'Watch Video Guide',
               style: GoogleFonts.poppins(

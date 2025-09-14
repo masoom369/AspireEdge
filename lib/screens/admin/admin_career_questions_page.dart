@@ -1,4 +1,4 @@
-// admin_career_questions_page.dart
+
 import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,7 +15,7 @@ class _AdminCareerQuestionsPageState extends State<AdminCareerQuestionsPage> {
   final DatabaseReference _ref =
       FirebaseDatabase.instance.ref("career_questions");
 
-  /// Add a new blank question
+
   Future<void> _addQuestion() async {
     final snapshot = await _ref.get();
     if (snapshot.exists && snapshot.value != null) {
@@ -38,18 +38,18 @@ class _AdminCareerQuestionsPageState extends State<AdminCareerQuestionsPage> {
     });
   }
 
-  /// Save edited question title
+
   Future<void> _saveQuestionTitle(String id, String title) async {
     if (title.trim().isEmpty) return;
     await _ref.child(id).update({"title": title});
   }
 
-  /// Delete a whole question
+
   Future<void> _deleteQuestion(String id) async {
     await _ref.child(id).remove();
   }
 
-  /// Add new option
+
   Future<void> _addOption(String questionId) async {
     final snap = await _ref.child(questionId).child("options").get();
     Map<String, dynamic> options = {};
@@ -74,7 +74,7 @@ class _AdminCareerQuestionsPageState extends State<AdminCareerQuestionsPage> {
     await _ref.child(questionId).child("options").set(options);
   }
 
-  /// Save option changes
+
   Future<void> _saveOption(
       String questionId, String optionKey, String text, String value) async {
     await _ref
@@ -84,7 +84,7 @@ class _AdminCareerQuestionsPageState extends State<AdminCareerQuestionsPage> {
         .set({"text": text, "value": value});
   }
 
-  /// Delete option
+
   Future<void> _deleteOption(String questionId, String optionKey) async {
     await _ref.child(questionId).child("options").child(optionKey).remove();
   }
@@ -156,7 +156,7 @@ class _AdminCareerQuestionsPageState extends State<AdminCareerQuestionsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Question Title
+
                       Row(
                         children: [
                           Expanded(
@@ -186,7 +186,7 @@ class _AdminCareerQuestionsPageState extends State<AdminCareerQuestionsPage> {
                       ),
                       const SizedBox(height: 10),
 
-                      // Options
+
                       Column(
                         children: options.entries.map((entry) {
                           final optionKey = entry.key.toString();
@@ -237,7 +237,7 @@ class _AdminCareerQuestionsPageState extends State<AdminCareerQuestionsPage> {
                         }).toList(),
                       ),
 
-                      // Add Option Button
+
                       Align(
                         alignment: Alignment.centerLeft,
                         child: TextButton.icon(
@@ -257,3 +257,4 @@ class _AdminCareerQuestionsPageState extends State<AdminCareerQuestionsPage> {
     );
   }
 }
+

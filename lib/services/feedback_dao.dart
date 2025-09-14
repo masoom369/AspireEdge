@@ -6,7 +6,7 @@ class FeedbackDao {
 
   FeedbackDao();
 
-  /// Save new feedback
+
   void saveFeedback(FeedbackModel feedback) {
     final newRef = _databaseRef.push();
     feedback = FeedbackModel(
@@ -23,18 +23,19 @@ class FeedbackDao {
     newRef.set(feedback.toJson());
   }
 
-  /// Get all feedbacks
+
   Query getFeedbackList() {
     return _databaseRef;
   }
 
-  /// Delete feedback by key
+
   void deleteFeedback(String key) {
     _databaseRef.child(key).remove();
   }
 
-  /// Update feedback (partial update using Map)
+
   Future<void> updateFeedback(String key, Map<String, dynamic> data) async {
     await _databaseRef.child(key).update(data);
   }
 }
+

@@ -53,3 +53,4 @@ class FeedbackModel {
   String toString() =>
       'Feedback(id: $id, userId: $userId, name: $name, email: $email, subject: $subject, inquiryType: $inquiryType, message: $message, status: $status, reply: $reply)';
 }
+

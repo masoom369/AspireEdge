@@ -24,7 +24,7 @@ class _NotificationPageState extends State<NotificationPage> {
   ];
 
   void _logout() {
-    // Here you can clear session, tokens, or navigate to login screen
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text("Logged out successfully"),
@@ -127,3 +127,4 @@ class _NotificationPageState extends State<NotificationPage> {
     );
   }
 }
+
