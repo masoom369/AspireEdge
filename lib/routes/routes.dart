@@ -5,7 +5,7 @@ import 'package:aspire_edge/screens/home_page.dart';
 import 'package:aspire_edge/screens/about_us_page.dart';
 import 'package:aspire_edge/screens/contact_us_page.dart';
 import 'package:aspire_edge/screens/profile_page.dart';
-import 'package:aspire_edge/screens/logout_screen.dart';
+import 'package:aspire_edge/screens/logout_page.dart';
 import 'package:aspire_edge/screens/bookmark_page.dart';
 import 'package:aspire_edge/screens/wishlist_page.dart';
 import 'package:aspire_edge/screens/notification_home_page.dart';
