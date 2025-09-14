@@ -35,13 +35,12 @@ class _EntryPointState extends State<EntryPoint>
   void initState() {
     super.initState();
 
-    _animationController =
-        AnimationController(
-          vsync: this,
-          duration: const Duration(milliseconds: 200),
-        )..addListener(() {
-          setState(() {});
-        });
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    )..addListener(() {
+        setState(() {});
+      });
 
     scalAnimation = Tween<double>(begin: 1, end: 0.8).animate(
       CurvedAnimation(
@@ -72,7 +71,7 @@ class _EntryPointState extends State<EntryPoint>
       backgroundColor: backgroundColor2,
       body: Stack(
         children: [
-
+          /// Sidebar
           AnimatedPositioned(
             width: 288,
             height: MediaQuery.of(context).size.height,
@@ -83,7 +82,7 @@ class _EntryPointState extends State<EntryPoint>
             child: const SideBar(),
           ),
 
-
+          /// Main content transform
           Transform(
             alignment: Alignment.center,
             transform: Matrix4.identity()
@@ -97,13 +96,13 @@ class _EntryPointState extends State<EntryPoint>
                 scale: scalAnimation.value,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(24)),
-                  child: widget.child, // Use the passed child
+                  child: widget.child,
                 ),
               ),
             ),
           ),
 
-
+          /// Sidebar toggle button
           AnimatedPositioned(
             duration: const Duration(milliseconds: 200),
             curve: Curves.fastOutSlowIn,
@@ -127,16 +126,12 @@ class _EntryPointState extends State<EntryPoint>
         ],
       ),
 
+      /// Bottom Navigation
       bottomNavigationBar: Transform.translate(
         offset: Offset(0, 100 * animation.value),
         child: SafeArea(
           child: Container(
-            padding: const EdgeInsets.only(
-              left: 12,
-              top: 12,
-              right: 12,
-              bottom: 12,
-            ),
+            padding: const EdgeInsets.all(12),
             margin: const EdgeInsets.symmetric(horizontal: 24),
             decoration: BoxDecoration(
               color: backgroundColor2.withOpacity(0.8),
@@ -164,13 +159,13 @@ class _EntryPointState extends State<EntryPoint>
                           Navigator.pushNamed(context, '/');
                           break;
                         case "Search":
-                          Navigator.pushNamed(context, '/ResourcesHubPage');
+                          Navigator.pushNamed(context, '/resources');
                           break;
                         case "Profile":
                           Navigator.pushNamed(context, '/profile');
                           break;
                         case "Notifications":
-                          Navigator.pushNamed(context, '/BookmarksPage');
+                          Navigator.pushNamed(context, '/notification');
                           break;
                         case "Contact":
                           Navigator.pushNamed(context, '/contact');
@@ -190,4 +185,3 @@ class _EntryPointState extends State<EntryPoint>
     );
   }
 }
-

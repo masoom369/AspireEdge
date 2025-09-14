@@ -87,7 +87,7 @@ class _SideBarState extends State<SideBar> {
         Navigator.pushNamed(context, '/');
         break;
       case "Write Testimonials":
-        Navigator.pushNamed(context, '/WriteTestimonialPage');
+        Navigator.pushNamed(context, '/write_testimonial');
         break;
       case "About Us":
         Navigator.pushNamed(context, '/about');
@@ -98,6 +98,8 @@ class _SideBarState extends State<SideBar> {
       case "Notification":
         Navigator.pushNamed(context, '/notification');
         break;
+
+      /// Admin only
       case "Notification Management":
         Navigator.pushNamed(context, '/notification_management');
         break;
@@ -114,32 +116,33 @@ class _SideBarState extends State<SideBar> {
         Navigator.pushNamed(context, '/resources_management');
         break;
       case "Testimonial Management":
-        Navigator.pushNamed(context, '/testimonials_management');
+        Navigator.pushNamed(context, '/testimonial_management');
         break;
       case "Stream Management":
-        Navigator.pushNamed(context, '/stream_questions_management');
+        Navigator.pushNamed(context, '/stream_management');
         break;
       case "Career Management":
         Navigator.pushNamed(context, '/career_management');
         break;
-      case "Resources Hub":
 
-        Navigator.pushNamed(context, '/ResourcesHubPage');
+      /// User features
+      case "Resources Hub":
+        Navigator.pushNamed(context, '/resources');
         break;
       case "Career Bank":
-        Navigator.pushNamed(context, '/CareerBankPage');
+        Navigator.pushNamed(context, '/career_bank');
         break;
       case "Interview Preparation":
-        Navigator.pushNamed(context, '/InterviewPrepPage');
+        Navigator.pushNamed(context, '/interview_preparation');
         break;
       case "Career Guidance":
-        Navigator.pushNamed(context, '/CareerGuidancePage');
+        Navigator.pushNamed(context, '/career_guidance');
         break;
       case "Stream Guidance":
-        Navigator.pushNamed(context, '/StreamSelectorPage');
+        Navigator.pushNamed(context, '/stream_guidance');
         break;
       case "CV Guidance":
-        Navigator.pushNamed(context, '/CVGuidancePage');
+        Navigator.pushNamed(context, '/cv_guidance');
         break;
       case "BookMark":
         Navigator.pushNamed(context, '/bookmark');
@@ -207,10 +210,4 @@ class _SideBarState extends State<SideBar> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }
-
