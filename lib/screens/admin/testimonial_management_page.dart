@@ -43,10 +43,16 @@ class TestimonialManagementPage extends StatelessWidget {
             itemCount: testimonials.length,
             itemBuilder: (context, index) {
               final t = testimonials[index];
-              return Card(
-                margin: const EdgeInsets.all(12),
+            return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.grey.shade300),
+                ),
+                elevation: 0,
+                color: Colors.white,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

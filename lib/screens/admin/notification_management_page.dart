@@ -8,10 +8,12 @@ class NotificationManagementPage extends StatefulWidget {
   const NotificationManagementPage({super.key});
 
   @override
-  State<NotificationManagementPage> createState() => _NotificationManagementPageState();
+  State<NotificationManagementPage> createState() =>
+      _NotificationManagementPageState();
 }
 
-class _NotificationManagementPageState extends State<NotificationManagementPage> {
+class _NotificationManagementPageState
+    extends State<NotificationManagementPage> {
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
   final _db = FirebaseDatabase.instance.ref('notifications');
@@ -41,7 +43,7 @@ class _NotificationManagementPageState extends State<NotificationManagementPage>
       },
       body: jsonEncode({
         'app_id': oneSignalAppId,
-        'included_segments': ['All'], // sends to all subscribed users
+        'included_segments': ['All'],
         'headings': {'en': title},
         'contents': {'en': body},
       }),
@@ -64,23 +66,96 @@ class _NotificationManagementPageState extends State<NotificationManagementPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "Notification Management"),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              "Create & Send Notifications",
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple.shade700,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Title Input
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(labelText: "Title"),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _bodyController,
-              decoration: const InputDecoration(labelText: "Body"),
+              style: const TextStyle(fontFamily: 'Poppins'),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.title, color: Colors.deepPurple),
+                labelText: "Title",
+                labelStyle: const TextStyle(fontFamily: 'Poppins'),
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
+              ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _sendNotification,
-              child: const Text("Send Notification"),
+
+            // Body Input
+            TextField(
+              controller: _bodyController,
+              style: const TextStyle(fontFamily: 'Poppins'),
+              maxLines: 5,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.message, color: Colors.deepPurple),
+                alignLabelWithHint: true,
+                labelText: "Body",
+                labelStyle: const TextStyle(fontFamily: 'Poppins'),
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            // Gradient Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _sendNotification,
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 6,
+                ),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF8E2DE2), Color(0xFF5B6CF1)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: const Text(
+                      "Send Notification",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
