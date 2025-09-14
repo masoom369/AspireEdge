@@ -106,8 +106,8 @@ class _SideBarState extends State<SideBar> {
       case "Feedback Management":
         Navigator.pushNamed(context, '/feedback_management');
         break;
-      case "Quiz Management":
-        Navigator.pushNamed(context, '/quiz_management');
+      case "Career Quiz Management":
+        Navigator.pushNamed(context, '/Career_quiz_management');
         break;
       case "Wishlist Management":
         Navigator.pushNamed(context, '/wishlist_management');
@@ -123,9 +123,6 @@ class _SideBarState extends State<SideBar> {
         break;
       case "Career Management":
         Navigator.pushNamed(context, '/career_management');
-        break;
-        case "Career Questions Management":
-        Navigator.pushNamed(context, '/career_questions_management');
         break;
 
       /// User features

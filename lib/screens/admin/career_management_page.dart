@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:aspire_edge/screens/admin/custom_appbar_admin.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/utils/image_picker.dart';
 import '../../services/career_dao.dart';
@@ -77,7 +76,7 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
             try {
               loaded.add(CareerItem(key: key, career: Career.fromJson(value)));
             } catch (e) {
-              debugPrint('Parse error career $key: $e');
+              debugPrint('❌ Parse error career $key: $e');
             }
           });
           setState(() {
@@ -119,6 +118,9 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
   void _deleteCareer(int index) {
     final key = careers[index].key;
     _careerDao.deleteCareer(key);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Career deleted")),
+    );
   }
 
   @override
@@ -129,38 +131,48 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () => _openCareerPage(),
-                icon: Icon(Icons.add, color: Colors.white),
-                label: Text(
+                icon: const Icon(Icons.add, color: Colors.white),
+                label: const Text(
                   "Add Career",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF3D455B),
-                  padding: EdgeInsets.symmetric(vertical: 14),
+                  backgroundColor: const Color(0xFF8E2DE2),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  elevation: 4,
+                  shadowColor: Colors.deepPurple.withOpacity(0.2),
                 ),
               ),
             ),
           ),
           Expanded(
             child: _isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : careers.isEmpty
-                    ? Center(
+                    ? const Center(
                         child: Text(
                           'No careers found.',
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
                         ),
                       )
                     : ListView.builder(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         itemCount: careers.length,
                         itemBuilder: (context, index) {
                           final careerItem = careers[index];
@@ -174,20 +186,25 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
                                   : career.imageBase64;
                               imageBytes = base64Decode(clean);
                             } catch (e) {
-                              debugPrint("Preview decode error: $e");
+                              debugPrint("❌ Preview decode error: $e");
                             }
                           }
 
-                          return Card(
-                            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            shape: RoundedRectangleBorder(
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
-                              side: BorderSide(color: Colors.grey.shade300),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
                             ),
-                            elevation: 0,
-                            color: Colors.white,
                             child: Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -197,38 +214,34 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
                                       child: Image.memory(
                                         imageBytes,
                                         width: double.infinity,
-                                        height: 100,
+                                        height: 120,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => Container(
-                                          height: 100,
-                                          child: Center(child: Text("Load Error")),
-                                        ),
                                       ),
                                     )
                                   else
                                     Container(
                                       width: double.infinity,
-                                      height: 100,
+                                      height: 120,
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
-                                        ),
+                                        color: Colors.grey[100],
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: const Center(
                                         child: Icon(
                                           Icons.image,
                                           color: Colors.grey,
+                                          size: 40,
                                         ),
                                       ),
                                     ),
                                   const SizedBox(height: 12),
                                   Text(
                                     career.title,
-                                    style: TextStyle(
+                                    style: const TextStyle(
+                                      fontFamily: 'Poppins',
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
-                                      color: Color(0xFF3D455B),
+                                      color: Color(0xFF2D3748),
                                     ),
                                   ),
                                   const SizedBox(height: 6),
@@ -236,41 +249,46 @@ class _CareerManagementPageState extends State<CareerManagementPage> {
                                     career.description,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(color: Colors.grey[700]),
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      color: Colors.grey[700],
+                                    ),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text("Industry: ${career.industry}"), // 👈 NEW FIELD
+                                  Text("Industry: ${career.industry}",
+                                      style: const TextStyle(fontFamily: 'Poppins')),
                                   const SizedBox(height: 8),
                                   Text(
                                     "Skills: ${career.requiredSkills.join(", ")}",
+                                    style: const TextStyle(fontFamily: 'Poppins'),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text("Salary Range: ${career.salaryRange}"),
+                                  Text("Salary Range: ${career.salaryRange}",
+                                      style: const TextStyle(fontFamily: 'Poppins')),
                                   const SizedBox(height: 8),
                                   Text(
                                     "Degrees: ${career.educationPath.recommendedDegrees.join(", ")}",
+                                    style: const TextStyle(fontFamily: 'Poppins'),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
                                     "Certifications: ${career.educationPath.certifications.join(", ")}",
+                                    style: const TextStyle(fontFamily: 'Poppins'),
                                   ),
                                   const SizedBox(height: 12),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       IconButton(
-                                        icon: Icon(
-                                          Icons.edit,
-                                          color: Colors.blueGrey,
-                                        ),
+                                        icon: const Icon(Icons.edit,
+                                            color: Color(0xFF5B6CF1)),
                                         onPressed: () =>
                                             _openCareerPage(careerItem: careerItem),
                                       ),
                                       IconButton(
-                                        icon: Icon(
-                                          Icons.delete,
-                                          color: Colors.redAccent,
-                                        ),
+                                        icon: const Icon(Icons.delete,
+                                            color: Colors.redAccent),
                                         onPressed: () => _deleteCareer(index),
                                       ),
                                     ],
@@ -305,7 +323,7 @@ class _CareerFormPageState extends State<CareerFormPage> {
   late TextEditingController salaryController;
   late TextEditingController degreesController;
   late TextEditingController certsController;
-  late TextEditingController industryController; // 👈 NEW FIELD
+  late TextEditingController industryController;
   String currentImageBase64 = "";
 
   @override
@@ -317,11 +335,12 @@ class _CareerFormPageState extends State<CareerFormPage> {
     skillsController =
         TextEditingController(text: career?.requiredSkills.join(", ") ?? "");
     salaryController = TextEditingController(text: career?.salaryRange ?? "");
-    degreesController =
-        TextEditingController(text: career?.educationPath.recommendedDegrees.join(", ") ?? "");
-    certsController =
-        TextEditingController(text: career?.educationPath.certifications.join(", ") ?? "");
-    industryController = TextEditingController(text: career?.industry ?? ""); // 👈 prefill
+    degreesController = TextEditingController(
+        text: career?.educationPath.recommendedDegrees.join(", ") ?? "");
+    certsController = TextEditingController(
+        text: career?.educationPath.certifications.join(", ") ?? "");
+    industryController =
+        TextEditingController(text: career?.industry ?? "");
     currentImageBase64 = career?.imageBase64 ?? "";
   }
 
@@ -338,7 +357,6 @@ class _CareerFormPageState extends State<CareerFormPage> {
           width: double.infinity,
           height: 150,
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _errorImage(),
         ),
       );
     } catch (_) {
@@ -362,10 +380,16 @@ class _CareerFormPageState extends State<CareerFormPage> {
     return TextField(
       controller: c,
       maxLines: maxLines,
+      style: const TextStyle(fontFamily: 'Poppins'),
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        labelStyle: const TextStyle(fontFamily: 'Poppins'),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF8E2DE2), width: 2),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       ),
     );
   }
@@ -373,7 +397,7 @@ class _CareerFormPageState extends State<CareerFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Career Management"),
+      appBar: CustomAppBar(title: "Career Form"),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
@@ -403,58 +427,66 @@ class _CareerFormPageState extends State<CareerFormPage> {
             const SizedBox(height: 12),
             _buildTextField(descController, "Description", maxLines: 3),
             const SizedBox(height: 12),
-            _buildTextField(
-              industryController,
-              "Industry", // 👈 NEW FIELD
-            ),
+            _buildTextField(industryController, "Industry"),
             const SizedBox(height: 12),
             _buildTextField(
-              skillsController,
-              "Required Skills (comma separated)",
-            ),
+                skillsController, "Required Skills (comma separated)"),
             const SizedBox(height: 12),
             _buildTextField(salaryController, "Salary Range"),
             const SizedBox(height: 12),
             _buildTextField(
-              degreesController,
-              "Recommended Degrees (comma separated)",
-            ),
+                degreesController, "Recommended Degrees (comma separated)"),
             const SizedBox(height: 12),
             _buildTextField(
-              certsController,
-              "Certifications (comma separated)",
-            ),
+                certsController, "Certifications (comma separated)"),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                final newCareer = Career(
-                  title: titleController.text,
-                  description: descController.text,
-                  requiredSkills:
-                      skillsController.text.split(",").map((e) => e.trim()).toList(),
-                  salaryRange: salaryController.text,
-                  educationPath: EducationPath(
-                    recommendedDegrees: degreesController.text
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  final newCareer = Career(
+                    title: titleController.text,
+                    description: descController.text,
+                    requiredSkills: skillsController.text
                         .split(",")
                         .map((e) => e.trim())
                         .toList(),
-                    certifications: certsController.text
-                        .split(",")
-                        .map((e) => e.trim())
-                        .toList(),
+                    salaryRange: salaryController.text,
+                    educationPath: EducationPath(
+                      recommendedDegrees: degreesController.text
+                          .split(",")
+                          .map((e) => e.trim())
+                          .toList(),
+                      certifications: certsController.text
+                          .split(",")
+                          .map((e) => e.trim())
+                          .toList(),
+                    ),
+                    imageBase64: currentImageBase64,
+                    industry: industryController.text,
+                  );
+                  widget.onSave(newCareer);
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF8E2DE2),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  imageBase64: currentImageBase64,
-                  industry: industryController.text, // 👈 NEW FIELD
-                );
-                widget.onSave(newCareer);
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF3D455B),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                  elevation: 4,
+                  shadowColor: Colors.deepPurple.withOpacity(0.3),
+                ),
+                child: const Text(
+                  "Save Career",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-              child: Text("Save"),
             ),
           ],
         ),

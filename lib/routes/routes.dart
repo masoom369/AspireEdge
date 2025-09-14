@@ -1,4 +1,4 @@
-import 'package:aspire_edge/screens/admin/career_questions_management_page.dart';
+import 'package:aspire_edge/screens/admin/admin_career_questions_page.dart';
 import 'package:flutter/material.dart';
 import 'package:aspire_edge/screens/onboarding/onboarding_screen.dart';
 import 'package:aspire_edge/screens/entryPoint/entry_point.dart';
@@ -95,8 +95,6 @@ final Map<String, WidgetBuilder> protectedRoutes = {
 /// ADMIN ROUTES
 /// ==========================
 final Map<String, WidgetBuilder> adminRoutes = {
-  '/career_questions_management': (context) =>
-      EntryPoint(child: const CareerQuestionsPage()),
   '/notification_management': (context) =>
       EntryPoint(child: const NotificationManagementPage()),
   '/career_management': (context) => EntryPoint(child: CareerManagementPage()),
@@ -104,7 +102,7 @@ final Map<String, WidgetBuilder> adminRoutes = {
       EntryPoint(child: const StreamManagementPage()),
   '/feedback_management': (context) =>
       EntryPoint(child: const FeedbackManagementPage()),
-  '/quiz_management': (context) => EntryPoint(child: QuizManagementPage()),
+  '/Career_quiz_management': (context) => EntryPoint(child: AdminCareerQuestionsPage()),
   '/resources_management': (context) =>
       EntryPoint(child: const ResourcesManagementPage()),
   '/testimonial_management': (context) =>
@@ -153,7 +151,6 @@ const List<String> protectedRoutesList = [
 const List<String> adminOnlyRoutes = [
   '/notification_management',
   '/career_management',
-  '/career_questions_management',
   '/stream_management',
   '/feedback_management',
   '/quiz_management',

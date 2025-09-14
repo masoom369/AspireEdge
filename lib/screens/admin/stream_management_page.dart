@@ -6,25 +6,24 @@ class StreamManagementPage extends StatefulWidget {
   const StreamManagementPage({super.key});
 
   @override
-  State<StreamManagementPage> createState() =>
-      _StreamManagementPageState();
+  State<StreamManagementPage> createState() => _StreamManagementPageState();
 }
 
 class _StreamManagementPageState extends State<StreamManagementPage> {
   final DatabaseReference _ref =
       FirebaseDatabase.instance.ref("stream_questions");
 
-  // void _addQuestion() {
-  //   final newRef = _ref.push();
-  //   newRef.set({
-  //     "title": "Untitled Question",
-  //     "type": "single",
-  //     "options": {
-  //       "0": {"text": "Option 1", "value": "science"},
-  //       "1": {"text": "Option 2", "value": "commerce"},
-  //     }
-  //   });
-  // }
+  void _addQuestion() {
+    final newRef = _ref.push();
+    newRef.set({
+      "title": "Untitled Question",
+      "type": "single",
+      "options": {
+        "0": {"text": "Option 1", "value": "science"},
+        "1": {"text": "Option 2", "value": "commerce"},
+      }
+    });
+  }
 
   void _editQuestionTitle(String id, String title) {
     _ref.child(id).update({"title": title});
@@ -76,13 +75,21 @@ class _StreamManagementPageState extends State<StreamManagementPage> {
 
   @override
   Widget build(BuildContext context) {
+    const themeColor = Color(0xFF8E2DE2); // same purple theme
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(title: "Stream Management"),
       body: StreamBuilder<DatabaseEvent>(
         stream: _ref.onValue,
         builder: (context, snapshot) {
           if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
-            return const Center(child: Text("No questions added yet"));
+            return const Center(
+              child: Text(
+                "No questions added yet",
+                style: TextStyle(fontFamily: "Poppins"),
+              ),
+            );
           }
 
           final Object? val = snapshot.data!.snapshot.value;
@@ -122,15 +129,27 @@ class _StreamManagementPageState extends State<StreamManagementPage> {
           }).toList();
 
           return ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             itemCount: questions.length,
             itemBuilder: (context, index) {
               final q = questions[index];
               final options = q["options"] as Map<String, dynamic>;
 
-              return Card(
-                margin: const EdgeInsets.all(10),
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -138,6 +157,7 @@ class _StreamManagementPageState extends State<StreamManagementPage> {
                         initialValue: q["title"],
                         decoration: const InputDecoration(
                           labelText: "Question Title",
+                          border: OutlineInputBorder(),
                         ),
                         onFieldSubmitted: (v) {
                           if (v.trim().isNotEmpty) {
@@ -145,10 +165,13 @@ class _StreamManagementPageState extends State<StreamManagementPage> {
                           }
                         },
                       ),
-                      const SizedBox(height: 10),
-
-                      DropdownButton<String>(
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String>(
                         value: q["type"],
+                        decoration: const InputDecoration(
+                          labelText: "Question Type",
+                          border: OutlineInputBorder(),
+                        ),
                         items: const [
                           DropdownMenuItem(
                               value: "single", child: Text("Single Choice")),
@@ -159,50 +182,82 @@ class _StreamManagementPageState extends State<StreamManagementPage> {
                           if (val != null) _editQuestionType(q["id"], val);
                         },
                       ),
-
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       Column(
                         children: options.entries.map((entry) {
                           final optionKey = entry.key;
                           final opt = Map<String, dynamic>.from(entry.value);
-                          return ListTile(
-                            title: TextFormField(
-                              initialValue: opt['text'],
-                              decoration: const InputDecoration(
-                                labelText: "Option Text",
-                              ),
-                              onFieldSubmitted: (v) {
-                                _editOption(
-                                    q["id"], optionKey, v.trim(), opt['value']);
-                              },
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            subtitle: TextFormField(
-                              initialValue: opt['value'],
-                              decoration: const InputDecoration(
-                                labelText: "Option Value",
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    initialValue: opt['text'],
+                                    decoration: const InputDecoration(
+                                      labelText: "Option Text",
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    onFieldSubmitted: (v) {
+                                      _editOption(
+                                          q["id"], optionKey, v.trim(), opt['value']);
+                                    },
+                                  ),
+                                  const SizedBox(height: 8),
+                                  TextFormField(
+                                    initialValue: opt['value'],
+                                    decoration: const InputDecoration(
+                                      labelText: "Option Value",
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    onFieldSubmitted: (v) {
+                                      _editOption(
+                                          q["id"], optionKey, opt['text'], v.trim());
+                                    },
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.delete,
+                                          color: Colors.redAccent),
+                                      onPressed: () =>
+                                          _deleteOption(q["id"], optionKey),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              onFieldSubmitted: (v) {
-                                _editOption(
-                                    q["id"], optionKey, opt['text'], v.trim());
-                              },
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () =>
-                                  _deleteOption(q["id"], optionKey),
                             ),
                           );
                         }).toList(),
                       ),
-                      TextButton.icon(
-                        onPressed: () => _addOption(q["id"]),
-                        icon: const Icon(Icons.add),
-                        label: const Text("Add Option"),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => _addOption(q["id"]),
+                          icon: const Icon(Icons.add, color: Colors.white),
+                          label: const Text(
+                            "Add Option",
+                            style: TextStyle(fontFamily: "Poppins"),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: themeColor,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
                       ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: Colors.redAccent),
                           onPressed: () => _deleteQuestion(q["id"]),
                         ),
                       ),
@@ -213,6 +268,32 @@ class _StreamManagementPageState extends State<StreamManagementPage> {
             },
           );
         },
+      ),
+
+      // Floating button styled same as career page
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: themeColor,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add),
+        label: const Text("Add Question"),
+        onPressed: _addQuestion,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
+      // bottom navigation bar styled
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifications'),
+          BottomNavigationBarItem(icon: Icon(Icons.video_call), label: 'Video'),
+        ],
+        currentIndex: 0,
+        selectedItemColor: themeColor,
+        unselectedItemColor: Colors.grey[600],
+        showUnselectedLabels: false,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }

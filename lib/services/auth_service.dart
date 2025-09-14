@@ -37,7 +37,7 @@ class AuthService {
       }
 
       return user;
-    } on FirebaseAuthException {
+    } on FirebaseAuthException catch (e) {
       rethrow;
     } catch (e) {
       rethrow;

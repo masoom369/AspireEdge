@@ -473,7 +473,7 @@ class DashboardPage extends StatelessWidget {
             'level': 'Alert',
             'duration': 'High Priority',
             'color': const Color(0xFFFF5722),
-            'emoji': '',
+            'emoji': '📈',
           },
           {
             'title': 'Content Moderation Queue',
@@ -482,7 +482,7 @@ class DashboardPage extends StatelessWidget {
             'level': 'Action Needed',
             'duration': 'Medium Priority',
             'color': const Color(0xFFFF9800),
-            'emoji': '',
+            'emoji': '⚠️',
           },
         ];
       case 'user':
@@ -494,7 +494,7 @@ class DashboardPage extends StatelessWidget {
             'level': 'Beginner',
             'duration': '6-12 months',
             'color': const Color(0xFFFF5722),
-            'emoji': '',
+            'emoji': '🚀',
           },
           {
             'title': 'Digital Marketing',
@@ -503,7 +503,7 @@ class DashboardPage extends StatelessWidget {
             'level': 'Beginner',
             'duration': '3-6 months',
             'color': const Color(0xFF2196F3),
-            'emoji': '',
+            'emoji': '📱',
           },
           {
             'title': 'Data Science',
@@ -512,7 +512,7 @@ class DashboardPage extends StatelessWidget {
             'level': 'Intermediate',
             'duration': '8-12 months',
             'color': const Color(0xFF4CAF50),
-            'emoji': '',
+            'emoji': '📊',
           },
         ];
       default:

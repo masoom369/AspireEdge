@@ -43,7 +43,7 @@ class _NotificationManagementPageState
       },
       body: jsonEncode({
         'app_id': oneSignalAppId,
-        'included_segments': ['All'],
+        'included_segments': ['All'], // sends to all subscribed users
         'headings': {'en': title},
         'contents': {'en': body},
       }),
@@ -51,13 +51,13 @@ class _NotificationManagementPageState
 
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Notification sent successfully!")),
+        const SnackBar(content: Text("✅ Notification sent successfully!")),
       );
       _titleController.clear();
       _bodyController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed: ${response.body}")),
+        SnackBar(content: Text("❌ Failed: ${response.body}")),
       );
     }
   }
@@ -66,93 +66,74 @@ class _NotificationManagementPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "Notification Management"),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Create & Send Notifications",
+              "Create Notification",
               style: TextStyle(
                 fontFamily: 'Poppins',
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple.shade700,
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF2D3748),
               ),
             ),
-            const SizedBox(height: 24),
-
-            // Title Input
+            const SizedBox(height: 20),
             TextField(
               controller: _titleController,
               style: const TextStyle(fontFamily: 'Poppins'),
               decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.title, color: Colors.deepPurple),
                 labelText: "Title",
                 labelStyle: const TextStyle(fontFamily: 'Poppins'),
-                filled: true,
-                fillColor: Colors.grey.shade100,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFF8E2DE2), width: 2),
                 ),
               ),
             ),
             const SizedBox(height: 16),
-
-            // Body Input
             TextField(
               controller: _bodyController,
               style: const TextStyle(fontFamily: 'Poppins'),
-              maxLines: 5,
+              maxLines: 4,
               decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.message, color: Colors.deepPurple),
-                alignLabelWithHint: true,
                 labelText: "Body",
                 labelStyle: const TextStyle(fontFamily: 'Poppins'),
-                filled: true,
-                fillColor: Colors.grey.shade100,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFF5B6CF1), width: 2),
                 ),
               ),
             ),
-            const SizedBox(height: 30),
-
-            // Gradient Button
+            const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _sendNotification,
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  backgroundColor: const Color(0xFF8E2DE2),
+                  shadowColor: Colors.deepPurple.withOpacity(0.3),
                   elevation: 6,
                 ),
-                child: Ink(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF8E2DE2), Color(0xFF5B6CF1)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: const Text(
-                      "Send Notification",
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
+                child: const Text(
+                  "Send Notification",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
               ),

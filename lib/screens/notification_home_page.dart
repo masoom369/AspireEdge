@@ -24,6 +24,7 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
       setState(() {
         notifications.insert(0, data);
       });
+      debugPrint("📩 Firebase notification: ${data['title']} - ${data['body']}");
     });
 
     // OneSignal foreground
@@ -42,12 +43,14 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
     });
 
     // OneSignal click
-    OneSignal.Notifications.addClickListener((event) {});
+    OneSignal.Notifications.addClickListener((event) {
+      debugPrint("👉 Notification opened: ${event.notification.jsonRepresentation()}");
+    });
   }
 
   void _deleteNotification(int index) {
     setState(() {
-      notifications.removeAt(index); // session only, not DB
+      notifications.removeAt(index); // only for current user session
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -93,10 +96,8 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
                       ],
                     ),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       title: Text(
                         item['title'] ?? "No Title",
                         style: const TextStyle(
@@ -118,10 +119,7 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
                         ),
                       ),
                       trailing: IconButton(
-                        icon: const Icon(
-                          Icons.delete,
-                          color: Color(0xFF8E2DE2),
-                        ),
+                        icon: const Icon(Icons.delete, color: Color(0xFF8E2DE2)),
                         onPressed: () => _deleteNotification(index),
                       ),
                     ),
@@ -129,6 +127,7 @@ class _NotificationHomePageState extends State<NotificationHomePage> {
                 },
               ),
       ),
+
     );
   }
 }

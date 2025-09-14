@@ -219,7 +219,7 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
             borderRadius: BorderRadius.circular(16),
           ),
           title: Text(
-            'Recommended Stream',
+            '🎯 Recommended Stream',
             style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 20,

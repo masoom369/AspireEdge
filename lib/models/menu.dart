@@ -16,7 +16,7 @@ List<Menu> adminSidebarMenus = [
   Menu(title: "Notification", icon: Icons.notifications),
   Menu(title: "Notification Management", icon: Icons.notifications),
   Menu(title: "Feedback Management", icon: Icons.feedback),
-  Menu(title: "Career Questions Management", icon: Icons.quiz),
+  Menu(title: "Career Quiz Management", icon: Icons.quiz),
   Menu(title: "Wishlist Management", icon: Icons.favorite_border),
   Menu(title: "Resources Management", icon: Icons.book),
   Menu(title: "Testimonial Management", icon: Icons.star_border),

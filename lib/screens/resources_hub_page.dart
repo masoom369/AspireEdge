@@ -64,7 +64,7 @@ class _ResourcesHubPageState extends State<ResourcesHubPage> {
       return;
     }
 
-    final resourceId = resource.title; // use resource object id
+    final resourceId = resource.title; // ✅ use resource object id
     if (bookmarkedResourceIds.contains(resourceId)) {
 
       await _bookmarkDao.removeBookmark(user.uid, resourceId);
