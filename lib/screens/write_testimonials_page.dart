@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../models/testimonial.dart';
 import '../utils/image_picker.dart'; // <-- Your helper for picking images
@@ -73,7 +72,7 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
           backgroundColor: Color(0xFF8E2DE2),
           content: Text(
             '✅ Testimonial submitted successfully!',
-            style: GoogleFonts.poppins(color: Colors.white),
+            style: TextStyle(fontFamily: 'Poppins', color: Colors.white),
           ),
         ),
       );
@@ -105,7 +104,8 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
         ),
         title: Text(
           'Write a Testimonial',
-          style: GoogleFonts.poppins(
+          style: TextStyle(
+            fontFamily: 'Poppins',
             fontSize: 20,
             fontWeight: FontWeight.w700,
             color: Color(0xFF2D3748),
@@ -121,7 +121,8 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
             SizedBox(height: 16),
             Text(
               'Share Your Testimonial',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF2D3748),
@@ -130,7 +131,8 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
             SizedBox(height: 8),
             Text(
               'Tell us how AspireEdge made an impact for you.',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 14,
                 color: Color(0xFF6B7280),
               ),
@@ -140,7 +142,8 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
 
             Text(
               'Your Name *',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF2D3748),
@@ -161,16 +164,17 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
                   borderSide: BorderSide(color: Color(0xFF8E2DE2), width: 2),
                 ),
                 hintText: 'Enter your full name',
-                hintStyle: GoogleFonts.poppins(color: Color(0xFF9CA3AF)),
+                hintStyle: TextStyle(fontFamily: 'Poppins', color: Color(0xFF9CA3AF)),
               ),
-              style: GoogleFonts.poppins(),
+              style: TextStyle(fontFamily: 'Poppins'),
             ),
             SizedBox(height: 20),
 
 
             Text(
               'Your Tier *',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF2D3748),
@@ -191,11 +195,11 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
                       EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
                 icon: Icon(Icons.arrow_drop_down, color: Color(0xFF8E2DE2)),
-                style: GoogleFonts.poppins(),
+                style: TextStyle(fontFamily: 'Poppins'),
                 items: _tierOptions.map((String option) {
                   return DropdownMenuItem<String>(
                     value: option,
-                    child: Text(option, style: GoogleFonts.poppins()),
+                    child: Text(option, style: TextStyle(fontFamily: 'Poppins')),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -210,7 +214,8 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
 
             Text(
               'Your Testimonial *',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF2D3748),
@@ -232,16 +237,17 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
                   borderSide: BorderSide(color: Color(0xFF8E2DE2), width: 2),
                 ),
                 hintText: 'Write your testimonial here...',
-                hintStyle: GoogleFonts.poppins(color: Color(0xFF9CA3AF)),
+                hintStyle: TextStyle(fontFamily: 'Poppins', color: Color(0xFF9CA3AF)),
               ),
-              style: GoogleFonts.poppins(),
+              style: TextStyle(fontFamily: 'Poppins'),
             ),
             SizedBox(height: 20),
 
 
             Text(
               'Add a Photo (optional)',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF2D3748),
@@ -295,7 +301,8 @@ class _WriteTestimonialsPageState extends State<WriteTestimonialsPage> {
                     ? CircularProgressIndicator(color: Colors.white)
                     : Text(
                         '📤 Submit Testimonial',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,

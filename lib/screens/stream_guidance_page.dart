@@ -1,6 +1,5 @@
 import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -221,7 +220,8 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
           ),
           title: Text(
             '🎯 Recommended Stream',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
+              fontFamily: 'Poppins',
               fontSize: 20,
               fontWeight: FontWeight.w700,
               color: const Color(0xFF2D3748),
@@ -239,7 +239,8 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
                 ),
                 child: Text(
                   recommendedStream,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF8E2DE2),
@@ -249,7 +250,7 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
               const SizedBox(height: 16),
               Text(
                 result["explanation"],
-                style: GoogleFonts.poppins(color: const Color(0xFF6B7280)),
+                style: TextStyle(fontFamily: 'Poppins', color: const Color(0xFF6B7280)),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
@@ -268,7 +269,8 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
                 ),
                 child: Text(
                   'Explore This Stream',
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -301,7 +303,7 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
         body: Center(
           child: Text(
             "No questions found in Firebase",
-            style: GoogleFonts.poppins(fontSize: 16),
+            style: TextStyle(fontFamily: 'Poppins', fontSize: 16),
           ),
         ),
       );
@@ -321,7 +323,8 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
               const SizedBox(height: 16),
               Text(
                 'Choose Your Academic Path',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
+                  fontFamily: 'Poppins',
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFF2D3748),
@@ -330,7 +333,8 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
               const SizedBox(height: 8),
               Text(
                 'Answer ${questions.length} questions to find the best stream for you.',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
+                  fontFamily: 'Poppins',
                   fontSize: 14,
                   color: const Color(0xFF6B7280),
                 ),
@@ -343,7 +347,8 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
                 children: [
                   Text(
                     '${currentStep + 1}/${questions.length}',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 16,
                       color: const Color(0xFF8E2DE2),
                     ),
@@ -388,7 +393,8 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
                     children: [
                       Text(
                         question['title'],
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF2D3748),
@@ -439,7 +445,8 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
                                       Expanded(
                                         child: Text(
                                           option['text'],
-                                          style: GoogleFonts.poppins(
+                                          style: TextStyle(
+                                            fontFamily: 'Poppins',
                                             fontSize: 16,
                                             color: isSelected
                                                 ? Colors.white
@@ -470,7 +477,7 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
                     onPressed: _prevStep,
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
                     label: Text('Back',
-                        style: GoogleFonts.poppins(color: Colors.white)),
+                        style: TextStyle(fontFamily: 'Poppins', color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           const Color(0xFF8E2DE2).withOpacity(0.8),
@@ -485,7 +492,7 @@ class _StreamGuidancePageState extends State<StreamGuidancePage> {
                     onPressed: _nextStep,
                     icon: const Icon(Icons.arrow_forward, color: Colors.white),
                     label: Text('Next',
-                        style: GoogleFonts.poppins(color: Colors.white)),
+                        style: TextStyle(fontFamily: 'Poppins', color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF8E2DE2),
                       padding: const EdgeInsets.symmetric(

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 
 import '../../models/testimonial.dart';
@@ -176,7 +175,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 20),
             Text(
               'Your Future Starts Here',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
                 color: const Color(0xFF2D3748),
@@ -185,7 +185,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 10),
             Text(
               'Explore careers, take quizzes, and unlock your potential with personalized guidance.',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 16,
                 color: const Color(0xFF6B7280),
               ),
@@ -195,7 +196,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 30),
             Text(
               'Featured Tools',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF2D3748),
@@ -240,7 +242,8 @@ class _HomePageState extends State<HomePage> {
                               Expanded(
                                 child: Text(
                                   module['title'],
-                                  style: GoogleFonts.poppins(
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
@@ -261,7 +264,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Text(
                             module['subtitle'],
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                               color: Colors.white.withOpacity(0.95),
@@ -269,7 +273,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Text(
                             module['description'],
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 12,
                               color: Colors.white.withOpacity(0.8),
                             ),
@@ -288,7 +293,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 30),
             Text(
               'Recent',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF2D3748),
@@ -339,7 +345,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Text(
                             content['title'],
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -349,7 +356,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Text(
                             content['duration'],
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 13,
                               color: Colors.white.withOpacity(0.9),
                             ),
@@ -366,7 +374,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 30),
             Text(
               'Success Stories',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF2D3748),
@@ -420,7 +429,8 @@ class _HomePageState extends State<HomePage> {
                                         currentTestimonial.userName.isNotEmpty
                                             ? currentTestimonial.userName[0]
                                             : '',
-                                        style: GoogleFonts.poppins(
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
                                           fontSize: 24,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,
@@ -435,7 +445,8 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Text(
                                     currentTestimonial.userName,
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600,
                                       color: const Color(0xFF2D3748),
@@ -445,14 +456,16 @@ class _HomePageState extends State<HomePage> {
                                       currentTestimonial.tier!.isNotEmpty)
                                     Text(
                                       currentTestimonial.tier!,
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
                                         fontSize: 14,
                                         color: Colors.grey[600],
                                       ),
                                     ),
                                   Text(
                                     currentTestimonial.date,
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
                                       fontSize: 12,
                                       color: Colors.grey[500],
                                     ),
@@ -468,7 +481,8 @@ class _HomePageState extends State<HomePage> {
 
                         Text(
                           currentTestimonial.message,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
                             fontSize: 16,
                             color: const Color(0xFF2D3748),
                           ),

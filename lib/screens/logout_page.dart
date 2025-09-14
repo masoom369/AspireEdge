@@ -1,6 +1,5 @@
 import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:aspire_edge/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,7 +43,8 @@ class _LogoutPageState extends State<LogoutPage> {
                 SizedBox(height: 16),
                 Text(
                   'You have been logged out.',
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF2D3748),
@@ -71,7 +71,8 @@ class _LogoutPageState extends State<LogoutPage> {
                   ),
                   child: Text(
                     'OK',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -102,7 +103,8 @@ class _LogoutPageState extends State<LogoutPage> {
               SizedBox(height: 24),
               Text(
                 'Signing you out...',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
+                  fontFamily: 'Poppins',
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF2D3748),
@@ -111,7 +113,8 @@ class _LogoutPageState extends State<LogoutPage> {
               SizedBox(height: 8),
               Text(
                 'Please wait while we securely log you out.',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
+                  fontFamily: 'Poppins',
                   fontSize: 14,
                   color: Color(0xFF6B7280),
                 ),

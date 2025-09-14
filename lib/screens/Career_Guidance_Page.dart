@@ -1,7 +1,6 @@
 
 import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -184,7 +183,8 @@ class _CareerGuidancePageState extends State<CareerGuidancePage> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           title: Text('🎯 Recommended Career Path',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                  fontFamily: 'Poppins',
                   fontSize: 18, fontWeight: FontWeight.w700)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -196,7 +196,8 @@ class _CareerGuidancePageState extends State<CareerGuidancePage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(recommended,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF8E2DE2))),
@@ -211,7 +212,7 @@ class _CareerGuidancePageState extends State<CareerGuidancePage> {
               },
               child: Text('Close',
                   style:
-                      GoogleFonts.poppins(color: const Color(0xFF8E2DE2))),
+                      TextStyle(fontFamily: 'Poppins', color: const Color(0xFF8E2DE2))),
             )
           ],
         );
@@ -238,7 +239,8 @@ class _CareerGuidancePageState extends State<CareerGuidancePage> {
           child: Column(
             children: [
               Text(question['title'],
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 20),
               Expanded(
@@ -267,7 +269,8 @@ class _CareerGuidancePageState extends State<CareerGuidancePage> {
                         ),
                         child: Text(
                           text,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
                               color: isSelected
                                   ? Colors.white
                                   : Colors.black87),

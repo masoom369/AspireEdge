@@ -1,6 +1,5 @@
 import 'package:aspire_edge/screens/entryPoint/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CVGuidancePage extends StatefulWidget {
   const CVGuidancePage({Key? key}) : super(key: key);
@@ -22,7 +21,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
             SizedBox(height: 16),
             Text(
               'Build Your First Professional CV',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF2D3748),
@@ -31,7 +31,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
             SizedBox(height: 8),
             Text(
               'Learn how to create a clean, effective resume that stands out.',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 14,
                 color: Color(0xFF6B7280),
               ),
@@ -61,7 +62,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                         children: [
                           Text(
                             '✅ Do’s',
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -70,7 +72,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                           SizedBox(height: 12),
                           Text(
                             '• Use clear headings and bullet points\n• Include relevant skills and achievements\n• Keep it to 1 page\n• Use professional fonts like Arial or Calibri\n• Tailor your CV to the job you’re applying for',
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 14,
                               color: Colors.white.withOpacity(0.9),
                             ),
@@ -102,7 +105,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                         children: [
                           Text(
                             '❌ Don’ts',
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -111,7 +115,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                           SizedBox(height: 12),
                           Text(
                             '• Avoid spelling and grammar errors\n• Don’t include photos unless required\n• Avoid personal details like age or religion\n• Don’t use overly creative formats\n• Never lie about experience',
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 14,
                               color: Colors.white.withOpacity(0.9),
                             ),
@@ -130,7 +135,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
 
             Text(
               'Downloadable Templates',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF2D3748),
@@ -157,7 +163,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                     children: [
                       Text(
                         'Professional CV Template',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF2D3748),
@@ -166,7 +173,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                       SizedBox(height: 8),
                       Text(
                         'Clean layout, modern design, perfect for entry-level roles.',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 14,
                           color: Color(0xFF6B7280),
                         ),
@@ -178,7 +186,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                           SizedBox(width: 8),
                           Text(
                             'Download PDF',
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 14,
                               color: Color(0xFF8E2DE2),
                               fontWeight: FontWeight.w600,
@@ -208,7 +217,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                     children: [
                       Text(
                         'Creative CV Template',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF2D3748),
@@ -217,7 +227,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                       SizedBox(height: 8),
                       Text(
                         'Ideal for design, arts, or creative fields.',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 14,
                           color: Color(0xFF6B7280),
                         ),
@@ -229,7 +240,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                           SizedBox(width: 8),
                           Text(
                             'Download PDF',
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 14,
                               color: Color(0xFF8E2DE2),
                               fontWeight: FontWeight.w600,
@@ -248,7 +260,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
 
             Text(
               'Watch Video Guide',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF2D3748),
@@ -273,7 +286,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                 children: [
                   Text(
                     'How to Write a Perfect Resume in 10 Minutes',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF2D3748),
@@ -282,7 +296,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                   SizedBox(height: 8),
                   Text(
                     'Step-by-step guide from experts. Covers formatting, content, and tips.',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 14,
                       color: Color(0xFF6B7280),
                     ),
@@ -294,7 +309,8 @@ class _CVGuidancePageState extends State<CVGuidancePage> {
                       SizedBox(width: 8),
                       Text(
                         'Watch Now',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 14,
                           color: Color(0xFF8E2DE2),
                           fontWeight: FontWeight.w600,
