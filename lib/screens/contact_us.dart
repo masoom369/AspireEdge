@@ -9,10 +9,10 @@ class ContactUsPage extends StatefulWidget {
   const ContactUsPage({super.key});
 
   @override
-  ContactUsPageState createState() => ContactUsPageState();
+  _ContactUsPageState createState() => _ContactUsPageState();
 }
 
-class ContactUsPageState extends State<ContactUsPage> {
+class _ContactUsPageState extends State<ContactUsPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();

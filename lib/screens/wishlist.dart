@@ -9,10 +9,10 @@ class WishlistPage extends StatefulWidget {
   const WishlistPage({super.key});
 
   @override
-  WishlistPageState createState() => WishlistPageState();
+  _WishlistPageState createState() => _WishlistPageState();
 }
 
-class WishlistPageState extends State<WishlistPage> {
+class _WishlistPageState extends State<WishlistPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();

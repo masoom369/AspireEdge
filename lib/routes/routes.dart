@@ -1,11 +1,11 @@
-import 'package:aspire_edge/screens/CV_Guidance_Page.dart';
-import 'package:aspire_edge/screens/Career_Guidance_Page.dart';
-import 'package:aspire_edge/screens/Interview_Preparation_Page.dart';
-import 'package:aspire_edge/screens/NotificationHomePage.dart';
-import 'package:aspire_edge/screens/Stream_Selector_Screen.dart';
-import 'package:aspire_edge/screens/Write_Testimonial_Screen.dart';
+import 'package:aspire_edge/screens/cv_guidance_page.dart';
+import 'package:aspire_edge/screens/career_guidance_page.dart';
+import 'package:aspire_edge/screens/interview_preparation_page.dart';
+import 'package:aspire_edge/screens/notification_home_page.dart';
+import 'package:aspire_edge/screens/stream_selector_screen.dart';
+import 'package:aspire_edge/screens/write_testimonial_screen.dart';
 import 'package:aspire_edge/screens/about_us.dart';
-import 'package:aspire_edge/screens/admin/AdminNotificationPage.dart';
+import 'package:aspire_edge/screens/admin/admin_notification_page.dart';
 import 'package:aspire_edge/screens/admin/admin_career_questions_page.dart';
 import 'package:aspire_edge/screens/admin/admin_stream_questions_page.dart';
 import 'package:aspire_edge/screens/admin/career_bank_management_screen.dart';
@@ -27,12 +27,12 @@ import 'package:aspire_edge/screens/wishlist.dart';
 import 'package:aspire_edge/services/auth_service.dart';
 import 'package:aspire_edge/services/user_dao.dart';
 import 'package:flutter/material.dart';
-import 'package:aspire_edge/screens/onboding/onboding_screen.dart';
+import 'package:aspire_edge/screens/onboarding/onboarding_screen.dart';
 import 'package:aspire_edge/screens/profile_screen.dart';
 
 
 final Map<String, WidgetBuilder> publicRoutes = {
-  '/auth': (context) => const OnbodingScreen(),
+  '/auth': (context) => const OnboardingScreen(),
 };
 final AuthService _authService = AuthService();
 final UserDao _userDao = UserDao();
