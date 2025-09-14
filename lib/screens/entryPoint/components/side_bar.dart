@@ -124,6 +124,9 @@ class _SideBarState extends State<SideBar> {
       case "Career Management":
         Navigator.pushNamed(context, '/career_management');
         break;
+        case "Career Questions Management":
+        Navigator.pushNamed(context, '/career_questions_management');
+        break;
 
       /// User features
       case "Resources Hub":
