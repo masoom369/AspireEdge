@@ -1,9 +1,11 @@
 import 'package:aspire_edge/screens/CV_Guidance_Page.dart';
 import 'package:aspire_edge/screens/Career_Guidance_Page.dart';
 import 'package:aspire_edge/screens/Interview_Preparation_Page.dart';
+import 'package:aspire_edge/screens/NotificationHomePage.dart';
 import 'package:aspire_edge/screens/Stream_Selector_Screen.dart';
 import 'package:aspire_edge/screens/Write_Testimonial_Screen.dart';
 import 'package:aspire_edge/screens/about_us.dart';
+import 'package:aspire_edge/screens/admin/AdminNotificationPage.dart';
 import 'package:aspire_edge/screens/admin/admin_career_questions_page.dart';
 import 'package:aspire_edge/screens/admin/admin_stream_questions_page.dart';
 import 'package:aspire_edge/screens/admin/career_bank_management_screen.dart';
@@ -39,8 +41,11 @@ final UserDao _userDao = UserDao();
 final Map<String, WidgetBuilder> protectedRoutes = {
   '/contact': (context) => EntryPoint(child: const ContactUsPage()),
   '/bookmark': (context) => EntryPoint(child: const BookmarksPage()),
-  '/wishlist': (context) => EntryPoint(child: const WishlistPage()), 
-  '/ResourcesHubPage': (context) => EntryPoint(child:  ResourcesHubPage()),
+  '/wishlist': (context) => EntryPoint(child: const WishlistPage()),
+  '/notification': (context) => EntryPoint(child: const NotificationHomePage()),
+  '/notification_management': (context) =>
+      EntryPoint(child: const AdminNotificationPage()),
+  '/ResourcesHubPage': (context) => EntryPoint(child: ResourcesHubPage()),
   '/wishlist_management': (context) =>
       EntryPoint(child: const AdminWishlistPage()),
   '/about': (context) => EntryPoint(child: const AboutUsPage()),

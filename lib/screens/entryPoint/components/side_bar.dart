@@ -95,6 +95,12 @@ class _SideBarState extends State<SideBar> {
       case "Contact Us":
         Navigator.pushNamed(context, '/contact');
         break;
+      case "Notification":
+        Navigator.pushNamed(context, '/notification');
+        break;
+      case "Notification Management":
+        Navigator.pushNamed(context, '/notification_management');
+        break;
       case "Feedback Management":
         Navigator.pushNamed(context, '/feedback_management');
         break;

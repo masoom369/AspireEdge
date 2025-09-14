@@ -11,9 +11,10 @@ class Menu {
 
 List<Menu> adminSidebarMenus = [
   Menu(title: "Home", icon: Icons.home),
-
   Menu(title: "About Us", icon: Icons.info),
   Menu(title: "Contact Us", icon: Icons.contact_mail),
+  Menu(title: "Notification", icon: Icons.notifications),
+  Menu(title: "Notification Management", icon: Icons.notifications),
   Menu(title: "Feedback Management", icon: Icons.feedback),
   Menu(title: "Quiz Management", icon: Icons.quiz),
   Menu(title: "Wishlist Management", icon: Icons.favorite_border),
