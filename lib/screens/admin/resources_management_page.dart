@@ -105,7 +105,7 @@ class _ResourcesManagementPageState extends State<ResourcesManagementPage> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final currentTab = DefaultTabController.of(ctx)!.index;
+                    final currentTab = DefaultTabController.of(ctx).index;
                     final category = ["Blog", "eBook", "Video", "Gallery"][currentTab];
                     if (formKey.currentState!.validate()) {
                       if (category == "Blog") {
@@ -238,7 +238,7 @@ class _ResourcesManagementPageState extends State<ResourcesManagementPage> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final currentTab = DefaultTabController.of(ctx)!.index;
+                    final currentTab = DefaultTabController.of(ctx).index;
                     final category = ["Blog", "eBook", "Video", "Gallery"][currentTab];
                     if (formKey.currentState!.validate()) {
                       Resource updatedResource;
@@ -405,7 +405,7 @@ class _ResourcesManagementPageState extends State<ResourcesManagementPage> {
 
             if (r is EBook)
               Text(
-                "${(r as EBook).link}",
+                "{(r as EBook).link}",
                 style: const TextStyle(
                   fontSize: 12,
                   color: Colors.blueGrey,
@@ -413,7 +413,7 @@ class _ResourcesManagementPageState extends State<ResourcesManagementPage> {
               ),
             if (r is Video)
               Text(
-                "${(r as Video).link}",
+                "{(r as Video).link}",
                 style: const TextStyle(
                   fontSize: 12,
                   color: Colors.blueGrey,

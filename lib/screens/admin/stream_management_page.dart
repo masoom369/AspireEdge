@@ -14,17 +14,17 @@ class _StreamManagementPageState extends State<StreamManagementPage> {
   final DatabaseReference _ref =
       FirebaseDatabase.instance.ref("stream_questions");
 
-  void _addQuestion() {
-    final newRef = _ref.push();
-    newRef.set({
-      "title": "Untitled Question",
-      "type": "single",
-      "options": {
-        "0": {"text": "Option 1", "value": "science"},
-        "1": {"text": "Option 2", "value": "commerce"},
-      }
-    });
-  }
+  // void _addQuestion() {
+  //   final newRef = _ref.push();
+  //   newRef.set({
+  //     "title": "Untitled Question",
+  //     "type": "single",
+  //     "options": {
+  //       "0": {"text": "Option 1", "value": "science"},
+  //       "1": {"text": "Option 2", "value": "commerce"},
+  //     }
+  //   });
+  // }
 
   void _editQuestionTitle(String id, String title) {
     _ref.child(id).update({"title": title});
@@ -95,7 +95,7 @@ class _StreamManagementPageState extends State<StreamManagementPage> {
               }
             }
           } else if (val is Map) {
-            rawValue = Map<String, dynamic>.from(val as Map);
+            rawValue = Map<String, dynamic>.from(val);
           }
 
           final questions = rawValue.entries.map((e) {

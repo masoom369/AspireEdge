@@ -24,16 +24,6 @@ class _UserNotificationPageState extends State<UserNotificationPage> {
     },
   ];
 
-  void _logout() {
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Logged out successfully"),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
