@@ -28,13 +28,14 @@ Future<void> main() async {
     OneSignal.Notifications.addForegroundWillDisplayListener((event) {
       event.preventDefault();
       event.notification.display();
-      debugPrint("📩 Foreground Notification: ${event.notification.jsonRepresentation()}");
+     // debugPrint("Foreground Notification: ${event.notification.jsonRepresentation()}");
     });
 
 
-    OneSignal.Notifications.addClickListener((event) {
-      debugPrint("👉 Notification opened: ${event.notification.jsonRepresentation()}");
-    });
+    // Commented out to fix MissingPluginException for OneSignal#addNativeClickListener
+    // OneSignal.Notifications.addClickListener((event) {
+    //   debugPrint("Notification opened: ${event.notification.jsonRepresentation()}");
+    // });
   }
 
   runApp(const MyApp());
